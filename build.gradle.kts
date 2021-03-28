@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    id("io.freefair.lombok") version "5.3.0"
 }
 
 group = "de.mockobor"
@@ -13,10 +14,13 @@ repositories {
 
 
 dependencies {
+
+    compileOnly("org.mockito:mockito-core:3.7.7")
+
     testImplementation(platform("org.junit:junit-bom:5.7.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    compileOnly("org.mockito:mockito-core:3.7.7")
-    testRuntimeOnly("org.mockito:mockito-core:3.7.7")
+    testImplementation("org.mockito:mockito-core:3.7.7")
+    testImplementation("org.assertj:assertj-core:3.19.0")
 }
 
 
