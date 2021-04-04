@@ -3,7 +3,7 @@ plugins {
     id("io.freefair.lombok") version "5.3.0"
 }
 
-group = "de.mockobor"
+group = "org.mockobor"
 version = "1.0-SNAPSHOT"
 
 

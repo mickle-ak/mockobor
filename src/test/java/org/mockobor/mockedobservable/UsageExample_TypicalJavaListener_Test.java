@@ -1,10 +1,9 @@
-package de.mockobor.mockedobservable;
+package org.mockobor.mockedobservable;
 
 
-import de.mockobor.mockedobservable.api.ListenerNotifier;
-import de.mockobor.mockedobservable.api.Mockitobor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockobor.Mockobor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,7 @@ class UsageExample_TypicalJavaListener_Test {
 
 	/** The listener to listen changes on something. */
 	public interface MyListener {
+
 		void somethingChanged1( Object somethingNewValue );
 
 		void somethingChanged2( Object somethingNewValue );
@@ -25,6 +25,7 @@ class UsageExample_TypicalJavaListener_Test {
 
 	/** The listener to listen changes on something other. */
 	public interface MyAnotherListener {
+
 		void somethingOtherChanged( Object somthingOtherValue );
 	}
 
@@ -73,8 +74,8 @@ class UsageExample_TypicalJavaListener_Test {
 		}
 
 		@Override
-		public void somethingOtherChanged( Object somthingOtherValue ) {
-			allChangesTogether.add( somthingOtherValue );
+		public void somethingOtherChanged( Object somethingOtherValue ) {
+			allChangesTogether.add( somethingOtherValue );
 		}
 
 		public List<Object> getAllChangesTogether() { return allChangesTogether; }
@@ -85,25 +86,26 @@ class UsageExample_TypicalJavaListener_Test {
 	//---------------------------------------  tests  -----------------------------------------
 	//-----------------------------------------------------------------------------------------
 
-	private ObservableObject mockedObservable;
+	private ListenersNotifier notifier;
 
-	private ListenerNotifier notifier;
+	private BeanObserverUnderTest observer;
+
 
 	@BeforeEach
 	void setUp() {
 		// Create mock for ObservableObject.
-		mockedObservable = mock( ObservableObject.class );
+		ObservableObject mockedObservable = mock( ObservableObject.class );
 
-		// Prepare mocked observable bean to observation. For classes with typical Java listener it returns listener interfaces itself.
-		notifier = Mockitobor.startObservation( mockedObservable );
+		// Create notifier for mocked observable object. For classes with typical Java listener it returns listener interfaces itself.
+		notifier = Mockobor.createNotifierFor( mockedObservable );
+
+		// Create SUT-object, which observes the mocked ObservableObject
+		observer = new BeanObserverUnderTest( mockedObservable );
 	}
 
 
 	@Test
 	void receiveUpdatesFromMockedObservable() {
-		// Create SUT-object, which observes the mocked ObservableObject
-		BeanObserverUnderTest observer = new BeanObserverUnderTest( mockedObservable );
-
 
 		// Simulate calling of change notifications from mocked observable
 		( (MyListener) notifier ).somethingChanged1( "value1" );
@@ -118,11 +120,27 @@ class UsageExample_TypicalJavaListener_Test {
 
 	@Test
 	void checkDeregistrationOfAllListeners() {
-		// Create SUT-object, which registers itself as observer for the mocked Observable and close to deregister
-		BeanObserverUnderTest observer = new BeanObserverUnderTest( mockedObservable );
+		// close should deregister all listeners
 		observer.close();
 
 		// check that all listeners are unregistered
-		assertThat( notifier.allListenersAreDeregistered() ).as( "all listeners are deregistered" ).isTrue();
+		assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are deregistered" ).isTrue();
+	}
+
+
+	@Test
+	void numberOfRegisteredListeners() {
+		assertThat( notifier.numberOfRegisteredListeners() ).as( "number of registered listeners" ).isEqualTo( 2 );
+		assertThat( notifier.numberOfListenerRegistrations() ).as( "number of registration" ).isEqualTo( 2 );
+		assertThat( notifier.numberOfListenerDeregistrations() ).as( "number of deregistrations" ).isZero();
+		assertThat( notifier.getAllListeners() ).hasSize( 2 ).allMatch( l -> l == observer );
+
+		// close should deregister all listeners
+		observer.close();
+
+		assertThat( notifier.numberOfRegisteredListeners() ).as( "number of registered listeners after close" ).isZero();
+		assertThat( notifier.numberOfListenerRegistrations() ).as( "number of registration" ).isEqualTo( 2 );
+		assertThat( notifier.numberOfListenerDeregistrations() ).as( "number of deregistrations" ).isEqualTo( 2 );
+		assertThat( notifier.getAllListeners() ).isEmpty();
 	}
 }

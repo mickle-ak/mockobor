@@ -1,9 +1,8 @@
-package de.mockobor.mockedobservable;
+package org.mockobor.mockedobservable;
 
-import de.mockobor.mockedobservable.api.Mockitobor;
-import de.mockobor.mockedobservable.api.ObservableNotifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockobor.Mockobor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,31 +46,30 @@ class UsageExample_Observable_Test {
 	//---------------------------------------  tests  -----------------------------------------
 	//-----------------------------------------------------------------------------------------
 
-	private Observable mockedObservable;
-
 	private ObservableNotifier notifier;
+
+	private ObserverUnderTest observer;
 
 
 	@BeforeEach
 	void setUp() {
 		// Create mock for Observable.
-		mockedObservable = mock( Observable.class );
+		Observable mockedObservable = mock( Observable.class );
 
-		// Prepare mocked observable to observation. For "Observer" as mock it returns special interface "ObservableNotifier".
-		notifier = Mockitobor.startObservation( mockedObservable );
+		// Create notifier for mocked observable. For "Observer" as mock it returns special interface "ObservableNotifier".
+		notifier = (ObservableNotifier) Mockobor.createNotifierFor( mockedObservable );
+
+		// Create SUT-object, which registers itself as observer for the mocked Observable and close to deregister
+		observer = new ObserverUnderTest( mockedObservable );
 	}
 
 
 	@Test
 	void receiveUpdatesFromMockedObservable() {
-		// Create SUT-object, which observes the mocked Observable
-		ObserverUnderTest observer = new ObserverUnderTest( mockedObservable );
-
 
 		// Simulate calling of change notifications from mocked observable
 		notifier.notifyObservers();
 		notifier.notifyObservers( "update parameter" );
-
 
 		// Check that observer has receive the notifications from mocked observable
 		assertThat( observer.getUpdateArguments() ).containsExactly( null, "update parameter" );
@@ -80,11 +78,27 @@ class UsageExample_Observable_Test {
 
 	@Test
 	void checkDeregistrationOfAllListeners() {
-		// Create SUT-object, which registers itself as observer for the mocked Observable and close to deregister
-		ObserverUnderTest observer = new ObserverUnderTest( mockedObservable );
+		// close should deregister all listeners
 		observer.close();
 
 		// check that all listeners are neatly unregistered
-		assertThat( notifier.allListenersAreDeregistered() ).as( "all listeners are deregistered" ).isTrue();
+		assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are deregistered" ).isTrue();
+	}
+
+
+	@Test
+	void numberOfRegisteredListeners() {
+		assertThat( notifier.numberOfRegisteredListeners() ).as( "number of registered listeners" ).isEqualTo( 1 );
+		assertThat( notifier.numberOfListenerRegistrations() ).as( "number of registration" ).isEqualTo( 1 );
+		assertThat( notifier.numberOfListenerDeregistrations() ).as( "number of deregistrations" ).isZero();
+		assertThat( notifier.getAllListeners() ).hasSize( 1 ).containsExactly( observer );
+
+		// close should deregister all listeners
+		observer.close();
+
+		assertThat( notifier.numberOfRegisteredListeners() ).as( "number of registered listeners after close" ).isZero();
+		assertThat( notifier.numberOfListenerRegistrations() ).as( "number of registration" ).isEqualTo( 1 );
+		assertThat( notifier.numberOfListenerDeregistrations() ).as( "number of deregistrations" ).isEqualTo( 1 );
+		assertThat( notifier.getAllListeners() ).isEmpty();
 	}
 }
