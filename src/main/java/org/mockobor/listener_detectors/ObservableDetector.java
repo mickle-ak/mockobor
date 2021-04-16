@@ -3,9 +3,11 @@ package org.mockobor.listener_detectors;
 import lombok.NonNull;
 import org.mockobor.Mockobor;
 import org.mockobor.mockedobservable.ObservableNotifier;
+import org.mockobor.utils.reflection.ReflectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -25,10 +27,25 @@ import java.util.Observer;
  * <li>the found registration methods will be redirected to the notifier object</li>
  * </ul>
  */
-public class ObservableDetector implements ListenerDefinitionDetector {
+public class ObservableDetector extends AbstractDetector implements ListenerDefinitionDetector {
 
 	@Override
-	public @NonNull ListenersDefinition detect( @NonNull Collection<Method> methods ) {
-		return null;
+	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
+		return Observer.class.isAssignableFrom( parameterType );
+	}
+
+	@Override
+	protected boolean isAddMethods( @NonNull Method method ) {
+		return ReflectionUtils.methodMatch( method, "addObserver", Observer.class );
+	}
+
+	@Override
+	protected boolean isRemoveMethods( @NonNull Method method ) {
+		return ReflectionUtils.methodMatch( method, "deleteObserver", Observer.class );
+	}
+
+	@Override
+	protected @NonNull List<Class<?>> getAdditionalInterfaces() {
+		return Collections.singletonList( ObservableNotifier.class );
 	}
 }

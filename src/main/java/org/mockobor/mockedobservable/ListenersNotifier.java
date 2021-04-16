@@ -68,6 +68,7 @@ public interface ListenersNotifier {
 	 * If listener's notification method returns some value, then result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * It is equal to call {@code notifierFor( listenerClass, selector() )}.
+	 * <p>
 	 * See {@link #notifierFor(Class, ListenerSelector...)} for details.
 	 *
 	 * @param listenerClass class of required listener
@@ -92,6 +93,7 @@ public interface ListenersNotifier {
 	 * If listener's notification method returns some value, then result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * It is equal to call {@code notifierFor( listenerClass, selector(listenerSelector) )}.
+	 * <p>
 	 * See {@link #notifierFor(Class, ListenerSelector...)} for details.
 	 *
 	 * @param listenerClass    class of required listener

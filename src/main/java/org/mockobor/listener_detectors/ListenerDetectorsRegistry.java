@@ -11,7 +11,7 @@ import java.util.Observer;
 /**
  * To manage listener definition detectors.
  * <p><br>
- * Out of the box (per default) follow detectors are registered (in this order):<ol>
+ * Out of the box (per default) follow detectors are registered (in processing order):<ol>
  * <li>{@link PropertyChangeDetector} for beans that support bound properties (see {@link PropertyChangeSupport}).</li>
  * <li>{@link TypicalJavaListenerDetector} for typical Java listener.</li>
  * <li>{@link ObservableDetector} for {@link Observer}/{@link Observable}.</li>
@@ -24,7 +24,7 @@ public interface ListenerDetectorsRegistry {
 
 
 	/**
-	 * To return list of all registered detectors in correct order (last added at first).
+	 * To return list of all registered detectors in correct order (LIFO).
 	 *
 	 * @return immutable list of all registered detectors in correct order
 	 */

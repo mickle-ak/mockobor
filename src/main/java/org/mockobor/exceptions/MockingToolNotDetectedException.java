@@ -7,8 +7,7 @@ package org.mockobor.exceptions;
 public class MockingToolNotDetectedException extends MockoborException {
 
 	public MockingToolNotDetectedException( Object mockedObservable ) {
-		super( "Can not detect mocking toll for %s. \n "
-		       + "of class %s. \n"
+		super( "Can not detect mocking toll for <%s>. (class: %s). \n"
 		       + "Either it is not a mock, or used mocking tool does not supported by Mockobor.",
 		       mockedObservable,
 		       mockedObservable != null ? mockedObservable.getClass().getSimpleName() : "null" );

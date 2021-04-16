@@ -29,7 +29,7 @@ import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistryImpl;
 public class MockoborContext {
 
 	/** Listener definition registry used in static context. */
-	static final ListenerDetectorsRegistry LISTENER_DEFINITION_REGISTRY = new ListenerDetectorsRegistryImpl();
+	static final ListenerDetectorsRegistry LISTENER_DETECTORS_REGISTRY = new ListenerDetectorsRegistryImpl();
 
 	/** Mocking tool registry used in static context. */
 	static final MockingToolsRegistry MOCKING_TOOLS_REGISTRY = new MockingToolsRegistryImpl();
@@ -47,7 +47,7 @@ public class MockoborContext {
 	 * @see ListenerDetectorsRegistry#registerListenerDefinitionDetector
 	 */
 	public static void registerListenerDefinitionDetector( ListenerDefinitionDetector listenerDefinitionDetector ) {
-		LISTENER_DEFINITION_REGISTRY.registerListenerDefinitionDetector( listenerDefinitionDetector );
+		LISTENER_DETECTORS_REGISTRY.registerListenerDefinitionDetector( listenerDefinitionDetector );
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class MockoborContext {
 	 * @see ListenerDetectorsRegistry#reset()
 	 */
 	public static void reset() {
-		LISTENER_DEFINITION_REGISTRY.reset();
+		LISTENER_DETECTORS_REGISTRY.reset();
 		MOCKING_TOOLS_REGISTRY.reset();
 	}
 }

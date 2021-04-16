@@ -10,6 +10,9 @@ import java.util.List;
 
 /**
  * Implementation of {@link ListenerDetectorsRegistry}.
+ * <p><br>
+ * Usually you don't need to use this.
+ * Only if you want to register custom listener definition detectors.
  */
 public class ListenerDetectorsRegistryImpl implements ListenerDetectorsRegistry {
 
@@ -36,8 +39,8 @@ public class ListenerDetectorsRegistryImpl implements ListenerDetectorsRegistry 
 	}
 
 	private void registerDefaultDetectors() {
-		detectors.add( new PropertyChangeDetector() ); // should processed be before TypicalJavaListenerDetector
-		detectors.add( new TypicalJavaListenerDetector() );
-		detectors.add( new ObservableDetector() );
+		registerListenerDefinitionDetector( new TypicalJavaListenerDetector() );
+		registerListenerDefinitionDetector( new ObservableDetector() );
+		registerListenerDefinitionDetector( new PropertyChangeDetector() ); // should processed be before TypicalJavaListenerDetector
 	}
 }

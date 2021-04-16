@@ -13,8 +13,7 @@ public class ListenerRegistrationMethodsNotDetectedException extends MockoborExc
 
 	public ListenerRegistrationMethodsNotDetectedException( Object mockedObservable,
 	                                                        Collection<ListenerDefinitionDetector> detectors ) {
-		super( "Neither of listener definition detectors can detect listener registration methods in object %s \n"
-		       + "of class %s. \n"
+		super( "Neither of listener definition detectors can detect listener registration methods in object <%s> (class: %s). \n"
 		       + "Used detectors: %s",
 		       mockedObservable,
 		       mockedObservable != null ? mockedObservable.getClass().getSimpleName() : "null",

@@ -1,6 +1,7 @@
 package org.mockobor.listener_detectors;
 
 import lombok.NonNull;
+import org.mockobor.exceptions.MockoborIllegalArgumentException;
 import org.mockobor.listener_detectors.NotificationMethodDelegate.NotificationMethodInvocation;
 import org.mockobor.mockedobservable.ObservableNotifier;
 import org.mockobor.mockedobservable.PropertyChangeNotifier;
@@ -8,9 +9,7 @@ import org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Observer;
+import java.util.*;
 
 
 /**
@@ -50,7 +49,9 @@ public interface ListenersDefinition {
 	/**
 	 * To get list of destinations for registration calls (like add/remove-Listener).
 	 * <p>
-	 * Suitable to stub registration methods of mocked observable in implementations of {@link ListenerRegistrationHandler}.
+	 * They used to redirect add/remove-listener methods of mocked observable to an instance of {@link ListenerContainer}.
+	 * <p>
+	 * Suitable to stubbing registration methods of mocked observable (used in of {@link ListenerRegistrationHandler}s).
 	 *
 	 * @return immutable list of registration delegates
 	 */
@@ -59,6 +60,8 @@ public interface ListenersDefinition {
 
 	/**
 	 * To get list of delegations to custom implementation of notification methods.
+	 * <p>
+	 * Usually it is an implementation of non-default methods of additional interfaces.
 	 * <p></p>
 	 * Notification delegates defined here take precedence over all other implementations of source method.
 	 * <p><br>
@@ -85,4 +88,92 @@ public interface ListenersDefinition {
 	 * @return immutable list of interfaces or empty list if additional interfaces not required for the detected listeners.
 	 */
 	@NonNull Collection<Class<?>> getAdditionalInterfaces();
+
+
+	/** Describes detected listener(s). */
+	class ListenersDefinitionImpl implements ListenersDefinition {
+
+		private final List<RegistrationDelegate> registrations = new ArrayList<>();
+
+		private final Map<Method, NotificationMethodInvocation> notifications = new HashMap<>();
+
+		private final Set<Class<?>> additionalInterfaces = new HashSet<>();
+
+		private final Set<Class<?>> detectedListeners = new HashSet<>();
+
+
+		@Override
+		public boolean hasListenerDetected() {
+			return !detectedListeners.isEmpty();
+		}
+
+		@Override
+		public @NonNull Collection<Class<?>> getDetectedListeners() {
+			return Collections.unmodifiableCollection( detectedListeners );
+		}
+
+		/**
+		 * To add detected listener (as interface).
+		 *
+		 * @param listenerClass listener's class (as declared in registration method). Must represent an interface type.
+		 * @throws MockoborIllegalArgumentException if the specified listener class does not represent an interface type
+		 * @see #getDetectedListeners()
+		 */
+		public void addDetectedListener( Class<?> listenerClass )
+				throws MockoborIllegalArgumentException {
+			if( !listenerClass.isInterface() ) throw new MockoborIllegalArgumentException( "only interface allowed here (but was: %s)", listenerClass );
+			detectedListeners.add( listenerClass );
+		}
+
+
+		@Override
+		public @NonNull Collection<RegistrationDelegate> getRegistrations() {
+			return Collections.unmodifiableCollection( registrations );
+		}
+
+		/**
+		 * To add delegate for registration method.
+		 *
+		 * @param registration registration delegate to add
+		 * @see #getRegistrations()
+		 */
+		public void addRegistration( RegistrationDelegate registration ) {
+			registrations.add( registration );
+		}
+
+
+		@Override
+		public @NonNull Map<Method, NotificationMethodInvocation> getCustomNotificationMethodDelegates() {
+			return Collections.unmodifiableMap( notifications );
+		}
+
+		/**
+		 * To add delegate for notification method.
+		 *
+		 * @param delegate delegate for notification method to add
+		 * @see #getCustomNotificationMethodDelegates()
+		 */
+		public void addNotification( NotificationMethodDelegate delegate ) {
+			notifications.put( delegate.getSource(), delegate.getDestination() );
+		}
+
+
+		@Override
+		public @NonNull Collection<Class<?>> getAdditionalInterfaces() {
+			return Collections.unmodifiableCollection( additionalInterfaces );
+		}
+
+		/**
+		 * To additional interface, which should be implemented by notifier object returned from {@code createNotifierFor}.
+		 *
+		 * @param iface additional interface to add
+		 * @throws MockoborIllegalArgumentException if the specified class does not represent an interface type
+		 * @see #getAdditionalInterfaces()
+		 */
+		public void addAdditionalInterface( Class<?> iface )
+				throws MockoborIllegalArgumentException {
+			if( !iface.isInterface() ) throw new MockoborIllegalArgumentException( "only interface allowed here (but was: %s)", iface );
+			additionalInterfaces.add( iface );
+		}
+	}
 }

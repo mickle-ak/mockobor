@@ -177,7 +177,7 @@ public final class Mockobor {
 	@NonNull
 	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
-		return new NotifierFactory( MockoborContext.LISTENER_DEFINITION_REGISTRY,
+		return new NotifierFactory( MockoborContext.LISTENER_DETECTORS_REGISTRY,
 		                            MockoborContext.MOCKING_TOOLS_REGISTRY )
 				.create( mockedObservable );
 	}

@@ -7,7 +7,8 @@ import org.mockobor.mockedobservable.PropertyChangeNotifier;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -27,10 +28,15 @@ import java.util.Collection;
  * <li>the found registration methods will be redirected to the notifier object</li>
  * </ul>
  */
-public class PropertyChangeDetector implements ListenerDefinitionDetector {
+public class PropertyChangeDetector extends TypicalJavaListenerDetector implements ListenerDefinitionDetector {
 
 	@Override
-	public @NonNull ListenersDefinition detect( @NonNull Collection<Method> methods ) {
-		return null;
+	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
+		return PropertyChangeListener.class.isAssignableFrom( parameterType );
+	}
+
+	@Override
+	protected @NonNull List<Class<?>> getAdditionalInterfaces() {
+		return Collections.singletonList( PropertyChangeNotifier.class );
 	}
 }

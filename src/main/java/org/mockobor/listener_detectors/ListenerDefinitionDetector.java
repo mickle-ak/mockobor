@@ -9,7 +9,24 @@ import java.util.Collection;
 /**
  * It finds methods used to registration of listeners and creates corresponding listeners definition.
  * <p></p>
+ * Implementation Notes:
+ * <p></p>
  * Implementation of this interface should be stateless, because one instance will be used for all detections.
+ * <p></p>
+ * Typically to implement this interface you only need to extend {@link AbstractDetector} and override required:<ul>
+ * <li>{@code isListenerClass(Class, Method)}</li>
+ * <li>{@code isAddMethods(Method)}</li>
+ * <li>{@code isRemoveMethods(Method)}</li>
+ * </ul>
+ * and optional:<ul>
+ * <li>{@code getAdditionalInterfaces()}</li>
+ * <li>{@code getNotificationDelegates()}</li>
+ * </ul>
+ * methods.
+ *
+ * @see ObservableDetector
+ * @see PropertyChangeDetector
+ * @see TypicalJavaListenerDetector
  */
 public interface ListenerDefinitionDetector {
 

@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class MethodNotFoundException extends MockoborException {
 
 	public MethodNotFoundException( Method method, Object[] args ) {
-		super( "can not find invocation handle for method <%s> \n, "
+		super( "can not find invocation handle for the method <%s> \n, "
 		       + "arguments: %s",
 		       method, args != null ? Arrays.asList( args ) : "[]" );
 	}
