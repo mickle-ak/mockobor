@@ -1,10 +1,19 @@
+import org.gradle.api.JavaVersion.VERSION_1_8
+
 plugins {
     `java-library`
-    id("io.freefair.lombok") version "5.3.0"
 }
 
-group = "org.mockobor"
+group = "io.github.mickle-ak.mockobor"
 version = "1.0-SNAPSHOT"
+
+
+java {
+    sourceCompatibility = VERSION_1_8
+    targetCompatibility = VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
+}
 
 
 repositories {
@@ -12,25 +21,29 @@ repositories {
     jcenter()
 }
 
-
 dependencies {
 
     val junit5_version = "5.7.1"
     val assertj_version = "3.19.0"
     val mockito_version = "3.8.0"
+    val lombok_version = "1.18.20"
 
     compileOnly("org.mockito:mockito-core:$mockito_version")
+    compileOnly("org.projectlombok:lombok:$lombok_version")
+    annotationProcessor("org.projectlombok:lombok:$lombok_version")
 
     testImplementation(platform("org.junit:junit-bom:$junit5_version"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junit5_version")
     testImplementation("org.mockito:mockito-core:$mockito_version")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
     testImplementation("org.assertj:assertj-core:$assertj_version")
+    testCompileOnly("org.projectlombok:lombok:$lombok_version")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombok_version")
 }
 
 
 tasks {
-    val test = "test"(Test::class) {
+    "test"(Test::class) {
         useJUnitPlatform()
         testLogging {
             showStandardStreams = true
@@ -39,17 +52,8 @@ tasks {
         }
         enableAssertions = true
         failFast = false
-        ignoreFailures = true
-    }
 
-    // to start all tests second time with standard mockito mock maker
-    val testWithMockitoStandardMockMaker = register<Test>("testWithMockitoStandardMockMaker") {
-        useJUnitPlatform()
-        systemProperty("mockito-mock-maker", "standard")
-        shouldRunAfter(test)
-    }
-    "check" {
-        dependsOn(testWithMockitoStandardMockMaker)
+        systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
     }
 
     // disable strict checking of javadoc in java 8+
