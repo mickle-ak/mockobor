@@ -4,7 +4,6 @@ import lombok.NonNull;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.util.MockUtil;
-import org.mockito.internal.util.Supplier;
 import org.mockito.stubbing.Answer;
 import org.mockobor.exceptions.MockoborException;
 import org.mockobor.exceptions.MockoborImplementationError;
@@ -16,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.mockito.Mockito.doAnswer;
 

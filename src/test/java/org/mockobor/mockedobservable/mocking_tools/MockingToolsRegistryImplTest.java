@@ -1,8 +1,10 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
 import lombok.NonNull;
+import org.easymock.EasyMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.MockoborIllegalArgumentException;
 import org.mockobor.listener_detectors.ListenerContainer;
@@ -10,8 +12,6 @@ import org.mockobor.listener_detectors.RegistrationDelegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 
 
 class MockingToolsRegistryImplTest {
@@ -25,11 +25,20 @@ class MockingToolsRegistryImplTest {
 
 
 	@Test
-	void findHandlerForMock() {
-		assertThat( mockingToolsRegistry.findHandlerForMock( mock( Object.class ) ) )
+	void findHandlerForMock_Mockito() {
+		assertThat( mockingToolsRegistry.findHandlerForMock( Mockito.mock( Object.class ) ) )
 				.isInstanceOf( MockitoListenerRegistrationHandler.class );
-		assertThat( mockingToolsRegistry.findHandlerForMock( spy( Object.class ) ) )
+		assertThat( mockingToolsRegistry.findHandlerForMock( Mockito.spy( Object.class ) ) )
 				.isInstanceOf( MockitoListenerRegistrationHandler.class );
+	}
+
+	@Test
+	void findHandlerForMock_EasyMock() {
+		assertThat( mockingToolsRegistry.findHandlerForMock( EasyMock.mock( Object.class ) ) )
+				.isInstanceOf( EasymockListenerRegistrationHandler.class );
+		assertThat( mockingToolsRegistry.findHandlerForMock( EasyMock.partialMockBuilder( Object.class ).createMock() ) )
+				.isInstanceOf( EasymockListenerRegistrationHandler.class );
+
 	}
 
 	@SuppressWarnings( "java:S5778" )
@@ -40,11 +49,15 @@ class MockingToolsRegistryImplTest {
 	}
 
 
+	// ==================================================================================
+	// ================================== add custom ====================================
+	// ==================================================================================
+
 	public static class AnotherListenerRegistrationHandler implements ListenerRegistrationHandler {
 
 		@Override
 		public boolean canHandle( Object mockedObservable ) {
-			return mockedObservable.getClass() == Object.class;
+			return mockedObservable != null && mockedObservable.getClass() == Object.class;
 		}
 
 		@Override

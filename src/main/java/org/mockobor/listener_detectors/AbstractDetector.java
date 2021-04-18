@@ -8,6 +8,7 @@ import org.mockobor.exceptions.MockoborIllegalArgumentException;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenersDefinition.ListenersDefinitionImpl;
 import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocation;
+import org.mockobor.utils.reflection.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -135,7 +136,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 			Class<L> listenerClass = rp.getListenerClass();
 			L listener = listenerClass.cast( arguments[rp.getListenerIndex()] );
 			listeners.addListener( selector, listenerClass, listener );
-			return null;
+			return ReflectionUtils.getDefaultValue( method.getReturnType() );
 		};
 	}
 
@@ -145,7 +146,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 			Class<L> listenerClass = rp.getListenerClass();
 			L listener = listenerClass.cast( arguments[rp.getListenerIndex()] );
 			listeners.removeListener( selector, listenerClass, listener );
-			return null;
+			return ReflectionUtils.getDefaultValue( method.getReturnType() );
 		};
 	}
 

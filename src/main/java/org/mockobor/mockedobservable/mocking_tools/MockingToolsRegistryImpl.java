@@ -1,5 +1,7 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.MockoborIllegalArgumentException;
@@ -8,8 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Default implementation of {@link MockingToolsRegistry}.
+ */
 public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 
+	@Getter( AccessLevel.PACKAGE )
 	private final List<ListenerRegistrationHandler> availableHandlers = new ArrayList<>();
 
 	public MockingToolsRegistryImpl() {
@@ -19,7 +25,9 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 	@Override
 	public @NonNull ListenerRegistrationHandler findHandlerForMock( @NonNull Object mockedObservable ) {
 		for( ListenerRegistrationHandler h : availableHandlers ) {
-			if( h.canHandle( mockedObservable ) ) return h;
+			if( h.canHandle( mockedObservable ) ) {
+				return h;
+			}
 		}
 		throw new MockingToolNotDetectedException( mockedObservable );
 	}
@@ -61,5 +69,7 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 	private void registerDefaultMockingTools() {
 		registerMockingTool( "org.mockito.Mockito",
 		                     "org.mockobor.mockedobservable.mocking_tools.MockitoListenerRegistrationHandler" );
+		registerMockingTool( "org.easymock.EasyMock",
+		                     "org.mockobor.mockedobservable.mocking_tools.EasymockListenerRegistrationHandler" );
 	}
 }

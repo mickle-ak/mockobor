@@ -4,10 +4,7 @@ import lombok.NonNull;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,11 +86,36 @@ public final class ReflectionUtils {
 	}
 
 	private static boolean isMockSubclass( @NonNull Class<?> clazz ) {
-		return isMockitoMock( clazz );
+		return isMockitoMock( clazz ) || isEasymockMock( clazz );
 	}
 
-	private static boolean isMockitoMock( @NonNull Class<?> clazz ) {
+	/**
+	 * To check if the specified class CAN be a class created by Mockito.
+	 * <p>
+	 * It does not use {@code MockUtil.isMock} because of Mockito can be not in classpath.
+	 * Therefore it is not 100% correct, but is OK for our purpose
+	 * (for example, if inline mockito mock-macker used, it returns always false).
+	 *
+	 * @param clazz class to test
+	 * @return true if specified class CAN be a class created by Mockito
+	 */
+	public static boolean isMockitoMock( @NonNull Class<?> clazz ) {
 		return clazz.getName().contains( "$MockitoMock$" ) || clazz.getName().startsWith( "org.mockito" );
+	}
+
+
+	/**
+	 * To check if the specified class CAN be a class created by EasyMock.
+	 * <p>
+	 * It is not 100% correct, but is OK for our purpose..
+	 *
+	 * @param clazz class to test
+	 * @return true if specified class CAN be a class created by EasyMock
+	 */
+	public static boolean isEasymockMock( @NonNull Class<?> clazz ) {
+		return clazz.getSimpleName().contains( "$EnhancerByCGLIB$" )
+		       || clazz.getName().startsWith( "org.easymock" )
+		       || Proxy.class.isAssignableFrom( clazz );
 	}
 
 

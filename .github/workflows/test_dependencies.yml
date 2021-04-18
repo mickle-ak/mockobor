@@ -1,0 +1,37 @@
+name: test mockting tool registration dependent of librarires in classpath
+
+on:
+  push:
+    paths:
+      - 'subprojects/dependencies-tests/**'
+      - '.github/workflows/test_dependencies.yml'
+
+  pull_request:
+    paths:
+      - 'subprojects/dependencies-tests/**'
+      - '.github/workflows/test_dependencies.yml'
+
+jobs:
+
+  test-dependences:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: publis mockobor to maven local
+        run: ./gradlew publishToMavenLocal
+
+      - name: test dependencies if no mocking tools/only mockito/only easymock etc. available
+        run: ./gradlew --project-dir=./subprojects/dependencies-tests check --continue
+

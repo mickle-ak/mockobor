@@ -2,9 +2,10 @@ import org.gradle.api.JavaVersion.VERSION_1_8
 
 plugins {
     `java-library`
+    `maven-publish`
 }
 
-group = "io.github.mickle-ak.mockobor"
+group = "io.github.mickle-ak"
 version = "1.0-SNAPSHOT"
 
 
@@ -26,24 +27,29 @@ dependencies {
     val junit5_version = "5.7.1"
     val assertj_version = "3.19.0"
     val mockito_version = "3.8.0"
+    val easymock_version = "4.3"
     val lombok_version = "1.18.20"
 
     compileOnly("org.mockito:mockito-core:$mockito_version")
+    compileOnly("org.easymock:easymock:$easymock_version")
     compileOnly("org.projectlombok:lombok:$lombok_version")
     annotationProcessor("org.projectlombok:lombok:$lombok_version")
 
     testImplementation(platform("org.junit:junit-bom:$junit5_version"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junit5_version")
+    testImplementation("org.assertj:assertj-core:$assertj_version")
     testImplementation("org.mockito:mockito-core:$mockito_version")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
-    testImplementation("org.assertj:assertj-core:$assertj_version")
+    testImplementation("org.easymock:easymock:$easymock_version")
     testCompileOnly("org.projectlombok:lombok:$lombok_version")
     testAnnotationProcessor("org.projectlombok:lombok:$lombok_version")
 }
 
 
 tasks {
-    "test"(Test::class) {
+
+    // configure test starter
+    named<Test>("test") {
         useJUnitPlatform()
         testLogging {
             showStandardStreams = true
@@ -61,3 +67,12 @@ tasks {
         (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("mockobor") {
+            from(components["java"])
+        }
+    }
+}
+        

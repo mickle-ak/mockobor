@@ -8,8 +8,9 @@ import org.mockobor.exceptions.MockoborIllegalArgumentException;
 /**
  * To manage {@link ListenerRegistrationHandler}s which are dependent on supported mocking tools.
  * <p><br>
- * Out of the box (per default) follow mocking tools are registered:<ul>
- * <li>Mockito -> {@code MockitoListenerRegistrationHandler}</li>
+ * Out of the box follow mocking tools are registered:<ul>
+ * <li>Mockito: {@code MockitoListenerRegistrationHandler}</li>
+ * <li>EasyMock: {@code EasymockListenerRegistrationHandler}</li>
  * </ul>
  * <p><br>
  * Usually you don't need to use this.

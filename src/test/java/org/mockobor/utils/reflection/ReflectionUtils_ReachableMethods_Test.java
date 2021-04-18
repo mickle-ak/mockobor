@@ -1,14 +1,21 @@
 package org.mockobor.utils.reflection;
 
-import org.mockobor.utils.reflection.mockito.DisableForStandardMockitoMockMaker;
+import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
+import org.mockobor.utils.reflection.mockito.DisableForStandardMockitoMockMaker;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
 
 
 @SuppressWarnings( "unused" )
@@ -77,46 +84,56 @@ class ReflectionUtils_ReachableMethods_Test {
 
 
 	private final String[] EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS = {
-		"defaultInterfaceMethod",
-		"protectedBaseMethods",
-		"publicBaseMethod",
-		"protectedOverriddenMethod",
-		"packageBaseMethod",
-		"protectedStaticBaseMethod",
-		"protectedDerivedMethods",
-		"publicDerivedMethod", // overloaded Method - without parameters
-		"publicDerivedMethod", // overloaded Method - with parameters
-		"packageDerivedMethod",
-		"publicStaticDerivedMethod" };
+			"defaultInterfaceMethod",
+			"protectedBaseMethods",
+			"publicBaseMethod",
+			"protectedOverriddenMethod",
+			"packageBaseMethod",
+			"protectedStaticBaseMethod",
+			"protectedDerivedMethods",
+			"publicDerivedMethod", // overloaded Method - without parameters
+			"publicDerivedMethod", // overloaded Method - with parameters
+			"packageDerivedMethod",
+			"publicStaticDerivedMethod" };
 
 
-	@Test
-	void getReachableMethods_Derived() {
-		Collection<Method> methods = getReachableMethods( mock( Derived.class ) );
+	@ParameterizedTest( name = "getReachableMethods_Derived - {0}" )
+	@MethodSource( "mockingTools" )
+	void getReachableMethods_Derived( String name, Function<Class<?>, Object> mocker ) {
+		Collection<Method> methods = getReachableMethods( mocker.apply( Derived.class ) );
 
 		assertThat( methods ).extracting( Method::getName ).containsExactlyInAnyOrder( EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS );
 	}
 
-	@Test
-	void getReachableMethods_DerivedInterface() {
-		Collection<Method> methods = getReachableMethods( mock( DerivedInterface.class ) );
+	@ParameterizedTest( name = "getReachableMethods_DerivedInterface - {0}" )
+	@MethodSource( "mockingTools" )
+	void getReachableMethods_DerivedInterface( String name, Function<Class<?>, Object> mocker ) {
+		Collection<Method> methods = getReachableMethods( mocker.apply( DerivedInterface.class ) );
 
 		assertThat( methods )
-			.extracting( Method::getName )
-			.containsExactlyInAnyOrder( "publicDerivedMethod",
-			                            "defaultInterfaceMethod",
-			                            "interfaceMethod",
-			                            "derivedInterfaceMethod" );
+				.extracting( Method::getName )
+				.containsExactlyInAnyOrder( "publicDerivedMethod",
+				                            "defaultInterfaceMethod",
+				                            "interfaceMethod",
+				                            "derivedInterfaceMethod" );
 	}
 
 	@Test
 	@DisableForStandardMockitoMockMaker
-	void getReachableMethods_FinalDerived() {
-		Collection<Method> methods = getReachableMethods( mock( FinalDerived.class ) );
+	void getReachableMethods_FinalDerived_MockitoOnly() {
+		Collection<Method> methods = getReachableMethods( Mockito.mock( FinalDerived.class ) );
 
 		assertThat( methods ).extracting( Method::getName )
 		                     .contains( EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS )
 		                     .contains( "finalMethod" )
 		                     .hasSize( EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS.length + 1 );
+	}
+
+
+	static Stream<Arguments> mockingTools() {
+		return Stream.of(
+				arguments( "Mockito", (Function<Class<?>, Object>) Mockito::mock ),
+				arguments( "EasyMock", (Function<Class<?>, Object>) EasyMock::mock )
+		);
 	}
 }
