@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockobor.listener_detectors.AbstractDetector.RegistrationParameters;
+import org.mockobor.listener_detectors.AbstractDetector.ListenerRegistrationParameters;
 import org.mockobor.mockedobservable.MockedObservable;
 import org.mockobor.mockedobservable.MockedObservable.MyAnotherListener;
 import org.mockobor.mockedobservable.MockedObservable.MyListener;
@@ -54,6 +54,8 @@ class AbstractDetectorTest {
 		void manyParametersAndListener( String s1, Object o2, MyListener l3, Integer i4 );
 
 		void noListeners( Object o1, Object o2 );
+
+		void twoListeners( int s1, MyListener listener, int s2, MyAnotherListener anotherListener, int s3 );
 	}
 
 	interface OnlyRemoveMethod {
@@ -68,6 +70,28 @@ class AbstractDetectorTest {
 		void addMyListener( MyListener listener );
 	}
 
+	/** Invalid listener, because has a class type. Listeners can be only interfaces. */
+	static abstract class InvalidListener {
+
+		@SuppressWarnings( "unused" )
+		abstract void onEvent( Object event );
+	}
+
+	interface InvalidRegistrationMethods {
+
+		@SuppressWarnings( "unused" )
+		void addInvalidListener( InvalidListener listener );
+
+		@SuppressWarnings( "unused" )
+		void addCorrectListener( MyListener listener );
+
+		@SuppressWarnings( "unused" )
+		void addArrayOfListeners( MyListener[] listeners );
+
+		@SuppressWarnings( "unused" )
+		void addVarargsOfListeners( MyListener... listeners );
+	}
+
 
 	// ==================================================================================
 	// ============================= detectRegistrations ================================
@@ -80,11 +104,11 @@ class AbstractDetectorTest {
 
 		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
 		assertThat( listenersDefinition.getRegistrations() )
-			.as( "10 add/removeXxxListener methods in MockedObservable" )
-			.hasSize( 10 );
+				.as( "12 add/removeXxxListener methods in MockedObservable" )
+				.hasSize( 12 );
 		assertThat( listenersDefinition.getDetectedListeners() )
-			.as( "add/removeXxxListener methods for follow listeners in MockedObservable" )
-			.containsExactlyInAnyOrder( MyListener.class, MyAnotherListener.class, PropertyChangeListener.class );
+				.as( "add/removeXxxListener methods for follow listeners in MockedObservable" )
+				.containsExactlyInAnyOrder( MyListener.class, MyAnotherListener.class, PropertyChangeListener.class );
 	}
 
 	@Test
@@ -94,11 +118,11 @@ class AbstractDetectorTest {
 
 		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
 		assertThat( listenersDefinition.getRegistrations() )
-			.as( "only 1 addListener methods in OnlyAddMethod" )
-			.hasSize( 1 );
+				.as( "only 1 addListener methods in OnlyAddMethod" )
+				.hasSize( 1 );
 		assertThat( listenersDefinition.getDetectedListeners() )
-			.as( "addListener methods for follow listeners in OnlyAddMethod" )
-			.containsExactly( MyListener.class );
+				.as( "addListener methods for follow listeners in OnlyAddMethod" )
+				.containsExactly( MyListener.class );
 	}
 
 
@@ -123,30 +147,52 @@ class AbstractDetectorTest {
 	}
 
 
+	@Test
+	void detect_only_correct_listeners() {
+		InvalidRegistrationMethods testObservable = mock( InvalidRegistrationMethods.class );
+		Collection<Method> allMethods = ReflectionUtils.getReachableMethods( testObservable );
+
+		ListenersDefinition listenersDefinition = new TypicalJavaListenerDetector().detect( allMethods );
+
+		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
+
+		assertThat( listenersDefinition.getRegistrations() )
+				.as( "expected registration methods" )
+				.extracting( RegistrationDelegate::getSource )
+				.extracting( Method::getName )
+				.containsExactly( "addCorrectListener" );
+
+		assertThat( listenersDefinition.getDetectedListeners() )
+				.as( "detected listener" )
+				.containsExactly( MyListener.class );
+	}
+
+
 	// ==================================================================================
 	// ============================= hasListenerParameter ===============================
 	// ==================================================================================
 
 	@ParameterizedTest( name = "[{index}] hasListenerParameter_listener_found({argumentsWithNames})" )
 	@MethodSource( "hasListenerParameter_listener_found" )
-	void hasListenerParameter_listener_found( String methodName, int expectedListenerIndex, Integer[] expectedSelectorIndexes ) {
-		RegistrationParameters registrationParameters = detector.getListenerParameter( findMethod( methodName ) );
-		assertThat( registrationParameters.getListenerIndex() ).isEqualTo( expectedListenerIndex );
+	void hasListenerParameter_listener_found( String methodName, Integer[] expectedListenerIndexes, Integer[] expectedSelectorIndexes ) {
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( findMethod( methodName ) );
+		assertThat( registrationParameters.getListenerIndexes() ).containsExactly( expectedListenerIndexes );
 		assertThat( registrationParameters.getSelectorIndexes() ).containsExactly( expectedSelectorIndexes );
 	}
 
 	@SuppressWarnings( "unused" ) // used as @MethodSource for hasListenerParameter_listener_found
 	private static Stream<Arguments> hasListenerParameter_listener_found() {
 		return Stream.of(
-			arguments( "onlyListener", 0, new Integer[0] ),
-			arguments( "stringAndListener", 1, new Integer[]{ 0 } ),
-			arguments( "manyParametersAndListener", 2, new Integer[]{ 0, 1, 3 } )
+				arguments( "onlyListener", new Integer[]{ 0 }, new Integer[0] ),
+				arguments( "stringAndListener", new Integer[]{ 1 }, new Integer[]{ 0 } ),
+				arguments( "manyParametersAndListener", new Integer[]{ 2 }, new Integer[]{ 0, 1, 3 } ),
+				arguments( "twoListeners", new Integer[]{ 1, 3 }, new Integer[]{ 0, 2, 4 } )
 		);
 	}
 
 	@Test
 	void hasListenerParameter_listener_not_found() {
-		RegistrationParameters registrationParameters = detector.getListenerParameter( findMethod( "noListeners" ) );
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( findMethod( "noListeners" ) );
 		assertThat( registrationParameters ).isNull();
 	}
 
@@ -159,16 +205,17 @@ class AbstractDetectorTest {
 	@MethodSource( "registrationParameters_selector" )
 	void registrationParameters_selector( String methodName, Object[] arguments, ListenerSelector expectedSelector ) {
 		Method method = findMethod( methodName );
-		RegistrationParameters registrationParameters = detector.getListenerParameter( method );
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( method );
 		assertThat( registrationParameters.createSelector( method, arguments ) ).isEqualTo( expectedSelector );
 	}
 
 	@SuppressWarnings( "unused" ) // used as @MethodSource for registrationParameters_selector
 	private static Stream<Arguments> registrationParameters_selector() {
 		return Stream.of(
-			arguments( "onlyListener", new Object[]{ mock( MyListener.class ) }, selector() ),
-			arguments( "stringAndListener", new Object[]{ "name", mock( MyListener.class ) }, selector( "name" ) ),
-			arguments( "manyParametersAndListener", new Object[]{ "amen", 1d, mock( MyListener.class ), 3 }, selector( "amen", 1d, 3 ) )
+				arguments( "onlyListener", new Object[]{ mock( MyListener.class ) }, selector() ),
+				arguments( "stringAndListener", new Object[]{ "name", mock( MyListener.class ) }, selector( "name" ) ),
+				arguments( "manyParametersAndListener", new Object[]{ "amen", 1d, mock( MyListener.class ), 3 }, selector( "amen", 1d, 3 ) ),
+				arguments( "twoListeners", new Object[]{ 1, mock( MyListener.class ), 2, mock( MyAnotherListener.class ), 3 }, selector( 1, 2, 3 ) )
 		);
 	}
 

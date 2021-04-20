@@ -27,17 +27,17 @@ class TypicalJavaListenerDetectorTest {
 		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
 
 		assertThat( listenersDefinition.getRegistrations() )
-			.as( "expected registration methods" )
-			.extracting( RegistrationDelegate::getSource )
-			.extracting( Method::getName )
-			.containsExactlyInAnyOrder( "addPropertyChangeListener", "addPropertyChangeListener",
-			                            "addMyListener", "addMyListener", "addMyAnotherListener",
-			                            "removePropertyChangeListener", "removePropertyChangeListener",
-			                            "removeMyListener", "removeMyListener", "removeMyAnotherListener" );
+				.as( "expected registration methods" )
+				.extracting( RegistrationDelegate::getSource )
+				.extracting( Method::getName )
+				.containsExactlyInAnyOrder( "addPropertyChangeListener", "addPropertyChangeListener",
+				                            "addMyListener", "addMyListener", "addMyAnotherListener", "addTwoListener",
+				                            "removePropertyChangeListener", "removePropertyChangeListener",
+				                            "removeMyListener", "removeMyListener", "removeMyAnotherListener", "removeTwoListener" );
 
 		assertThat( listenersDefinition.getDetectedListeners() )
-			.as( "detected listener" )
-			.containsExactlyInAnyOrder( PropertyChangeListener.class, MyListener.class, MyAnotherListener.class );
+				.as( "detected listener" )
+				.containsExactlyInAnyOrder( PropertyChangeListener.class, MyListener.class, MyAnotherListener.class );
 
 		assertThat( listenersDefinition.getAdditionalInterfaces() ).isEmpty();
 		assertThat( listenersDefinition.getCustomNotificationMethodDelegates() ).isEmpty();

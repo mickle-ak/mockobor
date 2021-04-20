@@ -33,11 +33,15 @@ public interface MockedObservable {
 
 	void addMyAnotherListener( MyAnotherListener listener );
 
+	void addTwoListener( MyListener myListener, MyAnotherListener myAnotherListener );
+
 	void removeMyListener( MyListener listener );
 
 	void removeMyListener( String preSelector, MyListener listener, String postSelector );
 
 	void removeMyAnotherListener( MyAnotherListener listener );
+
+	void removeTwoListener( MyListener myListener, MyAnotherListener myAnotherListener );
 
 
 	// ==================================================================================

@@ -2,6 +2,7 @@ package org.mockobor.listener_detectors;
 
 import lombok.NonNull;
 import org.mockobor.exceptions.MockoborIllegalArgumentException;
+import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.NotificationMethodDelegate.NotificationMethodInvocation;
 import org.mockobor.mockedobservable.ObservableNotifier;
 import org.mockobor.mockedobservable.PropertyChangeNotifier;
@@ -115,14 +116,15 @@ public interface ListenersDefinition {
 		/**
 		 * To add detected listener (as interface).
 		 *
-		 * @param listenerClass listener's class (as declared in registration method). Must represent an interface type.
-		 * @throws MockoborIllegalArgumentException if the specified listener class does not represent an interface type
+		 * @param listenerClasses list of listener's class (as declared in registration method). Must represent an interface type.
+		 * @throws MockoborImplementationError if at least one of the specified listener classes does not represent an interface type
 		 * @see #getDetectedListeners()
 		 */
-		public void addDetectedListener( Class<?> listenerClass )
-				throws MockoborIllegalArgumentException {
-			if( !listenerClass.isInterface() ) throw new MockoborIllegalArgumentException( "only interface allowed here (but was: %s)", listenerClass );
-			detectedListeners.add( listenerClass );
+		public void addDetectedListeners( Collection<Class<?>> listenerClasses ) throws MockoborImplementationError {
+			if( !listenerClasses.stream().allMatch( Class::isInterface ) ) {
+				throw new MockoborImplementationError( "Unexpected: only interfaces allowed here (was: %s)", listenerClasses );
+			}
+			detectedListeners.addAll( listenerClasses );
 		}
 
 
@@ -166,14 +168,15 @@ public interface ListenersDefinition {
 		/**
 		 * To additional interface, which should be implemented by notifier object returned from {@code createNotifierFor}.
 		 *
-		 * @param iface additional interface to add
-		 * @throws MockoborIllegalArgumentException if the specified class does not represent an interface type
+		 * @param ifaces list of additional interfaces to add
+		 * @throws MockoborIllegalArgumentException if at least one of the specified classes does not represent an interface type
 		 * @see #getAdditionalInterfaces()
 		 */
-		public void addAdditionalInterface( Class<?> iface )
-				throws MockoborIllegalArgumentException {
-			if( !iface.isInterface() ) throw new MockoborIllegalArgumentException( "only interface allowed here (but was: %s)", iface );
-			additionalInterfaces.add( iface );
+		public void addAdditionalInterfaces( Collection<Class<?>> ifaces ) throws MockoborIllegalArgumentException {
+			if( !ifaces.stream().allMatch( Class::isInterface ) ) {
+				throw new MockoborIllegalArgumentException( "only interface allowed here (but was: %s)", ifaces );
+			}
+			additionalInterfaces.addAll( ifaces );
 		}
 	}
 }

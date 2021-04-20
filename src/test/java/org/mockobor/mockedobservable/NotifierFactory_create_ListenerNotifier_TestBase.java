@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockobor.exceptions.MockoborException;
 import org.mockobor.listener_detectors.ListenerDetectorsRegistryImpl;
 import org.mockobor.listener_detectors.ListenerSelector;
+import org.mockobor.mockedobservable.MockedObservable.MyAnotherListener;
+import org.mockobor.mockedobservable.MockedObservable.MyListener;
+import org.mockobor.mockedobservable.TestedObserver.InvocationDef;
 import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistryImpl;
 
 import java.beans.PropertyChangeEvent;
@@ -44,12 +47,12 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 
 		assertThat( notifier.getObservableMock() ).isSameAs( mockedObservable );
 		assertThat( notifier.allListenersAreUnregistered() ).isFalse();
-		assertThat( notifier.numberOfRegisteredListeners() ).isEqualTo( 6 );
-		assertThat( notifier.numberOfListenerRegistrations() ).isEqualTo( 6 );
+		assertThat( notifier.numberOfRegisteredListeners() ).isEqualTo( 8 );
+		assertThat( notifier.numberOfListenerRegistrations() ).isEqualTo( 8 );
 		assertThat( notifier.numberOfListenerDeregistrations() ).isZero();
 
 		assertThat( notifier.getAllListeners() )
-				.hasSize( 6 )
+				.hasSize( 8 )
 				.containsOnly( testedObserver.getObserver(),
 				               testedObserver.getPropertyChangeListener(),
 				               testedObserver.getMyListener(),
@@ -59,11 +62,11 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 				.hasSize( 2 )
 				.containsOnly( testedObserver.getPropertyChangeListener() );
 
-		assertThat( notifier.getListeners( MockedObservable.MyListener.class ) )
-				.hasSize( 2 )
+		assertThat( notifier.getListeners( MyListener.class ) )
+				.hasSize( 3 )
 				.containsOnly( testedObserver.getMyListener() );
 
-		assertThat( notifier.getListeners( MockedObservable.MyListener.class, selector( "presel", "postsel" ) ) )
+		assertThat( notifier.getListeners( MyListener.class, selector( "presel", "postsel" ) ) )
 				.containsExactly( testedObserver.getMyListener() );
 
 		assertThat( notifier ).isInstanceOf( ListenersNotifier.class )
@@ -71,14 +74,15 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 		                      .isInstanceOf( PropertyChangeNotifier.class )
 		                      .isInstanceOf( Observer.class )
 		                      .isInstanceOf( PropertyChangeListener.class )
-		                      .isInstanceOf( MockedObservable.MyListener.class )
-		                      .isInstanceOf( MockedObservable.MyAnotherListener.class );
+		                      .isInstanceOf( MyListener.class )
+		                      .isInstanceOf( MyAnotherListener.class );
+
+		assertThatNoException().isThrownBy( () -> notifier.notifierFor( MyListener.class ) );
+		assertThatNoException().isThrownBy( () -> notifier.notifierFor( MyListener.class, selector( "presel", "postsel" ) ) );
+		assertThatNoException().as( "Object's method" ).isThrownBy( () -> notifier.toString() );
 
 		notifier.setStrictCheckListenerList( false );
-		assertThatNoException().isThrownBy( () -> notifier.notifierFor( MockedObservable.MyListener.class ) );
-		assertThatNoException().isThrownBy( () -> notifier.notifierFor( "sel", MockedObservable.MyListener.class ) );
-		assertThatNoException().isThrownBy( () -> notifier.notifierFor( MockedObservable.MyListener.class, selector( "presel", "postsel" ) ) );
-		assertThatNoException().as( "Object's method" ).isThrownBy( () -> notifier.toString() );
+		assertThatNoException().isThrownBy( () -> notifier.notifierFor( "selector", PropertyChangeListener.class ) );
 	}
 
 	@Test
@@ -89,16 +93,16 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 		notifier.setStrictCheckListenerList( false ); // to avoid exception if no listener found       
 		( (ObservableNotifier) notifier ).notifyObservers( "v1" );
 		( (PropertyChangeNotifier) notifier ).firePropertyChange( "prop", "o2", "n2" );
-		( (MockedObservable.MyListener) notifier ).somethingChanged1( "v1" );
+		( (MyListener) notifier ).somethingChanged1( "v1" );
 
 
 		assertThat( notifier.allListenersAreUnregistered() ).isTrue();
 		assertThat( notifier.numberOfRegisteredListeners() ).isZero();
-		assertThat( notifier.numberOfListenerRegistrations() ).isEqualTo( 6 );
-		assertThat( notifier.numberOfListenerDeregistrations() ).isEqualTo( 6 );
+		assertThat( notifier.numberOfListenerRegistrations() ).isEqualTo( 8 );
+		assertThat( notifier.numberOfListenerDeregistrations() ).isEqualTo( 8 );
 		assertThat( notifier.getAllListeners() ).as( "all listeners are unregistered" ).isEmpty();
 
-		// check ignore notifications  
+		// check ignore notifications because all listeners already removed
 		assertThat( testedObserver.getObserver().getInvocations() ).isEmpty();
 		assertThat( testedObserver.getPropertyChangeListener().getInvocations() ).isEmpty();
 		assertThat( testedObserver.getMyListener().getInvocations() ).isEmpty();
@@ -113,11 +117,11 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 		notifier.notifierFor( Observer.class ).update( null, "v3" );
 
 		assertThat( testedObserver.getObserver().getInvocations() )
-				.extracting( TestedObserver.InvocationDef::getParam )
+				.extracting( InvocationDef::getParam )
 				.containsExactly( null, "v1", "v2", "v3" );
 
 		assertThat( testedObserver.getObserver().getInvocations() )
-				.extracting( TestedObserver.InvocationDef::getSource )
+				.extracting( InvocationDef::getSource )
 				.containsOnlyNulls();
 	}
 
@@ -140,7 +144,7 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 		notifier.notifierFor( "prop", PropertyChangeListener.class ).propertyChange( new PropertyChangeEvent( mockedObservable, "p5", "o5", "n5" ) );
 
 		assertThat( testedObserver.getPropertyChangeListener().getInvocations() )
-				.extracting( TestedObserver.InvocationDef::getParam )
+				.extracting( InvocationDef::getParam )
 				.map( PropertyChangeEvent.class::cast )
 				.extracting( PropertyChangeEvent::getSource,
 				             PropertyChangeEvent::getPropertyName,
@@ -177,16 +181,26 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 
 	@Test
 	void notifyMyListener() {
-		( (MockedObservable.MyListener) notifier ).somethingChanged1( "v1" );
-		notifier.notifierFor( MockedObservable.MyListener.class ).somethingChanged2( "v2" );
-		notifier.notifierFor( MockedObservable.MyListener.class, selector( "presel", "postsel" ) ).somethingChanged1( "v3" );
+		( (MyListener) notifier ).somethingChanged1( "v1" );
+		notifier.notifierFor( MyListener.class ).somethingChanged2( "v2" );
+		notifier.notifierFor( MyListener.class, selector( "presel", "postsel" ) ).somethingChanged1( "v3" );
+		notifier.notifierFor( MyAnotherListener.class ).somethingOtherChanged( "v4" );
 
 		assertThat( testedObserver.getMyListener().getInvocations() )
-				.extracting( TestedObserver.InvocationDef::getMethod, TestedObserver.InvocationDef::getParam )
+				.extracting( InvocationDef::getMethod, InvocationDef::getParam )
 				.containsExactly(
-						tuple( "somethingChanged1", "v1" ),
-						tuple( "somethingChanged2", "v2" ),
-						tuple( "somethingChanged1", "v3" )
+						tuple( "somethingChanged1", "v1" ), // from added with addMyListener(MyListener)
+						tuple( "somethingChanged1", "v1" ), // from added with addTwoListener(MyListener, MyAnotherListener)
+						tuple( "somethingChanged2", "v2" ), // from added with addMyListener(MyListener)
+						tuple( "somethingChanged2", "v2" ), // from added with addTwoListener(MyListener, MyAnotherListener)
+						tuple( "somethingChanged1", "v3" ) // from added with selector addMyListener( String, MyListener, String )
+				);
+
+		assertThat( testedObserver.getMyAnotherListener().getInvocations() )
+				.extracting( InvocationDef::getMethod, InvocationDef::getParam )
+				.containsExactly(
+						tuple( "somethingOtherChanged", "v4" ), // from added with addMyAnotherListener( myAnotherListener )
+						tuple( "somethingOtherChanged", "v4" ) // from added with addTwoListener(MyListener, MyAnotherListener)
 				);
 	}
 

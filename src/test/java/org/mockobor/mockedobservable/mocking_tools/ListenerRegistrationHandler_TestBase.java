@@ -45,8 +45,6 @@ abstract class ListenerRegistrationHandler_TestBase {
 
 	@Test
 	void canHandle_partial_mock() {
-		System.out.println( createPartialMock( listeners ).toString() );
-		System.out.println( createPartialMock( listeners ).getClass().toString() );
 		assertThat( handler.canHandle( createPartialMock( listeners ) ) ).isTrue();
 	}
 

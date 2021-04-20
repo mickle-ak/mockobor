@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.mockobor.exceptions.MockoborIllegalArgumentException;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenersDefinition.ListenersDefinitionImpl;
 import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocation;
@@ -93,7 +92,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	public ListenersDefinition detect( @NonNull Collection<Method> methods ) {
 		ListenersDefinitionImpl listenersDefinition = detectRegistrations( methods );
 		if( listenersDefinition.hasListenerDetected() ) {
-			getAdditionalInterfaces().forEach( listenersDefinition::addAdditionalInterface );
+			listenersDefinition.addAdditionalInterfaces( getAdditionalInterfaces() );
 			getCustomNotificationMethodDelegates().forEach( listenersDefinition::addNotification );
 		}
 		return listenersDefinition;
@@ -114,12 +113,12 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	protected ListenersDefinitionImpl detectRegistrations( @NonNull Collection<Method> methods ) {
 		ListenersDefinitionImpl listenersDefinition = new ListenersDefinitionImpl();
 		for( Method method : methods ) {
-			RegistrationParameters registrationParameters = getListenerParameter( method );
+			ListenerRegistrationParameters registrationParameters = getListenerRegistrationParameter( method );
 			if( registrationParameters != null ) {
 				if( isAddMethods( method ) ) {
 					RegistrationInvocation addDelegate = createAddDelegate( registrationParameters );
 					listenersDefinition.addRegistration( new RegistrationDelegate( method, addDelegate ) );
-					listenersDefinition.addDetectedListener( registrationParameters.getListenerClass() );
+					listenersDefinition.addDetectedListeners( registrationParameters.getListenerClasses() );
 				}
 				else if( isRemoveMethods( method ) ) {
 					RegistrationInvocation removeDelegate = createRemoveDelegate( registrationParameters );
@@ -130,52 +129,58 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		return listenersDefinition;
 	}
 
-	protected <L> RegistrationInvocation createAddDelegate( RegistrationParameters rp ) {
-		return ( listeners, method, arguments ) -> {
-			ListenerSelector selector = rp.createSelector( method, arguments );
-			Class<L> listenerClass = rp.getListenerClass();
-			L listener = listenerClass.cast( arguments[rp.getListenerIndex()] );
-			listeners.addListener( selector, listenerClass, listener );
-			return ReflectionUtils.getDefaultValue( method.getReturnType() );
-		};
+	protected RegistrationInvocation createAddDelegate( ListenerRegistrationParameters rp ) {
+		return ( listeners, method, arguments ) -> createDelegate( rp, method, arguments, listeners::addListener );
 	}
 
-	protected <L> RegistrationInvocation createRemoveDelegate( RegistrationParameters rp ) {
-		return ( listeners, method, arguments ) -> {
-			ListenerSelector selector = rp.createSelector( method, arguments );
-			Class<L> listenerClass = rp.getListenerClass();
-			L listener = listenerClass.cast( arguments[rp.getListenerIndex()] );
-			listeners.removeListener( selector, listenerClass, listener );
-			return ReflectionUtils.getDefaultValue( method.getReturnType() );
-		};
+	protected RegistrationInvocation createRemoveDelegate( ListenerRegistrationParameters rp ) {
+		return ( listeners, method, arguments ) -> createDelegate( rp, method, arguments, listeners::removeListener );
 	}
+
+	@SuppressWarnings( "unchecked" )
+	private <L> Object createDelegate( @NonNull AbstractDetector.ListenerRegistrationParameters rp,
+	                                   @NonNull Method method,
+	                                   @NonNull Object[] arguments,
+	                                   @NonNull ListenerRegistration registration ) {
+		ListenerSelector selector = rp.createSelector( method, arguments );
+		List<Integer> listenerIndexes = rp.getListenerIndexes();
+		List<Class<?>> listenerClasses = rp.getListenerClasses();
+		for( int i = 0; i < listenerIndexes.size(); i++ ) {
+			Class<L> listenerClass = (Class<L>) listenerClasses.get( i );
+			L listener = listenerClass.cast( arguments[listenerIndexes.get( i )] );
+			registration.invoke( selector, listenerClass, listener );
+		}
+		return ReflectionUtils.getDefaultValue( method.getReturnType() );
+	}
+
+	@FunctionalInterface
+	private interface ListenerRegistration {
+
+		<L> void invoke( ListenerSelector selector, Class<L> listenerClass, L listener );
+	}
+
 
 	/**
 	 * @param method method to check
 	 * @return registration parameters if the specified method has one listener parameter; null otherwise
 	 * @see #isListenerClass
 	 */
-	protected RegistrationParameters getListenerParameter( @NonNull Method method ) {
-		int listenerIndex = -1;
+	protected ListenerRegistrationParameters getListenerRegistrationParameter( @NonNull Method method ) {
 		List<Integer> selectorIndexes = new ArrayList<>();
+		List<Integer> listenerIndexes = new ArrayList<>();
+		List<Class<?>> listenerClasses = new ArrayList<>();
 		Class<?>[] parameterTypes = method.getParameterTypes();
 		for( int i = 0; i < parameterTypes.length; i++ ) {
-			if( isListenerClass( parameterTypes[i], method ) ) {
-				if( listenerIndex != -1 ) {
-					throw new MockoborIllegalArgumentException(
-							"Only one listener per registration methods allowed! \n"
-							+ "Method: <%s> \n"
-							+ "Listeners found on positions: %d, %d)",
-							method, listenerIndex, i );
-				}
-				listenerIndex = i;
+			if( parameterTypes[i].isInterface() && isListenerClass( parameterTypes[i], method ) ) {
+				listenerIndexes.add( i );
+				listenerClasses.add( parameterTypes[i] );
 			}
 			else {
 				selectorIndexes.add( i );
 			}
 		}
-		return listenerIndex != -1
-		       ? new RegistrationParameters( method, listenerIndex, parameterTypes[listenerIndex], selectorIndexes )
+		return !listenerIndexes.isEmpty()
+		       ? new ListenerRegistrationParameters( method, listenerIndexes, listenerClasses, selectorIndexes )
 		       : null;
 	}
 
@@ -189,25 +194,21 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 */
 	@RequiredArgsConstructor
 	@Getter
-	public static class RegistrationParameters {
+	public static class ListenerRegistrationParameters {
 
 		@Getter( AccessLevel.NONE )
 		@NonNull
 		private final Method registrationMethod; // only to compare with invoked method
 
 		/** Index of listener parameter in registration method's arguments. */
-		private final int listenerIndex;
+		private final List<Integer> listenerIndexes;
 
 		/** Type of listener found in registration method. */
-		@NonNull private final Class<?> listenerClass;
+		@NonNull private final List<Class<?>> listenerClasses;
 
 		/** Indexes of other parameter (except listener) in registration method's arguments used to create selector. */
 		@NonNull private final List<Integer> selectorIndexes;
 
-		@SuppressWarnings( "unchecked" )
-		public <L> Class<L> getListenerClass() {
-			return (Class<L>) listenerClass;
-		}
 
 		/**
 		 * To create listener selector which describe actual invocation of registration method.
@@ -226,9 +227,9 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		}
 
 		private void checkIsSameMethod( @NonNull Method invokedMethod, @NonNull Object[] arguments ) {
-			if( !Objects.equals( invokedMethod, registrationMethod ) || arguments.length != selectorIndexes.size() + 1 ) {
+			if( !Objects.equals( invokedMethod, registrationMethod ) || arguments.length != selectorIndexes.size() + listenerIndexes.size() ) {
 				throw new MockoborImplementationError( "create selector for unexpected method (expected: %s(%d), was: %s(%d))",
-				                                       registrationMethod.getName(), selectorIndexes.size() + 1,
+				                                       registrationMethod.getName(), selectorIndexes.size() + +listenerIndexes.size(),
 				                                       invokedMethod.getName(), arguments.length );
 			}
 		}

@@ -90,6 +90,7 @@ public class TestedObserver {
 		mockedObservable.addMyListener( myListener );
 		mockedObservable.addMyListener( "presel", myListener, "postsel" );
 		mockedObservable.addMyAnotherListener( myAnotherListener );
+		mockedObservable.addTwoListener( myListener, myAnotherListener );
 	}
 
 
@@ -100,5 +101,6 @@ public class TestedObserver {
 		mockedObservable.removeMyListener( myListener );
 		mockedObservable.removeMyListener( "presel", myListener, "postsel" );
 		mockedObservable.removeMyAnotherListener( myAnotherListener );
+		mockedObservable.removeTwoListener( myListener, myAnotherListener );
 	}
 }
