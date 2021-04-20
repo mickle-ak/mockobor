@@ -3,6 +3,7 @@ package org.mockobor.listener_detectors;
 import lombok.NonNull;
 import org.mockobor.Mockobor;
 import org.mockobor.mockedobservable.PropertyChangeNotifier;
+import org.mockobor.utils.reflection.ReflectionUtils;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -28,11 +29,23 @@ import java.util.List;
  * <li>the found registration methods will be redirected to the notifier object</li>
  * </ul>
  */
-public class PropertyChangeDetector extends TypicalJavaListenerDetector implements ListenerDefinitionDetector {
+public class PropertyChangeDetector extends AbstractDetector implements ListenerDefinitionDetector {
 
 	@Override
 	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
 		return PropertyChangeListener.class.isAssignableFrom( parameterType );
+	}
+
+	@Override
+	protected boolean isAddMethods( @NonNull Method method ) {
+		return ReflectionUtils.methodMatch( method, "addPropertyChangeListener", PropertyChangeListener.class )
+		       || ReflectionUtils.methodMatch( method, "addPropertyChangeListener", String.class, PropertyChangeListener.class );
+	}
+
+	@Override
+	protected boolean isRemoveMethods( @NonNull Method method ) {
+		return ReflectionUtils.methodMatch( method, "removePropertyChangeListener", PropertyChangeListener.class )
+		       || ReflectionUtils.methodMatch( method, "removePropertyChangeListener", String.class, PropertyChangeListener.class );
 	}
 
 	@Override

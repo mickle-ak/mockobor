@@ -1,6 +1,5 @@
 package org.mockobor.mockedobservable;
 
-import lombok.Getter;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockobor.Mockobor;
@@ -18,11 +17,14 @@ class Mockito_ListenerNotifier_Test {
 
     private static class ClassUnderTest {
 
-        @Getter
         private final List<PropertyChangeEvent> invocations = new ArrayList<>();
 
-        public ClassUnderTest( PropertyChangeSupport observable ) {
-            observable.addPropertyChangeListener( invocations::add );
+        public ClassUnderTest(PropertyChangeSupport observable) {
+            observable.addPropertyChangeListener(invocations::add);
+        }
+
+        public List<PropertyChangeEvent> getInvocations() {
+            return invocations;
         }
     }
 

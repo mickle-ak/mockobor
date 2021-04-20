@@ -4,7 +4,7 @@ plugins {
     java
 }
 
-group = "io.github.mickle-ak.mockobor.dependence-tests"
+group = "io.github.mickle-ak.mockobor"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -21,18 +21,15 @@ dependencies {
 
     val mockoborVersion = "+"
 
-    testImplementation("io.github.mickle-ak:mockobor:$mockoborVersion")
+    testImplementation("io.github.mickle-ak.mockobor:mockobor:$mockoborVersion")
 
 
     val junit5Version = "5.7.1"
     val assertjVersion = "3.19.0"
-    val lombokVersion = "1.18.20"
 
     testImplementation(platform("org.junit:junit-bom:$junit5Version"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junit5Version")
     testImplementation("org.assertj:assertj-core:$assertjVersion")
-    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
-    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
 }
 
 tasks.getByName<Test>("test") {

@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
 }
 
-group = "io.github.mickle-ak"
+group = "io.github.mickle-ak.mockobor"
 version = "1.0-SNAPSHOT"
 
 

@@ -31,9 +31,10 @@ class TypicalJavaListenerDetectorTest {
 				.extracting( RegistrationDelegate::getSource )
 				.extracting( Method::getName )
 				.containsExactlyInAnyOrder( "addPropertyChangeListener", "addPropertyChangeListener",
-				                            "addMyListener", "addMyListener", "addMyAnotherListener", "addTwoListener",
+				                            "addMyListener", "addMyListener", "addMyAnotherListener",
 				                            "removePropertyChangeListener", "removePropertyChangeListener",
-				                            "removeMyListener", "removeMyListener", "removeMyAnotherListener", "removeTwoListener" );
+				                            "removeMyListener", "removeMyListener", "removeMyAnotherListener",
+				                            "addTwoListeners", "removeTwoListeners" );
 
 		assertThat( listenersDefinition.getDetectedListeners() )
 				.as( "detected listener" )

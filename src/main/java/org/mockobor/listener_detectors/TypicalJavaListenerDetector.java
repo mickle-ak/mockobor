@@ -31,7 +31,7 @@ public class TypicalJavaListenerDetector extends AbstractDetector implements Lis
 	private final Pattern removeMethodNamePattern;
 
 	public TypicalJavaListenerDetector() {
-		this( ".*Listener", "add(.*)Listener", "remove(.*)Listener" );
+		this( ".*Listener", "add(.*)Listeners?", "remove(.*)Listeners?" );
 	}
 
 

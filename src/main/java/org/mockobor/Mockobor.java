@@ -67,7 +67,7 @@ import java.util.Observer;
  *      notifier.notifierFor( "selector", MyListener.class ).somethingChanged1( newValue );
  *      notifier.notifierFor( MyListener.class, selector( "selector" ) ).somethingChanged1( newValue ); // exactly as above
  *
- *      // to notify (send the same event to) all listeners registered with selector "s1" ODER selector "s2":
+ *      // to notify (send the same event to) all listeners registered with selector "s1" OR selector "s2":
  *      notifier.notifierFor( MyListener.class, selector( "s1" ), selector( "s2" ) ).somethingChanged1( newValue );
  * ...
  * }

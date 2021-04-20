@@ -190,9 +190,9 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 				.extracting( InvocationDef::getMethod, InvocationDef::getParam )
 				.containsExactly(
 						tuple( "somethingChanged1", "v1" ), // from added with addMyListener(MyListener)
-						tuple( "somethingChanged1", "v1" ), // from added with addTwoListener(MyListener, MyAnotherListener)
+						tuple( "somethingChanged1", "v1" ), // from added with addTwoListeners(MyListener, MyAnotherListener)
 						tuple( "somethingChanged2", "v2" ), // from added with addMyListener(MyListener)
-						tuple( "somethingChanged2", "v2" ), // from added with addTwoListener(MyListener, MyAnotherListener)
+						tuple( "somethingChanged2", "v2" ), // from added with addTwoListeners(MyListener, MyAnotherListener)
 						tuple( "somethingChanged1", "v3" ) // from added with selector addMyListener( String, MyListener, String )
 				);
 
@@ -200,7 +200,7 @@ abstract class NotifierFactory_create_ListenerNotifier_TestBase {
 				.extracting( InvocationDef::getMethod, InvocationDef::getParam )
 				.containsExactly(
 						tuple( "somethingOtherChanged", "v4" ), // from added with addMyAnotherListener( myAnotherListener )
-						tuple( "somethingOtherChanged", "v4" ) // from added with addTwoListener(MyListener, MyAnotherListener)
+						tuple( "somethingOtherChanged", "v4" ) // from added with addTwoListeners(MyListener, MyAnotherListener)
 				);
 	}
 

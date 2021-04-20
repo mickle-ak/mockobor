@@ -33,7 +33,7 @@ public interface MockedObservable {
 
 	void addMyAnotherListener( MyAnotherListener listener );
 
-	void addTwoListener( MyListener myListener, MyAnotherListener myAnotherListener );
+	void addTwoListeners( MyListener myListener, MyAnotherListener myAnotherListener );
 
 	void removeMyListener( MyListener listener );
 
@@ -41,7 +41,7 @@ public interface MockedObservable {
 
 	void removeMyAnotherListener( MyAnotherListener listener );
 
-	void removeTwoListener( MyListener myListener, MyAnotherListener myAnotherListener );
+	void removeTwoListeners( MyListener myListener, MyAnotherListener myAnotherListener );
 
 
 	// ==================================================================================
