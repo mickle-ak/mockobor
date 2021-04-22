@@ -92,21 +92,21 @@ public interface ListenersNotifier {
 	 * <p><br>
 	 * If listener's notification method returns some value, then result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
-	 * It is equal to call {@code notifierFor( listenerClass, selector(listenerSelector) )}.
+	 * It is equal to call {@code notifierFor( listenerClass, selector(listenerSelectorValue) )}.
 	 * <p>
 	 * See {@link #notifierFor(Class, ListenerSelector...)} for details.
 	 *
-	 * @param listenerClass    class of required listener
-	 * @param listenerSelector selector used to registration of listeners
-	 * @param <L>              class of required listener
+	 * @param listenerClass         class of required listener
+	 * @param listenerSelectorValue selector used to registration of listeners
+	 * @param <L>                   class of required listener
 	 * @return a object which implements the specified listener interface to call its methods for notification
 	 * @throws ListenersNotFoundException if no listeners with suitably selector registered by the mocked observable and
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 * @see #notifierFor(Class, ListenerSelector...)
 	 */
-	default <L> @NonNull L notifierFor( @NonNull Object listenerSelector, @NonNull Class<L> listenerClass )
+	default <L> @NonNull L notifierFor( @NonNull Object listenerSelectorValue, @NonNull Class<L> listenerClass )
 			throws ListenersNotFoundException {
-		return notifierFor( listenerClass, selector( listenerSelector ) );
+		return notifierFor( listenerClass, selector( listenerSelectorValue ) );
 	}
 
 	/**

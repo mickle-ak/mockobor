@@ -41,7 +41,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	protected abstract boolean isAddMethods( @NonNull Method method );
 
 	/**
-	 * To check if the specified method is an remove-method.
+	 * To check if the specified method is a remove-method.
 	 * <p>
 	 * For example: {@code removeListener}, {@code deleteObserver}, {@code removeMyListener} etc.
 	 *

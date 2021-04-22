@@ -38,10 +38,11 @@ class UsageExample_CustomDetector_Test {
 	/**
 	 * Additional interface, which should implement notifier created by {@link Mockobor#createNotifierFor}.
 	 * <p></p>
-	 * For test purpose it
-	 * overrides two methods of ListenersNotifier (numberOfRegisteredListeners and numberOfListenerRegistrations),
-	 * adds one method with default implementation (notifyMyObserver(String)),
-	 * adds one method without implementation (notifyMyObserver()) (implementation provided over custom notification delegate).
+	 * For test purpose it overrides<ul>
+	 * <li>two methods of ListenersNotifier (numberOfRegisteredListeners and numberOfListenerRegistrations),</li>
+	 * <li>adds one method with default implementation (notifyMyObserver(String)),</li>
+	 * <li>adds one method without implementation (notifyMyObserver()) (implementation provided over custom notification delegate).</li>
+	 * </ul>
 	 * The method numberOfListenerDeregistrations() is overridden, but does not change default behavior.
 	 */
 	public interface AdditionalInterface extends ListenersNotifier {
@@ -89,7 +90,7 @@ class UsageExample_CustomDetector_Test {
 		}
 
 		@Override
-		protected boolean isRemoveMethods( @NonNull Method method ) {
+		protected boolean isRemoveMethods( @NonNull Method method ) { // remove methods are not necessary
 			return false;
 		}
 
@@ -100,7 +101,7 @@ class UsageExample_CustomDetector_Test {
 					// overridden implementation of numberOfListenerRegistrations()
 					new NotificationMethodDelegate(
 							ListenersNotifier.class.getMethod( "numberOfListenerRegistrations" ),
-							( listenersNotifier, method, arguments ) -> -100 ),
+							( listenersNotifier, method, arguments ) -> -100 ), // something other, that can not be returned from other implementations
 					// required implementation of notifyMyObserver()
 					new NotificationMethodDelegate(
 							AdditionalInterface.class.getMethod( "notifyMyObserver" ),
@@ -156,12 +157,17 @@ class UsageExample_CustomDetector_Test {
 
 	@Test
 	void customListenerDefinitionDetector_notification() {
-		notifier.notifierFor( MyObserver.class ).update( "v1" );
-		( (AdditionalInterface) notifier ).notifyMyObserver( "v2" );
-		( (AdditionalInterface) notifier ).notifyMyObserver(); // null, over custom notification delegate  
-		( (MyObserver) notifier ).update( 33 );
+		// send events using additional interface
+		AdditionalInterface additionalNotifier = (AdditionalInterface) this.notifier;
+		additionalNotifier.notifyMyObserver( "v1" );
+		additionalNotifier.notifyMyObserver(); // null, over custom notification delegate
 
-		assertThat( testedObject.getInvocations() ).containsExactly( "v1", "v2", null, 33 );
+		// send events using direct ListenerNotifier
+		this.notifier.notifierFor( MyObserver.class ).update( "v2" );
+		( (MyObserver) this.notifier ).update( 33 );
+
+		// check events
+		assertThat( testedObject.getInvocations() ).containsExactly( "v1", null, "v2", 33 );
 	}
 
 

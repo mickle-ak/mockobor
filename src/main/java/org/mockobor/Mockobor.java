@@ -63,7 +63,7 @@ import java.util.Observer;
  *      notifier.notifierFor( MyListener.class ).somethingChanged1( newValue );
  *      notifier.notifierFor( MyListener.class ).somethingChanged2( newValue1, newValue2 );
  *
- *      // if you need to select listeners registered with certain values, then you can do it with "selector"-s:
+ *      // if you need to select listeners registered with certain qualifier, then you can do it with "selector"-s:
  *      notifier.notifierFor( "selector", MyListener.class ).somethingChanged1( newValue );
  *      notifier.notifierFor( MyListener.class, selector( "selector" ) ).somethingChanged1( newValue ); // exactly as above
  *
