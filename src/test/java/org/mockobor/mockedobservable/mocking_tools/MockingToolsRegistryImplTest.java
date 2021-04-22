@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MockingToolsRegistryImplTest {
 
-	private final MockingToolsRegistry mockingToolsRegistry = new MockingToolsRegistryImpl();
+	private final MockingToolsRegistryImpl mockingToolsRegistry = new MockingToolsRegistryImpl();
 
 	@AfterEach
 	void tearDown() {
@@ -68,7 +68,7 @@ class MockingToolsRegistryImplTest {
 	@Test
 	void registerAnotherMockingTool() {
 		// Object as mocking tool :-), but always in classpath
-		boolean rc = mockingToolsRegistry.registerMockingTool( Object.class.getName(), AnotherListenerRegistrationHandler.class.getName() );
+		boolean rc = mockingToolsRegistry.registerListenerRegistrationHandler( new AnotherListenerRegistrationHandler() );
 		assertThat( rc ).isTrue();
 		assertThat( mockingToolsRegistry.findHandlerForMock( new Object() ) )
 				.isInstanceOf( AnotherListenerRegistrationHandler.class );
@@ -78,7 +78,7 @@ class MockingToolsRegistryImplTest {
 	@Test
 	void registerUnknownMockingTool() {
 		// mocking tool not in classpath
-		boolean rc = mockingToolsRegistry.registerMockingTool( "unknown.class.name", AnotherListenerRegistrationHandler.class.getName() );
+		boolean rc = mockingToolsRegistry.addDefaultMockingTool( "unknown.class.name", AnotherListenerRegistrationHandler.class.getName() );
 		assertThat( rc ).isFalse();
 		assertThatThrownBy( () -> mockingToolsRegistry.findHandlerForMock( new Object() ) )
 				.isInstanceOf( MockingToolNotDetectedException.class );
@@ -88,7 +88,7 @@ class MockingToolsRegistryImplTest {
 	@Test
 	void register_invalid_handle_not_implemented_ListenerRegistrationHandler() {
 		// Object as mocking tool :-), but always in classpath
-		assertThatThrownBy( () -> mockingToolsRegistry.registerMockingTool( Object.class.getName(), Object.class.getName() ) )
+		assertThatThrownBy( () -> mockingToolsRegistry.addDefaultMockingTool( Object.class.getName(), Object.class.getName() ) )
 				.isInstanceOf( MockoborIllegalArgumentException.class );
 	}
 }

@@ -2,7 +2,6 @@ package org.mockobor.mockedobservable.mocking_tools;
 
 import lombok.NonNull;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
-import org.mockobor.exceptions.MockoborIllegalArgumentException;
 
 
 /**
@@ -41,19 +40,12 @@ public interface MockingToolsRegistry {
 	/**
 	 * To add custom support for your mocking tool.
 	 * <p></p>
-	 * It uses class names to avoid  premature loading and thrown of {@code ClassNotFoundException}
-	 * if supported mocking tool not in classpath.
-	 * <p></p>
 	 * Usually you don't need to use this.
 	 * Only if you want to register custom implementation of {@link ListenerRegistrationHandler} for your mocking tool.
 	 *
-	 * @param mockingToolDetectClassName   name of class used to detect if the mocking tool in classpath (the class can be loaded)
-	 * @param registrationHandlerClassName name of class implemented {@link ListenerRegistrationHandler} for the mocking tool.
-	 * @return true if the specified mocking tool was found in classpath and corresponding handler is registered
-	 * @throws MockoborIllegalArgumentException if mocking tool found, but listener registration handler can not be created
+	 * @param registrationHandler class implemented {@link ListenerRegistrationHandler} for your mocking tool.
 	 */
-	boolean registerMockingTool( @NonNull String mockingToolDetectClassName, @NonNull String registrationHandlerClassName )
-			throws MockoborIllegalArgumentException;
+	boolean registerListenerRegistrationHandler( @NonNull ListenerRegistrationHandler registrationHandler );
 
 
 	/**

@@ -22,6 +22,7 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 		registerDefaultMockingTools();
 	}
 
+
 	@Override
 	public @NonNull ListenerRegistrationHandler findHandlerForMock( @NonNull Object mockedObservable ) {
 		for( ListenerRegistrationHandler h : availableHandlers ) {
@@ -34,7 +35,31 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 
 
 	@Override
-	public boolean registerMockingTool( @NonNull String mockingToolDetectClassName, @NonNull String registrationHandlerClassName )
+	public boolean registerListenerRegistrationHandler( @NonNull ListenerRegistrationHandler registrationHandler ) {
+		return availableHandlers.add( registrationHandler );
+	}
+
+
+	@Override
+	public void reset() {
+		availableHandlers.clear();
+		registerDefaultMockingTools();
+	}
+
+
+	/**
+	 * To add support for one of default mocking tool.
+	 * <p></p>
+	 * It uses class names to avoid premature loading of implementation classes
+	 * and thrown of {@code ClassNotFoundException} if supported mocking tool not in classpath.
+	 *
+	 * @param mockingToolDetectClassName   name of class used to detect if the mocking tool in classpath (the class can be loaded)
+	 * @param registrationHandlerClassName name of class implemented {@link ListenerRegistrationHandler} for the mocking tool.
+	 *                                     It must have a no argument constructor.
+	 * @return true if the specified mocking tool was found in classpath and corresponding handler is registered
+	 * @throws MockoborIllegalArgumentException if mocking tool found, but listener registration handler can not be created
+	 */
+	boolean addDefaultMockingTool( @NonNull String mockingToolDetectClassName, @NonNull String registrationHandlerClassName )
 			throws MockoborIllegalArgumentException {
 		try {
 			// try to find mocking tool class 
@@ -59,17 +84,14 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 		}
 	}
 
-
-	@Override
-	public void reset() {
-		availableHandlers.clear();
-		registerDefaultMockingTools();
-	}
-
+	/*
+	 * It uses class names to avoid premature loading of implementation classes
+	 * and thrown of {@code ClassNotFoundException} if supported mocking tool not in classpath.
+	 */
 	private void registerDefaultMockingTools() {
-		registerMockingTool( "org.mockito.Mockito",
-		                     "org.mockobor.mockedobservable.mocking_tools.MockitoListenerRegistrationHandler" );
-		registerMockingTool( "org.easymock.EasyMock",
-		                     "org.mockobor.mockedobservable.mocking_tools.EasymockListenerRegistrationHandler" );
+		addDefaultMockingTool( "org.mockito.Mockito",
+		                       "org.mockobor.mockedobservable.mocking_tools.MockitoListenerRegistrationHandler" );
+		addDefaultMockingTool( "org.easymock.EasyMock",
+		                       "org.mockobor.mockedobservable.mocking_tools.EasymockListenerRegistrationHandler" );
 	}
 }
