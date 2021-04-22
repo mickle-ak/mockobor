@@ -25,15 +25,14 @@ class UsageExample_CustomDetector_Test {
 
 	/** Custom listener interface used by observer to receive notifications from {@link MyObservable}. */
 	public interface MyObserver {
-
 		void update( Object param );
 	}
 
 	/** Class of observable object. It is mocked in this test, because we don't need to have a class, interface is enough. */
 	public interface MyObservable {
-
 		void addMyObservable( MyObserver observable );
 	}
+
 
 	/**
 	 * Additional interface, which should implement notifier created by {@link Mockobor#createNotifierFor}.
@@ -66,6 +65,7 @@ class UsageExample_CustomDetector_Test {
 
 		void notifyMyObserver();
 	}
+
 
 	/**
 	 * Custom detector.
@@ -119,6 +119,7 @@ class UsageExample_CustomDetector_Test {
 		}
 	}
 
+
 	/** The class under test, which should observes a mocked {@link MyObservable}. */
 	public static class TestedObject implements MyObserver {
 
@@ -147,11 +148,13 @@ class UsageExample_CustomDetector_Test {
 
 	@BeforeAll
 	static void beforeAll() {
+		// register custom listener detector
 		MockoborContext.registerListenerDefinitionDetector( new CustomDetector() );
 	}
 
 	@AfterAll
 	static void afterAll() {
+		// reset context to avoid correlation with other tests
 		MockoborContext.reset();
 	}
 
@@ -159,7 +162,7 @@ class UsageExample_CustomDetector_Test {
 	void customListenerDefinitionDetector_notification() {
 		// send events using additional interface
 		AdditionalInterface additionalNotifier = (AdditionalInterface) this.notifier;
-		additionalNotifier.notifyMyObserver( "v1" );
+		additionalNotifier.notifyMyObserver( "v1" ); // over default implementation in interface
 		additionalNotifier.notifyMyObserver(); // null, over custom notification delegate
 
 		// send events using direct ListenerNotifier

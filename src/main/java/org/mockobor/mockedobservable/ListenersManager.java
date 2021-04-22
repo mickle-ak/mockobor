@@ -49,7 +49,6 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 
 	@Value
 	private static class ListenerKey {
-
 		@NonNull Class<?>         listenerClass;
 		@NonNull ListenerSelector selector;
 	}

@@ -17,19 +17,16 @@ class NotifierFactory_Exceptions_Test {
 	public interface WithoutAddListener {}
 
 	public interface OnlyRemoveMethod {
-
 		@SuppressWarnings( "unused" )
 		void removeMyListener( MockedObservable.MyListener listener );
 	}
 
 	public interface OnlyAddMethod {
-
 		@SuppressWarnings( "unused" )
 		void addMyListener( MockedObservable.MyListener listener );
 	}
 
 	public static class OnlyAddMethodsObject implements OnlyAddMethod {
-
 		@Override
 		public void addMyListener( MockedObservable.MyListener listener ) {}
 	}

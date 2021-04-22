@@ -75,7 +75,6 @@ public class TestedObserver {
 
 	@Value
 	public static class InvocationDef {
-
 		Class<?> clazz;
 		String   method;
 		Object   source;

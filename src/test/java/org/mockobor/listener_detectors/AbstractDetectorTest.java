@@ -59,20 +59,17 @@ class AbstractDetectorTest {
 	}
 
 	interface OnlyRemoveMethod {
-
 		@SuppressWarnings( "unused" )
 		void removeMyListener( MyListener listener );
 	}
 
 	interface OnlyAddMethod {
-
 		@SuppressWarnings( "unused" )
 		void addMyListener( MyListener listener );
 	}
 
 	/** Invalid listener, because has a class type. Listeners can be only interfaces. */
 	static abstract class InvalidListener {
-
 		@SuppressWarnings( "unused" )
 		abstract void onEvent( Object event );
 	}

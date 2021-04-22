@@ -175,9 +175,9 @@ public interface ListenersNotifier {
 
 
 	/**
-	 * Set flag: strict check of listener list by notification.<ul>
-	 * <li>true - exception if no listener found</li>
-	 * <li>false - do nothing if no listener found</li>
+	 * Set flag: strict check of listener list by fire notification.<ul>
+	 * <li>true - exception if no listener found in {@link #notifierFor}</li>
+	 * <li>false - do nothing if no listener found in {@link #notifierFor}</li>
 	 * </ul>
 	 *
 	 * @param strict should throw exception if no listener found

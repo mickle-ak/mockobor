@@ -1,8 +1,9 @@
-import org.gradle.api.JavaVersion.VERSION_1_8
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 plugins {
     `java-library`
     `maven-publish`
+    jacoco
 }
 
 group = "io.github.mickle-ak.mockobor"
@@ -10,8 +11,8 @@ version = "1.0-SNAPSHOT"
 
 
 java {
-    sourceCompatibility = VERSION_1_8
-    targetCompatibility = VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
     withJavadocJar()
     withSourcesJar()
 }
@@ -19,7 +20,6 @@ java {
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
@@ -45,28 +45,51 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:$lombok_version")
 }
 
+// configure test starter
+tasks.test {
+    useJUnitPlatform()
+    systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
 
-tasks {
-
-    // configure test starter
-    named<Test>("test") {
-        useJUnitPlatform()
-        testLogging {
-            showStandardStreams = true
-            showExceptions = true
-            events("passed", "skipped", "failed")
-        }
-        enableAssertions = true
-        failFast = false
-
-        systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
+    testLogging {
+        events("skipped", "failed")
+        showStandardStreams = true
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        exceptionFormat = FULL
     }
+    enableAssertions = true
+    failFast = false
 
-    // disable strict checking of javadoc in java 8+
-    named<Javadoc>("javadoc") {
-        (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    addTestListener(object : TestListener {
+        override fun beforeSuite(suite: TestDescriptor) {}
+        override fun beforeTest(testDescriptor: TestDescriptor) {}
+        override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {}
+        override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+            if (suite.parent == null) { // will match the outermost suite
+                println("Test result: ${result.resultType} " +
+                        "(${result.testCount} tests, " +
+                        "${result.successfulTestCount} successes, " +
+                        "${result.failedTestCount} failures, " +
+                        "${result.skippedTestCount} skipped)")
+            }
+        }
+    })
+}
+
+// disable strict checking of javadoc in java 8+
+tasks.javadoc {
+    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+}
+
+// configure jacoco report task
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    doLast {
+        println("full jacoco report: " + reports.html.entryPoint.absolutePath)
     }
 }
+
 
 publishing {
     publications {
@@ -75,4 +98,3 @@ publishing {
         }
     }
 }
-        

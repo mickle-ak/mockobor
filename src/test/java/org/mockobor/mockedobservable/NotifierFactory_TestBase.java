@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockobor.listener_detectors.ListenerSelector.selector;
 
 
-abstract class NotifierFactory_create_ListenerNotifier_TestBase {
+abstract class NotifierFactory_TestBase {
 
 	private final MockedObservable  mockedObservable = createMock();
 	private       ListenersNotifier notifier;

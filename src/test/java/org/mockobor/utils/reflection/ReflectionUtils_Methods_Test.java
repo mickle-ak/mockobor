@@ -8,23 +8,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.mockobor.utils.reflection.ReflectionUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockobor.utils.reflection.ReflectionUtils.*;
 
 
 @SuppressWarnings( "unused" )
 class ReflectionUtils_Methods_Test {
 
 	private interface TestMethods {
-
 		void method( String s );
-
 		void method( Object s );
-
 		void method( Integer s );
-
 		void method();
-
 		default String defaultMethod( String param ) {
 			return param;
 		}
@@ -76,15 +71,10 @@ class ReflectionUtils_Methods_Test {
 	// ==================================================================================
 
 	private interface TestMethods2 {
-
 		void method( String s );
-
 		void method( Object s );
-
 		int method( Integer s );
-
 		void method();
-
 		void anotherMethod();
 	}
 

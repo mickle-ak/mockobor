@@ -347,11 +347,12 @@ if you have another kind of listeners, you can add support for your listeners:
 Typically, to implement `ListenerDefinitionDetector` you only need to extend `AbstractDetector` and implement/override
 follow methods:
 - `isListenerClass(Class, Method)` - to check if the specified parameter type is a listener type
-- `isAddMethods(Method)` - to check if the specified method is an add-method
-- `isRemoveMethods(Method)` - to check if the specified method is a remove-method
+- `isAddMethods(Method)` - to check if the specified method is a registration method to add listener
+- `isRemoveMethods(Method)` - to check if the specified method is a registration method to remove listener
 - `getAdditionalInterfaces()` - only if you want to provide special support for your listeners
-- `getNotificationDelegates()` - only if you need to implement some methods of your additional interfaces (better use
-  default implementations in interface itself) or override some methods of `ListenersNotifier` (do you want it indeed?)
+- `getNotificationDelegates()` - only if you need to
+  + implement some methods of your additional interfaces (better use default implementations in interface itself)
+  + override some methods of `ListenersNotifier` (do you want it indeed?)
 
 For more details see javadoc
 and [Custom listener detector example](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java)

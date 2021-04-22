@@ -15,14 +15,11 @@ public interface MockedObservable {
 	// ==================================================================================
 
 	interface MyListener {
-
 		void somethingChanged1( Object somethingNewValue );
-
 		int somethingChanged2( Object somethingNewValue );
 	}
 
 	interface MyAnotherListener {
-
 		void somethingOtherChanged( Object somethingOtherValue );
 	}
 
