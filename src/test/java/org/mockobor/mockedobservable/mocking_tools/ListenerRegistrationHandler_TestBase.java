@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.RegistrationDelegate;
 import org.mockobor.mockedobservable.ListenersManager;
-import org.mockobor.utils.reflection.ReflectionUtils;
+import org.mockobor.utils.reflection.TypeUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ abstract class ListenerRegistrationHandler_TestBase {
 
 		String result = mock.returnType();
 		assertThat( invocationArguments ).isEmpty();
-		assertThat( result ).isNull();
+		assertThat( result ).isEmpty();
 		assertThat( usedListenerContainers ).containsExactly( listeners );
 	}
 
@@ -144,7 +144,7 @@ abstract class ListenerRegistrationHandler_TestBase {
 	private Object destinationMethod( ListenerContainer listeners, Method sourceMethods, Object... arguments ) {
 		usedListenerContainers.add( listeners );
 		invocationArguments.addAll( Arrays.asList( arguments ) );
-		return ReflectionUtils.getDefaultValue( sourceMethods.getReturnType() );
+		return TypeUtils.getDefaultReturnValue( sourceMethods.getReturnType() );
 	}
 
 	@SuppressWarnings( "OptionalGetWithoutIsPresent" )

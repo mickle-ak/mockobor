@@ -1,20 +1,23 @@
 package org.mockobor.utils.reflection;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
 
+@NoArgsConstructor( access = AccessLevel.PRIVATE )
 public final class ReflectionUtils {
-
-	private ReflectionUtils() {}
-
 
 	// ==================================================================================
 	// ============================= getReachableMethods ================================
@@ -64,7 +67,7 @@ public final class ReflectionUtils {
 
 		// collect in superclass
 		Class<?> superclass = clazz.getSuperclass();
-		if( superclass != null && !Objects.equals( superclass, Object.class ) ) {
+		if( superclass != null && superclass != Object.class ) {
 			collectApplicableMethods( superclass, collectedMethods );
 		}
 
@@ -76,9 +79,9 @@ public final class ReflectionUtils {
 
 	private static boolean isOverridden( @NonNull Collection<Method> alreadyCollectedMethods, @NonNull Method method ) {
 		return alreadyCollectedMethods.stream().anyMatch(
-			alreadyCollected -> Objects.equals( alreadyCollected.getName(), method.getName() )
-			                    && Objects.equals( alreadyCollected.getReturnType(), method.getReturnType() )
-			                    && Arrays.equals( alreadyCollected.getParameterTypes(), method.getParameterTypes() ) );
+				alreadyCollected -> Objects.equals( alreadyCollected.getName(), method.getName() )
+				                    && Objects.equals( alreadyCollected.getReturnType(), method.getReturnType() )
+				                    && Arrays.equals( alreadyCollected.getParameterTypes(), method.getParameterTypes() ) );
 	}
 
 	private static boolean isApplicable( @NonNull Method method ) {
@@ -107,7 +110,7 @@ public final class ReflectionUtils {
 	/**
 	 * To check if the specified class CAN be a class created by EasyMock.
 	 * <p>
-	 * It is not 100% correct, but is OK for our purpose..
+	 * It is not 100% correct, but is OK for our purpose...
 	 *
 	 * @param clazz class to test
 	 * @return true if specified class CAN be a class created by EasyMock
@@ -137,56 +140,36 @@ public final class ReflectionUtils {
 
 
 	/**
-	 * To find method compatible to the {@code methodToCompare} in the specified methods list.
+	 * To find method similar to the specified {@code invokedMethods} in the specified list of declared methods.
 	 * <p>
-	 * Methods are compatible if both have same method signature (the name, return type and parameter types).
+	 * Methods are similar if both have same method signature (the name, return type and parameter types) - see {@link #isSimilar}.
 	 * <p>
-	 * It makes sense to use this method in invocation handler by creation of dynamic proxy,
+	 * It makes sense for example to use this method in invocation handler by creation of dynamic proxy,
 	 * to find and invoke implementation of compatible method declared in another interface
 	 * (if both interface implemented in proxy class).
 	 *
-	 * @param methods         list of methods to search in
-	 * @param methodToCompare method to compare
-	 * @return compatible methods from the specified list of null if not found
-	 * @see #areMethodsCompatible
+	 * @param declaredMethods list of declared methods to search in
+	 * @param invokedMethods  invoked method to find similar declared one
+	 * @return similar method from the specified list or null if not found
+	 * @see #isSimilar
 	 */
-	public static Method findCompatibleMethod( Collection<Method> methods, Method methodToCompare ) {
-		return methods.stream().filter( m -> areMethodsCompatible( m, methodToCompare ) ).findFirst().orElse( null );
+	public static Method findSimilarMethod( @NonNull Collection<Method> declaredMethods,
+	                                        @NonNull Method invokedMethods ) {
+		return declaredMethods.stream().filter( m -> isSimilar( m, invokedMethods ) ).findFirst().orElse( null );
 	}
 
 	/**
-	 * To test if the method1 and method2 are "compatible" - have same method signature
-	 * (the method1 and method2 have same name, return type and parameter types).
-	 * <p>
-	 * It makes sense to use this method in invocation handler by creation of dynamic proxy,
-	 * to find and invoke implementation of compatible method declared in another interface
-	 * (if both interface implemented in proxy class).
+	 * To test if the methodA and methodB are "similar" - both have same method signature:
+	 * the equal names, return types and parameter types.
 	 *
-	 * @param method1 first {@link Method} to check
-	 * @param method2 second {@link Method} to check
-	 * @return true if the method1 and method2 have same name, return type and parameter types
+	 * @param methodA first {@link Method} to check
+	 * @param methodB second {@link Method} to check
+	 * @return true if the methodA and methodB have same name, return type and parameter types
 	 */
-	public static boolean areMethodsCompatible( @NonNull Method method1, @NonNull Method method2 ) {
-		return Objects.equals( method1.getName(), method2.getName() )
-		       && Objects.equals( method1.getReturnType(), method2.getReturnType() )
-		       && Arrays.equals( method1.getParameterTypes(), method2.getParameterTypes() );
-	}
-
-
-	/**
-	 * To get default value for the specified class.
-	 * <p>
-	 * It works correct for primitive types too!
-	 *
-	 * @param clazz class to get default value
-	 * @param <T>   class to get default value
-	 * @return default value for the specified class
-	 */
-	@SuppressWarnings( "unchecked" )
-	public static <T> T getDefaultValue( Class<T> clazz ) {
-		return clazz.isPrimitive() && clazz != void.class
-		       ? (T) Array.get( Array.newInstance( clazz, 1 ), 0 )
-		       : null;
+	public static boolean isSimilar( @NonNull Method methodA, @NonNull Method methodB ) {
+		return Objects.equals( methodA.getName(), methodB.getName() )
+		       && Objects.equals( methodA.getReturnType(), methodB.getReturnType() )
+		       && Arrays.equals( methodA.getParameterTypes(), methodB.getParameterTypes() );
 	}
 
 

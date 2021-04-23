@@ -81,17 +81,17 @@ class ReflectionUtils_Methods_Test {
 
 	@Test
 	void testFindCompatibleMethod_found() throws NoSuchMethodException {
-		Collection<Method> methods = Arrays.asList( TestMethods.class.getDeclaredMethods() );
+		Collection<Method> declaredMethods = Arrays.asList( TestMethods.class.getDeclaredMethods() );
 
-		Method methodToCompare = TestMethods2.class.getMethod( "method", String.class );
-		assertThat( methods ).doesNotContain( methodToCompare ); // to be sure
+		Method invokedMethod = TestMethods2.class.getMethod( "method", String.class );
+		assertThat( declaredMethods ).doesNotContain( invokedMethod ); // to be sure
 
-		Method compatibleMethod = findCompatibleMethod( methods, methodToCompare );
+		Method declaredMethod = findSimilarMethod( declaredMethods, invokedMethod );
 
-		assertThat( methods ).as( "result from the methods list" ).contains( compatibleMethod );
-		assertThat( areMethodsCompatible( compatibleMethod, methodToCompare ) ).as( "compatibel methods" ).isTrue();
-		assertThat( compatibleMethod ).as( "compatible method is another method" ).isNotEqualTo( methodToCompare );
-		assertThat( compatibleMethod.getDeclaringClass() ).as( "because of another declaring class" ).isNotEqualTo( methodToCompare.getDeclaringClass() );
+		assertThat( declaredMethods ).as( "result from the methods list" ).contains( declaredMethod );
+		assertThat( isSimilar( declaredMethod, invokedMethod ) ).as( "compatible methods" ).isTrue();
+		assertThat( declaredMethod ).as( "compatible method is another method" ).isNotEqualTo( invokedMethod );
+		assertThat( declaredMethod.getDeclaringClass() ).as( "because of another declaring class" ).isNotEqualTo( invokedMethod.getDeclaringClass() );
 	}
 
 	@Test
@@ -101,60 +101,36 @@ class ReflectionUtils_Methods_Test {
 		Method methodToCompare = TestMethods2.class.getMethod( "anotherMethod" );
 		assertThat( methods ).doesNotContain( methodToCompare ); // to be sure
 
-		assertThat( findCompatibleMethod( methods, methodToCompare ) ).as( "not found" ).isNull();
+		assertThat( findSimilarMethod( methods, methodToCompare ) ).as( "not found" ).isNull();
 	}
 
 
 	@Test
-	void testAreMethodsCompatible() throws NoSuchMethodException {
+	void testIsSimilar() throws NoSuchMethodException {
 		Class<TestMethods> clazz1 = TestMethods.class;
 		Class<TestMethods2> clazz2 = TestMethods2.class;
 
-		assertThat( areMethodsCompatible( clazz1.getMethod( "method" ),
-		                                  clazz2.getMethod( "method" ) ) )
-			.isTrue();
+		assertThat( isSimilar( clazz1.getMethod( "method" ),
+		                       clazz2.getMethod( "method" ) ) )
+				.isTrue();
 
-		assertThat( areMethodsCompatible( clazz1.getMethod( "method", String.class ),
-		                                  clazz2.getMethod( "method", String.class ) ) )
-			.isTrue();
+		assertThat( isSimilar( clazz1.getMethod( "method", String.class ),
+		                       clazz2.getMethod( "method", String.class ) ) )
+				.isTrue();
 
-		assertThat( areMethodsCompatible( clazz1.getMethod( "method" ),
-		                                  clazz2.getMethod( "anotherMethod" ) ) )
-			.as( "different method name" )
-			.isFalse();
+		assertThat( isSimilar( clazz1.getMethod( "method" ),
+		                       clazz2.getMethod( "anotherMethod" ) ) )
+				.as( "different method name" )
+				.isFalse();
 
-		assertThat( areMethodsCompatible( clazz1.getMethod( "method", Integer.class ),
-		                                  clazz2.getMethod( "method", Object.class ) ) )
-			.as( "different parameter type" )
-			.isFalse();
+		assertThat( isSimilar( clazz1.getMethod( "method", Integer.class ),
+		                       clazz2.getMethod( "method", Object.class ) ) )
+				.as( "different parameter type" )
+				.isFalse();
 
-		assertThat( areMethodsCompatible( clazz1.getMethod( "method", Integer.class ),
-		                                  clazz2.getMethod( "method", Integer.class ) ) )
-			.as( "different return type" )
-			.isFalse();
-	}
-
-
-	// ==================================================================================
-	// =============================== getDefaultValue ==================================
-	// ==================================================================================
-
-	@SuppressWarnings( "ConstantConditions" )
-	@Test
-	void testGetDefaultValue() {
-		assertThat( getDefaultValue( byte.class ) ).isZero();
-		assertThat( getDefaultValue( short.class ) ).isZero();
-		assertThat( getDefaultValue( int.class ) ).isZero();
-		assertThat( getDefaultValue( long.class ) ).isZero();
-		assertThat( getDefaultValue( char.class ) ).isEqualTo( (char) 0 );
-		assertThat( getDefaultValue( float.class ) ).isZero();
-		assertThat( getDefaultValue( double.class ) ).isZero();
-		assertThat( getDefaultValue( boolean.class ) ).isFalse();
-		assertThat( getDefaultValue( void.class ) ).isNull();
-		assertThat( getDefaultValue( Integer.class ) ).isNull();
-		assertThat( getDefaultValue( Boolean.class ) ).isNull();
-		assertThat( getDefaultValue( String.class ) ).isNull();
-		assertThat( getDefaultValue( Object.class ) ).isNull();
-		assertThat( getDefaultValue( Void.class ) ).isNull();
+		assertThat( isSimilar( clazz1.getMethod( "method", Integer.class ),
+		                       clazz2.getMethod( "method", Integer.class ) ) )
+				.as( "different return type" )
+				.isFalse();
 	}
 }

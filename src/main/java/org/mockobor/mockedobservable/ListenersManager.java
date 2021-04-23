@@ -7,7 +7,7 @@ import lombok.Value;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.ListenerSelector;
-import org.mockobor.utils.reflection.ReflectionUtils;
+import org.mockobor.utils.reflection.TypeUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -96,7 +96,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 		for( L listener : listenersToNotify ) {
 			result = method.invoke( listener, args );
 		}
-		return result != null ? result : ReflectionUtils.getDefaultValue( method.getReturnType() );
+		return result != null ? result : TypeUtils.getDefaultReturnValue( method.getReturnType() );
 	}
 
 

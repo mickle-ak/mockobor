@@ -23,7 +23,7 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 
 import static java.util.Collections.unmodifiableCollection;
-import static org.mockobor.utils.reflection.ReflectionUtils.findCompatibleMethod;
+import static org.mockobor.utils.reflection.ReflectionUtils.findSimilarMethod;
 import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
 
 
@@ -162,8 +162,8 @@ public class NotifierFactory {
 					return method.invoke( listenersNotifier, args );
 				}
 
-				// 4. try compatible methods declared in listenersNotifier
-				Method compatibleMethod = findCompatibleMethod( getReachableMethods( listenersNotifier ), method );
+				// 4. try similar methods declared in listenersNotifier
+				Method compatibleMethod = findSimilarMethod( getReachableMethods( listenersNotifier ), method );
 				if( compatibleMethod != null ) {
 					return compatibleMethod.invoke( listenersNotifier, args );
 				}
@@ -187,7 +187,7 @@ public class NotifierFactory {
 
 	private static NotificationMethodInvocation findDelegate( @NonNull Map<Method, NotificationMethodInvocation> delegates,
 	                                                          @NonNull Method invokedMethod ) {
-		Method delegateSourceMethod = findCompatibleMethod( delegates.keySet(), invokedMethod );
+		Method delegateSourceMethod = findSimilarMethod( delegates.keySet(), invokedMethod );
 		return delegateSourceMethod != null ? delegates.get( delegateSourceMethod ) : null;
 	}
 

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenersDefinition.ListenersDefinitionImpl;
 import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocation;
-import org.mockobor.utils.reflection.ReflectionUtils;
+import org.mockobor.utils.reflection.TypeUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -150,7 +150,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 			L listener = listenerClass.cast( arguments[listenerIndexes.get( i )] );
 			registration.invoke( selector, listenerClass, listener );
 		}
-		return ReflectionUtils.getDefaultValue( method.getReturnType() );
+		return TypeUtils.getDefaultReturnValue( method.getReturnType() );
 	}
 
 	@FunctionalInterface
