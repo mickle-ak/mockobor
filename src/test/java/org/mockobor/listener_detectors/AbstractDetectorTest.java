@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockobor.exceptions.MockoborException;
 import org.mockobor.listener_detectors.AbstractDetector.ListenerRegistrationParameters;
 import org.mockobor.mockedobservable.MockedObservable;
 import org.mockobor.mockedobservable.MockedObservable.MyAnotherListener;
@@ -56,6 +57,8 @@ class AbstractDetectorTest {
 		void noListeners( Object o1, Object o2 );
 
 		void twoListeners( int s1, MyListener listener, int s2, MyAnotherListener anotherListener, int s3 );
+
+		void addVarargListener( MyListener listener, int... selectors );
 	}
 
 	interface OnlyRemoveMethod {
@@ -183,7 +186,10 @@ class AbstractDetectorTest {
 				arguments( "onlyListener", new Integer[]{ 0 }, new Integer[0] ),
 				arguments( "stringAndListener", new Integer[]{ 1 }, new Integer[]{ 0 } ),
 				arguments( "manyParametersAndListener", new Integer[]{ 2 }, new Integer[]{ 0, 1, 3 } ),
-				arguments( "twoListeners", new Integer[]{ 1, 3 }, new Integer[]{ 0, 2, 4 } )
+				arguments( "twoListeners", new Integer[]{ 1, 3 }, new Integer[]{ 0, 2, 4 } ),
+				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } ),
+				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } ),
+				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } )
 		);
 	}
 
@@ -212,7 +218,10 @@ class AbstractDetectorTest {
 				arguments( "onlyListener", new Object[]{ mock( MyListener.class ) }, selector() ),
 				arguments( "stringAndListener", new Object[]{ "name", mock( MyListener.class ) }, selector( "name" ) ),
 				arguments( "manyParametersAndListener", new Object[]{ "amen", 1d, mock( MyListener.class ), 3 }, selector( "amen", 1d, 3 ) ),
-				arguments( "twoListeners", new Object[]{ 1, mock( MyListener.class ), 2, mock( MyAnotherListener.class ), 3 }, selector( 1, 2, 3 ) )
+				arguments( "twoListeners", new Object[]{ 1, mock( MyListener.class ), 2, mock( MyAnotherListener.class ), 3 }, selector( 1, 2, 3 ) ),
+				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ) }, selector() ),
+				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1 }, selector( 1 ) ),
+				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1, 2 }, selector( 1, 2 ) )
 		);
 	}
 
@@ -222,6 +231,9 @@ class AbstractDetectorTest {
 	// ==================================================================================
 
 	private static Method findMethod( String name ) {
-		return Arrays.stream( Methods.class.getDeclaredMethods() ).filter( m -> m.getName().equals( name ) ).findFirst().orElse( null );
+		Class<Methods> methodsClass = Methods.class;
+		return Arrays.stream( methodsClass.getDeclaredMethods() )
+		             .filter( m -> m.getName().equals( name ) )
+		             .findFirst().orElseThrow( () -> new MockoborException( "Method '%s' not found in '%s'", name, methodsClass.getName() ) );
 	}
 }

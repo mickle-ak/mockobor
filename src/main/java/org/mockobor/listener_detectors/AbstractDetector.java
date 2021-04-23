@@ -11,6 +11,7 @@ import org.mockobor.utils.reflection.TypeUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.IntStream;
 
 
 /**
@@ -138,10 +139,11 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	}
 
 	@SuppressWarnings( "unchecked" )
-	private <L> Object createDelegate( @NonNull AbstractDetector.ListenerRegistrationParameters rp,
+	private <L> Object createDelegate( @NonNull ListenerRegistrationParameters rp,
 	                                   @NonNull Method method,
-	                                   @NonNull Object[] arguments,
+	                                   Object[] arguments,
 	                                   @NonNull ListenerRegistration registration ) {
+		if( arguments == null ) arguments = new Object[0];
 		ListenerSelector selector = rp.createSelector( method, arguments );
 		List<Integer> listenerIndexes = rp.getListenerIndexes();
 		List<Class<?>> listenerClasses = rp.getListenerClasses();
@@ -219,21 +221,48 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		 */
 		public ListenerSelector createSelector( @NonNull Method invokedMethod, @NonNull Object[] arguments ) {
 			checkIsSameMethod( invokedMethod, arguments );
-			Object[] selectorArguments = new Object[selectorIndexes.size()];
+			return createSelector( invokedMethod, arguments, new ArrayList<>( selectorIndexes ) );
+		}
+
+
+		private static ListenerSelector createSelector( Method invokedMethod, Object[] arguments, List<Integer> selectorIndexesCopy ) {
+			if( invokedMethod.isVarArgs() ) {
+				if( arguments.length < invokedMethod.getParameterCount() ) {
+					// vararg omitted => remove vararg elements from selector indexes
+					selectorIndexesCopy.removeIf( idx -> idx >= arguments.length );
+				}
+				else if( arguments.length > invokedMethod.getParameterCount() ) {
+					// more that one vararg => add indexes of extra parameters
+					IntStream.range( invokedMethod.getParameterCount(), arguments.length ).forEach( selectorIndexesCopy::add );
+				}
+			}
+			Object[] selectorArguments = new Object[selectorIndexesCopy.size()];
 			for( int i = 0; i < selectorArguments.length; i++ ) {
-				selectorArguments[i] = arguments[selectorIndexes.get( i )];
+				selectorArguments[i] = arguments[selectorIndexesCopy.get( i )];
 			}
 			return ListenerSelector.selector( selectorArguments );
 		}
 
+
 		private void checkIsSameMethod( @NonNull Method invokedMethod, @NonNull Object[] arguments ) {
-			if( !Objects.equals( invokedMethod, registrationMethod ) || arguments.length != selectorIndexes.size() + listenerIndexes.size() ) {
-				throw new MockoborImplementationError( "create selector for unexpected method (expected: %s(%d), was: %s(%d))",
-				                                       registrationMethod.getName(), selectorIndexes.size() + +listenerIndexes.size(),
-				                                       invokedMethod.getName(), arguments.length );
+			if( !Objects.equals( invokedMethod, registrationMethod ) ) {
+				throw new MockoborImplementationError( "create selector for unexpected method (expected: %s, was: %s)",
+				                                       registrationMethod, invokedMethod.getName() );
+			}
+			int declaredNumberOfArguments = selectorIndexes.size() + listenerIndexes.size();
+			if( !invokedMethod.isVarArgs() ) {
+				if( arguments.length != declaredNumberOfArguments ) {
+					throw new MockoborImplementationError( "create selector for unexpected number of parameters (method: %s, expected: %d, was: %d:%s)",
+					                                       invokedMethod.getName(), declaredNumberOfArguments,
+					                                       arguments.length, Arrays.asList( arguments ) );
+				}
+			}
+			else if( arguments.length < declaredNumberOfArguments - 1 ) { // less then with empty varargs
+				throw new MockoborImplementationError( "create selector for unexpected number of parameters (vararg method: %s, expected>=%d, was: %d:%s)",
+				                                       invokedMethod.getName(), declaredNumberOfArguments - 1,
+				                                       arguments.length, Arrays.asList( arguments ) );
 			}
 		}
 	}
-
 
 }

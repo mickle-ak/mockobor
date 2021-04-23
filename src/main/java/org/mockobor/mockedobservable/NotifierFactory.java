@@ -2,7 +2,6 @@ package org.mockobor.mockedobservable;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenerRegistrationMethodsNotDetectedException;
 import org.mockobor.exceptions.MethodNotFoundException;
@@ -46,9 +45,6 @@ public class NotifierFactory {
 	@NonNull
 	private final MockingToolsRegistry mockingToolsRegistry;
 
-	/** Flag: should notifier object implements detected listeners. */
-	@SuppressWarnings( { "FieldCanBeLocal", "FieldMayBeFinal" } )
-	@Setter
 	private boolean implementListeners = true;
 
 
@@ -67,6 +63,21 @@ public class NotifierFactory {
 		ListenersManager listenerManager = new ListenersManager( mockedObservable );
 		registerInMockedObservable( listenerManager, listenersDefinitions );
 		return createProxy( listenerManager, listenersDefinitions );
+	}
+
+	/**
+	 * Flag: should notifier object implements detected listeners (default: true).
+	 * <p>
+	 * If true - all new {@code ListenersNotifier} returned from {@link #create} implement all detected listener interfaces.
+	 * So events can be fired using both ways: {@code ((MyListener) notifier).somethingChanged(...);} or
+	 * {@code notifier.notifierFor( MyListener.class ).somethingChanged(...);}.
+	 * <p>
+	 * if false - all new {@code ListenersNotifier} returned from {@link #create} does not implement listener interfaces.
+	 * So there is only one way to fire events: {@code notifier.notifierFor( MyListener.class ).somethingChanged(...);}
+	 */
+	@SuppressWarnings( "unused" )
+	public void setImplementListeners( boolean implementListeners ) {
+		this.implementListeners = implementListeners;
 	}
 
 
