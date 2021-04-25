@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.mockobor.exceptions.ListenerRegistrationMethodsNotDetectedException;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
+import org.mockobor.exceptions.UnregisteredListenersFoundException;
 import org.mockobor.listener_detectors.ListenerDefinitionDetector;
 import org.mockobor.listener_detectors.ListenerSelector;
 import org.mockobor.mockedobservable.ListenersNotifier;
@@ -141,6 +142,9 @@ import java.util.Observer;
 @NoArgsConstructor( access = AccessLevel.PRIVATE )
 public final class Mockobor {
 
+	private static final NotifierFactory NOTIFIER_FACTORY = new NotifierFactory( MockoborContext.LISTENER_DETECTORS_REGISTRY,
+	                                                                             MockoborContext.MOCKING_TOOLS_REGISTRY );
+
 	/**
 	 * To create notifier for the specified mocked observable.
 	 * <p>
@@ -177,8 +181,41 @@ public final class Mockobor {
 	@NonNull
 	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
-		return new NotifierFactory( MockoborContext.LISTENER_DETECTORS_REGISTRY,
-		                            MockoborContext.MOCKING_TOOLS_REGISTRY )
-				.create( mockedObservable );
+		return NOTIFIER_FACTORY.create( mockedObservable );
+	}
+
+
+	/**
+	 * To check if all listeners by all specified notifiers are unregistered.
+	 * <p><br>
+	 * Example:
+	 * <pre class="code"><code class="java">
+	 *
+	 * // create notifier for mocked PropertyChangeSupport
+	 * PropertyChangeSupport mockedPropertyChangeSupport = mock( PropertyChangeSupport.class );
+	 * Observable mockedObservable = mock( Observable.class );
+	 * AnotherObservable mockedAnotherObservable = mock( AnotherObservable.class );
+	 *
+	 * ListenersNotifier notifier1 = Mockobor.createNotifierFor( mockedPropertyChangeSupport );
+	 * ListenersNotifier notifier2 = Mockobor.createNotifierFor( mockedObservable );
+	 * ListenersNotifier notifier3 = Mockobor.createNotifierFor( mockedAnotherObservable );
+	 *
+	 * // tested object registers itself as listener by the specified objects
+	 * TestObject testObject = new TestObject( mockedPropertyChangeSupport, mockedObservable, mockedAnotherObservable );
+	 *
+	 * // tested object should remove itself from the specified in constructor objects on close.
+	 * testObject.close(); // or dispose() etc.
+	 *
+	 * // check that all listeners are unregistered
+	 * Mockobor.assertThatAllListenersAreUnregistered( notifier1, notifier2, notifier3 );
+	 *
+	 * </code></pre>
+	 *
+	 * @param notifiers notifiers to check
+	 * @throws UnregisteredListenersFoundException if some of the specified notifier contains unregistered listener(s)
+	 */
+	public static void assertThatAllListenersAreUnregistered( @NonNull ListenersNotifier... notifiers )
+			throws UnregisteredListenersFoundException {
+		NOTIFIER_FACTORY.assertThatAllListenersAreUnregistered( notifiers );
 	}
 }

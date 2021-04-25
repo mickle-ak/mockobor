@@ -118,7 +118,7 @@ class UsageExample_BeanPropertyChange_Test {
 		observer.close();
 
 		// check that all listeners are unregistered
-		assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are deregistered" ).isTrue();
+		Mockobor.assertThatAllListenersAreUnregistered( notifier );
 	}
 
 

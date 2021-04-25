@@ -19,7 +19,7 @@ your tests.
 
 - [Dependencies](#Dependencies)
 - [Usage](#Usage)
-- [Detailed Examples](#detailed-examples)
+- [Examples](#examples)
   - [simulate sending of events from mocked collaborator to tested object](#simulate-sending-of-events-from-mocked-collaborator-to-tested-object)
   - [check completely deregistration of listeners](#check-completely-deregistration-of-listeners)
   - [collect and verify events from test object](#collect-and-verify-events-from-test-object)
@@ -71,10 +71,11 @@ This notifier object can be used to
   + using `PropertyChangeNotifier` (if suitable): `((PropertyChangeNotifier) notifier).firePropertyChange(...)`
   + using `ObservableNotifier`  (if suitable): `((ObservableNotifier) notifier).notifyObservers(...)`
 - check completely deregistration of listeners
-  + `assertThat( notifier.allListenersAreUnregistered() ).isTrue();`
+  + `Mockobor.assertThatAllListenersAreUnregistered( notifier1, ..., notifierN )`
+  + or for single notifier `assertThat( notifier.allListenersAreUnregistered() ).isTrue()`
 
-For more details see JavaDoc for `Mockobor`, `Mocobor.createNotifierFor`, `ListenerNotifer`
-and [Detailed Examples](#detailed-examples) bellow.
+For more details see JavaDoc for `Mockobor`, `Mocobor.createNotifierFor`, `ListenerNotifer`,
+`Mockobor.assertThatAllListenersAreUnregistered` and [Examples](#examples) bellow.
 
 
 #### listener selectors
@@ -100,7 +101,7 @@ registration methods and allows adding selectors by sending of notifications:
         notifier.notiferFor(listner3.class).listener_method();
         ...
 ```
-For more detail see [Detailed Examples / typical java style listeners](#typical-java-style-listeners)
+For more detail see [Examples / typical java style listeners](#typical-java-style-listeners)
 
 
 ### collect and verify events from test object
@@ -111,7 +112,7 @@ For more detail see [Detailed Examples / typical java style listeners](#typical-
 (not implemented jet, probably in version 1.2)
 
 
-## Detailed Examples
+## Examples
 
 ### simulate sending of events from mocked collaborator to tested object
 
@@ -321,10 +322,12 @@ class TestedObserver_Test {
     testObject.destroy(); // or close() or dispose() etc.
 
     // check that all listeners are unregistered
-    assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are unregistered" ).isTrue();
+    Mockobor.assertThatAllListenersAreUnregistered( notifier );
   }
 }
 ```
+See
+also [UsageExample_allListenersAreUnregistered_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_allListenersAreUnregistered_Test.java)
 
 
 ## Extension

@@ -1,6 +1,7 @@
 package org.mockobor.mockedobservable;
 
 import lombok.NonNull;
+import lombok.Value;
 import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerSelector;
@@ -36,7 +37,7 @@ public interface ListenersNotifier {
 	 * <pre class="code"><code class="java">
 	 *
 	 * // create notifier for mocked PropertyChangeSupport
-	 * PropertyChangeSupport mockedPropertyChangeSupport = mock( PropertyChangeSupport.class )
+	 * PropertyChangeSupport mockedPropertyChangeSupport = mock( PropertyChangeSupport.class );
 	 * ListenersNotifier notifier = Mockobor.createNotifierFor( mockedPropertyChangeSupport );
 	 *
 	 * // tested object registers itself as listener by the specified PropertyChangeSupport object
@@ -226,4 +227,29 @@ public interface ListenersNotifier {
 	 * @return unmodifiable list of listeners of required type, registered with one of the specified selectors, or empty list if nothing found
 	 */
 	@NonNull <L> Collection<L> getListeners( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors );
+
+
+	/**
+	 * Get list of full selectors for all currently registered listeners.
+	 *
+	 * @return unmodifiable list of full selectors
+	 */
+	@NonNull Collection<ListenerKey<?>> getListenersWithSelector(); // NOSONAR: types of each listeners are 1. different and 2. unknown here
+
+
+	/**
+	 * Full listener selector: listener class + selector used by registration.
+	 *
+	 * @param <L> listener class
+	 */
+	@Value
+	class ListenerKey<L> {
+		@NonNull Class<L>         listenerClass;
+		@NonNull ListenerSelector selector;
+
+		@Override
+		public String toString() {
+			return listenerClass.getSimpleName() + ".class registered with " + selector;
+		}
+	}
 }

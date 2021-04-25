@@ -3,7 +3,6 @@ package org.mockobor.mockedobservable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.Value;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.ListenerSelector;
@@ -47,19 +46,24 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	private int deregistrationsCount;
 
 
-	@Value
-	private static class ListenerKey {
-		@NonNull Class<?>         listenerClass;
-		@NonNull ListenerSelector selector;
-	}
-
 	/** listener key (selector + class) -> list of listeners. */
-	private final Map<ListenerKey, List<Object>> listeners = new ConcurrentHashMap<>();
+	private final Map<ListenerKey<?>, List<Object>> listeners = new ConcurrentHashMap<>();
 
 
 	@Override
+	@NonNull
+	public Object getObservableMock() {
+		return observable;
+	}
+
+
+	// ==================================================================================
+	// ============================== ListenerContainer =================================
+	// ==================================================================================
+
+	@Override
 	public <L> void addListener( @NonNull ListenerSelector selector, @NonNull Class<L> listenerClass, @NonNull L listener ) {
-		ListenerKey key = new ListenerKey( listenerClass, selector );
+		ListenerKey<L> key = new ListenerKey<>( listenerClass, selector );
 		listeners.computeIfAbsent( key, k -> new ArrayList<>() ).add( listener );
 		++registrationsCount;
 		++registeredListenersCount;
@@ -67,7 +71,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 
 	@Override
 	public <L> void removeListener( @NonNull ListenerSelector selector, @NonNull Class<L> listenerClass, @NonNull L listener ) {
-		ListenerKey key = new ListenerKey( listenerClass, selector );
+		ListenerKey<L> key = new ListenerKey<>( listenerClass, selector );
 		listeners.computeIfPresent( key, ( k, list ) -> {
 			if( list.remove( listener ) ) {
 				++deregistrationsCount;
@@ -77,6 +81,10 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 		} );
 	}
 
+
+	// ==================================================================================
+	// ============================== ListenersNotifier =================================
+	// ==================================================================================
 
 	@Override
 	@NonNull
@@ -106,12 +114,6 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	}
 
 	@Override
-	@NonNull
-	public Object getObservableMock() {
-		return observable;
-	}
-
-	@Override
 	public int numberOfRegisteredListeners() {
 		return registeredListenersCount;
 	}
@@ -135,7 +137,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	@Override
 	public @NonNull <L> Collection<L> getListeners( @NonNull Class<L> listenerClass ) {
 		return listeners.entrySet().stream()
-		                .filter( entry -> Objects.equals( entry.getKey().listenerClass, listenerClass ) )
+		                .filter( entry -> Objects.equals( entry.getKey().getListenerClass(), listenerClass ) )
 		                .flatMap( entry -> entry.getValue().stream() )
 		                .map( listenerClass::cast )
 		                .collect( Collectors.toList() );
@@ -144,13 +146,18 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	@Override
 	@NonNull
 	public <L> Collection<L> getListeners( Class<L> listenerClass, ListenerSelector... selectors ) {
-		Set<ListenerKey> requiredKeys = Arrays.stream( selectors )
-		                                      .map( s -> new ListenerKey( listenerClass, s ) )
-		                                      .collect( Collectors.toSet() );
+		Set<ListenerKey<L>> requiredKeys = Arrays.stream( selectors )
+		                                         .map( s -> new ListenerKey<>( listenerClass, s ) )
+		                                         .collect( Collectors.toSet() );
 		return listeners.entrySet().stream()
 		                .filter( entry -> requiredKeys.contains( entry.getKey() ) )
 		                .flatMap( entry -> entry.getValue().stream() )
 		                .map( listenerClass::cast )
 		                .collect( Collectors.toList() );
+	}
+
+	@Override
+	public @NonNull Collection<ListenerKey<?>> getListenersWithSelector() {
+		return Collections.unmodifiableCollection( listeners.keySet() );
 	}
 }

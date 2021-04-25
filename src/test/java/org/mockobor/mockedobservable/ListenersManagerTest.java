@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerSelector;
+import org.mockobor.mockedobservable.ListenersNotifier.ListenerKey;
 import org.mockobor.mockedobservable.MockedObservable.MyAnotherListener;
 import org.mockobor.mockedobservable.MockedObservable.MyListener;
 import org.mockobor.mockedobservable.TestedObserver.InvocationDef;
@@ -52,15 +53,24 @@ class ListenersManagerTest {
 				.containsExactlyInAnyOrder( listener_no_selector, listener_v_selector, listener_v1_v2_selector, anotherListener_v_selector );
 
 			assertThat( listenerManager.getListeners( MyListener.class ) )
-				.containsExactlyInAnyOrder( listener_no_selector, listener_v_selector, listener_v1_v2_selector );
+					.containsExactlyInAnyOrder( listener_no_selector, listener_v_selector, listener_v1_v2_selector );
 
 			assertThat( listenerManager.getListeners( MyListener.class, selector() ) ).containsExactly( listener_no_selector );
 			assertThat( listenerManager.getListeners( MyListener.class, selector( "v" ) ) ).containsExactly( listener_v_selector );
 			assertThat( listenerManager.getListeners( MyListener.class, selector( "v1", "v2" ) ) ).containsExactly( listener_v1_v2_selector );
 			assertThat( listenerManager.getListeners( MyListener.class, selector(), selector( "v1", "v2" ) ) )
-				.containsExactlyInAnyOrder( listener_no_selector, listener_v1_v2_selector );
+					.containsExactlyInAnyOrder( listener_no_selector, listener_v1_v2_selector );
 
 			assertThat( listenerManager.getListeners( MyAnotherListener.class, selector( "v" ) ) ).containsExactly( anotherListener_v_selector );
+
+			assertThat( listenerManager.getListenersWithSelector() )
+					.extracting( ListenerKey::getListenerClass, ListenerKey::getSelector )
+					.containsExactlyInAnyOrder(
+							tuple( MyListener.class, selector() ),
+							tuple( MyListener.class, selector( "v" ) ),
+							tuple( MyListener.class, selector( "v1", "v2" ) ),
+							tuple( MyAnotherListener.class, selector( "v" ) )
+					);
 		}
 
 		@Test
@@ -93,6 +103,7 @@ class ListenersManagerTest {
 			assertThat( listenerManager.numberOfRegisteredListeners() ).isZero();
 			assertThat( listenerManager.numberOfListenerDeregistrations() ).isEqualTo( 4 );
 			assertThat( listenerManager.allListenersAreUnregistered() ).isTrue();
+			assertThat( listenerManager.getListenersWithSelector() ).isEmpty();
 		}
 
 		@Test

@@ -142,7 +142,7 @@ class UsageExample_TypicalJavaListener_Test {
 		observer.close();
 
 		// check that all listeners are unregistered
-		assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are deregistered" ).isTrue();
+		Mockobor.assertThatAllListenersAreUnregistered( notifier );
 	}
 
 

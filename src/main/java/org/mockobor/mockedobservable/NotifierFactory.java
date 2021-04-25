@@ -6,6 +6,7 @@ import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenerRegistrationMethodsNotDetectedException;
 import org.mockobor.exceptions.MethodNotFoundException;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
+import org.mockobor.exceptions.UnregisteredListenersFoundException;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.ListenerDefinitionDetector;
 import org.mockobor.listener_detectors.ListenerDetectorsRegistry;
@@ -20,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableCollection;
 import static org.mockobor.utils.reflection.ReflectionUtils.findSimilarMethod;
@@ -65,6 +68,7 @@ public class NotifierFactory {
 		return createProxy( listenerManager, listenersDefinitions );
 	}
 
+
 	/**
 	 * Flag: should notifier object implements detected listeners (default: true).
 	 * <p>
@@ -74,10 +78,34 @@ public class NotifierFactory {
 	 * <p>
 	 * if false - all new {@code ListenersNotifier} returned from {@link #create} does not implement listener interfaces.
 	 * So there is only one way to fire events: {@code notifier.notifierFor( MyListener.class ).somethingChanged(...);}
+	 *
+	 * @param implementListeners true to implement detected listeners in notifier object(s); false - to not implement
 	 */
 	@SuppressWarnings( "unused" )
 	public void setImplementListeners( boolean implementListeners ) {
 		this.implementListeners = implementListeners;
+	}
+
+
+	/**
+	 * To check if all listeners by all specified notifiers are unregistered.
+	 *
+	 * @param notifiers notifiers to check
+	 * @throws UnregisteredListenersFoundException if some of the specified notifier contains unregistered listener(s)
+	 */
+	public void assertThatAllListenersAreUnregistered( @NonNull ListenersNotifier... notifiers )
+			throws UnregisteredListenersFoundException {
+		List<ListenersNotifier> notClean = Stream.of( notifiers )
+		                                         .filter( n -> !n.allListenersAreUnregistered() )
+		                                         .collect( Collectors.toList() );
+		if( !notClean.isEmpty() ) {
+			StringBuilder builder = new StringBuilder( "Found not unregistered listeners by:" );
+			notClean.forEach( n -> {
+				builder.append( "\n\t" ).append( n.getObservableMock() );
+				n.getListenersWithSelector().forEach( lk -> builder.append( "\n\t\t" ).append( lk.toString() ) );
+			} );
+			throw new UnregisteredListenersFoundException( builder.toString() );
+		}
 	}
 
 
