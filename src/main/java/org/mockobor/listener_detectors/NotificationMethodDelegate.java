@@ -15,9 +15,9 @@ import java.lang.reflect.Method;
 @Value
 public class NotificationMethodDelegate {
 
-	Method source;
+	@NonNull Method source;
 
-	NotificationMethodInvocation destination;
+	@NonNull NotificationMethodInvocation destination;
 
 
 	/**

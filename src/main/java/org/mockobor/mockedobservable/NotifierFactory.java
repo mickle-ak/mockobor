@@ -7,12 +7,11 @@ import org.mockobor.exceptions.ListenerRegistrationMethodsNotDetectedException;
 import org.mockobor.exceptions.MethodNotFoundException;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.UnregisteredListenersFoundException;
-import org.mockobor.listener_detectors.ListenerContainer;
-import org.mockobor.listener_detectors.ListenerDefinitionDetector;
-import org.mockobor.listener_detectors.ListenerDetectorsRegistry;
-import org.mockobor.listener_detectors.ListenersDefinition;
+import org.mockobor.listener_detectors.*;
 import org.mockobor.listener_detectors.NotificationMethodDelegate.NotificationMethodInvocation;
+import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocation;
 import org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler;
+import org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler.Invocation;
 import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistry;
 import org.mockobor.utils.reflection.ReflectionUtils;
 
@@ -140,10 +139,40 @@ public class NotifierFactory {
 	                                         @NonNull List<ListenersDefinition> listenersDefinitions ) {
 		Object mockedObservable = listenerManager.getObservableMock();
 		ListenerRegistrationHandler registrationHandler = mockingToolsRegistry.findHandlerForMock( mockedObservable );
-		listenersDefinitions
-				.stream()
-				.flatMap( definition -> definition.getRegistrations().stream() )
-				.forEach( delegation -> registrationHandler.registerInMock( listenerManager, delegation ) );
+		interceptPreviouslyListenerRegistrations( mockedObservable, registrationHandler, listenerManager, listenersDefinitions );
+		redirectRegistrationMethods( registrationHandler, listenerManager, listenersDefinitions );
+	}
+
+	private void interceptPreviouslyListenerRegistrations( @NonNull Object observableMock,
+	                                                       @NonNull ListenerRegistrationHandler registrationHandler,
+	                                                       @NonNull ListenerContainer listenerManager,
+	                                                       @NonNull List<ListenersDefinition> listenersDefinitions ) {
+		Collection<Invocation> previouslyInvocations = registrationHandler.getPreviouslyRegistrations( observableMock );
+
+		if( !previouslyInvocations.isEmpty() ) {
+			Map<Method, RegistrationInvocation> registrationMethods =
+					registrationDelegateStream( listenersDefinitions ).collect(
+							Collectors.toMap( RegistrationDelegate::getSource, RegistrationDelegate::getDestination ) );
+			previouslyInvocations.forEach( invocation -> {
+				Method invokedMethod = invocation.getInvokedMethod();
+				Method declaredMethod = findSimilarMethod( registrationMethods.keySet(), invokedMethod );
+				if( declaredMethod != null ) {
+					RegistrationInvocation registration = registrationMethods.get( declaredMethod ); // !=null because declaredMethod in keySet
+					registration.invoke( listenerManager, declaredMethod, invocation.getArguments() );
+				}
+			} );
+		}
+	}
+
+	private void redirectRegistrationMethods( @NonNull ListenerRegistrationHandler registrationHandler,
+	                                          @NonNull ListenerContainer listenerManager,
+	                                          @NonNull List<ListenersDefinition> listenersDefinitions ) {
+		registrationDelegateStream( listenersDefinitions ).forEach(
+				delegation -> registrationHandler.registerInMock( listenerManager, delegation ) );
+	}
+
+	private Stream<RegistrationDelegate> registrationDelegateStream( @NonNull List<ListenersDefinition> listenersDefinitions ) {
+		return listenersDefinitions.stream().flatMap( definition -> definition.getRegistrations().stream() );
 	}
 
 

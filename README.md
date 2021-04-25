@@ -41,8 +41,8 @@ Mockobor propagates no dependencies.
 To use Mockobor in your unit tests, you need to:
 - start your test with _java 8+_
 - use at least one of follow mocking tools in your tests:
-  - _Mockito 2.1.0+_ (Mockobor uses 3.8.0)
-  - _EasyMock 3.4+_ (Mockobor uses 4.3)
+  - _Mockito 2.20.1+_
+  - _EasyMock 3.4+_
 
 
 ## Usage
@@ -357,8 +357,12 @@ follow methods:
   + implement some methods of your additional interfaces (better use default implementations in interface itself)
   + override some methods of `ListenersNotifier` (do you want it indeed?)
 
-For more details see javadoc
-and [Custom listener detector example](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java)
+For more details see
+javadoc, [Custom listener detector example](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java)
+and [PropertyChangeDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/PropertyChangeDetector.java)
+or
+[TypicalJavaListenerDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/TypicalJavaListenerDetector.java)
+as implementation examples.
 
 
 ### Another mocking tool
@@ -373,38 +377,41 @@ tool, it is possible to add support for them:
 - register it using `MockoborContext.registerListenerRegistrationHandler`
 
 For more details see
-javadoc, [MockitoListenerRegistrationHandler.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/MockitoListenerRegistrationHandler.java)
-and [EasymockListenerRegistrationHandler.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/EasymockListenerRegistrationHandler.java)
+javadoc, [ListenerRegistrationHandler .java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/ListenerRegistrationHandler.java)
+and [MockitoListenerRegistrationHandler.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/MockitoListenerRegistrationHandler.java)
+or [EasymockListenerRegistrationHandler.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/EasymockListenerRegistrationHandler.java)
+as implementation examples.
 
 
 
 ## Restrictions
 
-- to simulate sending of events from mocked collaborator to tested object, the notifier object must be created (by
-  calling `Mocobor.createNotifierFor`) before tested object registers its listener by mocked collaborator! It is
-  necessary, because registration methods must be redirected to notifier before they will be called from tested object.
-  As consequence, it is not possible to inject mocks using `@InjectMocks` annotation. In future versions it can be
-  changed.
-
 - only interfaces accepted as listeners - you can't use methods like `addMyListener(MyListener)`, where `MyListener` has
-  a class type - such methods will be not recognised as registration methods. `MyListener` can be only an interface.
+  a class type - such methods will be not recognised as registration methods. `MyListener` can be an interface only.
   That is in fact standard practice in java.
 
 - registration of array of listeners (as vararg too) is not supported - methods like
   `addMyListener(MyListener[] listeners)` or `addMyListener(MyListener... listeners)` will be not recognised as
-  registration methods. Is it necessary at all?
+  registration methods.
 
 - It can have troubles by compiling with java 16+, because lombok actually has a
   [problem with Java 16](https://github.com/rzwitserloot/lombok/issues/2681). Compiled with java 8+ it runs with java 16
   without problems.
 
-- If you mock collaborator with _EasyMock_ and its listener registration methods have _varargs_
-  (like `addListener(MyListener l, Object...selector)`), then it can be problematic - during recording mode Mockobor
-  can't forecast how many arguments will be used by real invocation of such method, therefore recorded and real
-  invocations don't have to match (see [here](https://github.com/easymock/easymock/issues/130)). Probably I only need to
-  write custom argument matcher for varargs, but I don't know, is it possible at all, and if I'll do it sometimes.
-  Patches (here for `EasymockListenerRegistrationHandler`) are welcome! ;-).
 
+### _EasyMock_ restrictions
+
+If you mock a collaborator object using _EasyMock_:
+
+- a notifier object must be created (by calling `Mocobor.createNotifierFor`) before a tested object registers its
+  listener by the mocked collaborator! It is necessary, because registration methods must be redirected to the notifier
+  before they will be called from the tested object. As consequence, it is not possible to inject mocks to the observer
+  test object using `@TestSubject` annotation.
+
+- If listener registration methods of the mocked collaborator object have _varargs_ (
+  like `addListener(MyListener l, Object...selector)`), then it can be problematic - during recording mode Mockobor
+  can't forecast how many arguments will be used by real invocation of such method, therefore recorded and real
+  invocations don't have to match (see [here](https://github.com/easymock/easymock/issues/130)).
 
 
 ## Installation
@@ -415,7 +422,7 @@ To use the Mockobor in your unit tests, use this dependency entry:
 
 ### maven
 
-in your `pom.xml`:
+in `pom.xml`:
 ```xml 
 <dependency>
   <groupId>io.github.mickle-ak.mockobor</groupId>
@@ -427,8 +434,8 @@ in your `pom.xml`:
 
 ### gradle
 
-in your `build.gradle.kts`:
-```
+in `build.gradle.kts`:
+```kotlin
 testImplementation( "io.github.mickle-ak.mockobor:mockobor:1.0" )
 ```
 
@@ -436,6 +443,6 @@ testImplementation( "io.github.mickle-ak.mockobor:mockobor:1.0" )
 
 - **1.0** (??.0?.2021)
   - simulation of sending of events from mocked collaborator to tested object
+  - take over listeners registered before notifier object created (Mockito only)
   - checking of completely deregistration of listeners
   - support for Mockito and EasyMock
-

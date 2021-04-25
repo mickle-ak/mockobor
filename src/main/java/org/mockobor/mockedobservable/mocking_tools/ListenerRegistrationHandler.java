@@ -1,8 +1,13 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
 import lombok.NonNull;
+import lombok.Value;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.RegistrationDelegate;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
 
 
 /**
@@ -30,4 +35,28 @@ public interface ListenerRegistrationHandler {
 	 * @param registration definition of redirection as delegation from source method to destination method
 	 */
 	void registerInMock( @NonNull ListenerContainer listeners, @NonNull RegistrationDelegate registration );
+
+
+	/**
+	 * To get of list of previously invoked (registration) methods.
+	 * <p>
+	 * Order is important and must be exactly the same as real invocation order.
+	 * <p>
+	 * if mocking tool does not support reading of previously invocations, then it can return empty list.
+	 *
+	 * @param mockedObservable object to inspect
+	 * @return list of previously invocations
+	 */
+	default Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Describes invocation of one method.
+	 */
+	@Value
+	class Invocation {
+		@NonNull Method   invokedMethod;
+		@NonNull Object[] arguments;
+	}
 }

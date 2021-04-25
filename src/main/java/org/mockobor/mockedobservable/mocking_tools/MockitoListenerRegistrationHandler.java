@@ -13,11 +13,13 @@ import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocati
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.lenient;
 
 
 /**
@@ -30,13 +32,17 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 		return MockUtil.isMock( mockedObservable );
 	}
 
+	// ==================================================================================
+	// =============================== registerInMock ===================================
+	// ==================================================================================
+
 	@Override
 	public void registerInMock( @NonNull ListenerContainer listeners, @NonNull RegistrationDelegate registration ) {
 		Object mockedObject = listeners.getObservableMock();
 		if( !MockUtil.isMock( mockedObject ) ) throw new MockoborImplementationError( "observable (%s) must be a mockito mock", mockedObject );
 
 		try {
-			Object stabbingObject = doAnswer( createAnswer( listeners, registration.getDestination() ) ).when( mockedObject );
+			Object stabbingObject = lenient().doAnswer( createAnswer( listeners, registration.getDestination() ) ).when( mockedObject );
 			Method sourceMethod = registration.getSource();
 			sourceMethod.invoke( stabbingObject, createArgumentMatchers( sourceMethod ) );
 		}
@@ -73,5 +79,17 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 		ANY_FOR_PRIMITIVE_TYPES.put( double.class, ArgumentMatchers::anyDouble );
 		ANY_FOR_PRIMITIVE_TYPES.put( char.class, ArgumentMatchers::anyChar );
 		ANY_FOR_PRIMITIVE_TYPES.put( boolean.class, ArgumentMatchers::anyBoolean );
+	}
+
+	// ==================================================================================
+	// ========================= getPreviouslyRegistrations =============================
+	// ==================================================================================
+
+	@Override
+	public Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
+		return Mockito.mockingDetails( mockedObservable )
+		              .getInvocations().stream()
+		              .map( i -> new Invocation( i.getMethod(), i.getArguments() ) )
+		              .collect( Collectors.toList() );
 	}
 }

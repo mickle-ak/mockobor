@@ -12,9 +12,9 @@ import java.lang.reflect.Method;
 @Value
 public class RegistrationDelegate {
 
-	Method source;
+	@NonNull Method source;
 
-	RegistrationInvocation destination;
+	@NonNull RegistrationInvocation destination;
 
 
 	/**
