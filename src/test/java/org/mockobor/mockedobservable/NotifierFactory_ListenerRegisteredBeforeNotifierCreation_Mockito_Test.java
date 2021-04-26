@@ -69,15 +69,18 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 	// ==================================== tests =======================================
 	// ==================================================================================
 
+	private final NotifierSettings defaultSettings = NotifierSettingsImpl.createDefaultSettings();
+
 	private final NotifierFactory factory = new NotifierFactory( new ListenerDetectorsRegistryImpl(),
 	                                                             new MockingToolsRegistryImpl() );
 
 	private final MockedObservable mockedObservable = Mockito.mock( MockedObservable.class );
 
+
 	@Test
 	void add_before_create_notifier() {
 		BaseTestObject createdBeforeNotifier = new OnlyAddTestObject( mockedObservable );
-		ListenersNotifier notifier = factory.create( mockedObservable );
+		ListenersNotifier notifier = factory.create( mockedObservable, defaultSettings );
 		BaseTestObject createdAfterNotifier = new OnlyAddTestObject( mockedObservable );
 
 		// should send notification to both test objects
@@ -93,7 +96,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 	@Test
 	void removeThenAdd_before_create_notifier() {
 		BaseTestObject createdBeforeNotifier = new RemoveThenAddTestObject( mockedObservable );
-		ListenersNotifier notifier = factory.create( mockedObservable );
+		ListenersNotifier notifier = factory.create( mockedObservable, defaultSettings );
 		BaseTestObject createdAfterNotifier = new RemoveThenAddTestObject( mockedObservable );
 
 		// should send notification to both test objects
@@ -110,7 +113,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 	@Test
 	void addThenRemove_before_create_notifier() {
 		BaseTestObject createdBeforeNotifier = new AddThenRemoveTestObject( mockedObservable );
-		ListenersNotifier notifier = factory.create( mockedObservable );
+		ListenersNotifier notifier = factory.create( mockedObservable, defaultSettings );
 		BaseTestObject createdAfterNotifier = new AddThenRemoveTestObject( mockedObservable );
 
 		assertThatThrownBy( () -> notifier.notifierFor( MyListener.class ) )
@@ -121,7 +124,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 	@Test
 	void varargRegistrationMethods() {
 		BaseTestObject createdBeforeNotifier = new RemoveThenAddVarargTestObject( mockedObservable );
-		ListenersNotifier notifier = factory.create( mockedObservable );
+		ListenersNotifier notifier = factory.create( mockedObservable, defaultSettings );
 		BaseTestObject createdAfterNotifier = new RemoveThenAddVarargTestObject( mockedObservable );
 
 		// should send notification to both test objects

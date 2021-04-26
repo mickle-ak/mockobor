@@ -104,12 +104,46 @@ registration methods and allows adding selectors by sending of notifications:
 For more detail see [Examples / typical java style listeners](#typical-java-style-listeners)
 
 
+#### listener notifier settings
+
+`NotifierSettings` can be used to control follow aspects of creation and working of listener notifier :
+
+- strict or lenient checking if list of listeners selected to send notification contains any listener
+  + strick (default) - throw `ListenersNotFoundException` if no listener selected to send notification
+  + lenient - do nothing in this case
+- should a new listener notifier implements interfaces of detected listeners
+  + true (default) - all new `ListenersNotifier` returned from `Mockobor.createNotifierFor` implement all detected
+    listener interfaces. So events can be fired using both ways:
+    * `((MyListener) notifier).somethingChanged(...)` or
+    * `notifier.notifierFor( MyListener.class ).somethingChanged(...)`
+  + false - all new `ListenersNotifier` **does not** implement listener interfaces. So there is only one way to fire
+    events: `notifier.notifierFor( MyListener.class ).somethingChanged(...);`
+
+`NotifierSettings` can be changed globally - for all next created `ListenersNotifier` - using settings stored statically
+in `MockoborContext`:
+```java
+  MockoborContext.updateNotifierSettings()
+        .ignoreListenersInterfaces()
+        .lenientListenerListCheck();
+```
+or for one creation only:
+```java
+  ListenersNotifier notifier=Mockobor.createNotifierFor(
+        mockedObservable,
+        Mockobor.notifierSettings().ignoreListenersInterfaces().lenientListenerListCheck();
+```
+For more detail see [Examples / NotifierSettings](#notifiersettings)
+
+
+
 ### collect and verify events from test object
 (not implemented jet, probably in version 1.1)
 
 
+
 ### synchrone start of asynchrone subprocesses
 (not implemented jet, probably in version 1.2)
+
 
 
 ## Examples
@@ -330,6 +364,12 @@ See
 also [UsageExample_allListenersAreUnregistered_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_allListenersAreUnregistered_Test.java)
 
 
+### NotifierSettings
+
+See [UsageExample_NotifierSettings_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_NotifierSettings_Test.java)
+
+
+
 ## Extension
 
 ### Custom listener detector
@@ -445,4 +485,5 @@ testImplementation( "io.github.mickle-ak.mockobor:mockobor:1.0" )
   - simulation of sending of events from mocked collaborator to tested object
   - take over listeners registered before notifier object created (Mockito only)
   - checking of completely deregistration of listeners
+  - listener notifier settings
   - support for Mockito and EasyMock

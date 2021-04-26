@@ -31,12 +31,6 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	@NonNull
 	private final Object observable;
 
-	/**
-	 * Flag: strict check of listener list in {@link #notifierFor}.<ul>
-	 * <li>true - exception if no listener found</li>
-	 * <li>false - do nothing if no listener found</li>
-	 * </ul>
-	 */
 	private boolean strictCheckListenerList = true;
 
 	private int registeredListenersCount;

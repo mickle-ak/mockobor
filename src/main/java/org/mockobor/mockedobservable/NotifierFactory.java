@@ -47,42 +47,23 @@ public class NotifierFactory {
 	@NonNull
 	private final MockingToolsRegistry mockingToolsRegistry;
 
-	private boolean implementListeners = true;
-
-
 	/**
 	 * To create notifier object for the specified mocked observable.
 	 *
 	 * @param mockedObservable mock of observable object
+	 * @param settings         settings used to create a new listener notifier
 	 * @return notifier used to simulate notification calls from the specified mocked observable
 	 * @throws ListenerRegistrationMethodsNotDetectedException if neither of listener definition detectors can detect listener registration methods
 	 * @throws MockingToolNotDetectedException                 if the specified object not a mock or mocking tool used to mock it not supported
 	 */
 	@NonNull
-	public ListenersNotifier create( @NonNull Object mockedObservable )
+	public ListenersNotifier create( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
 		List<ListenersDefinition> listenersDefinitions = detectListenersDefinitions( mockedObservable );
 		ListenersManager listenerManager = new ListenersManager( mockedObservable );
+		listenerManager.setStrictCheckListenerList( settings.getStrictCheckListenerList() );
 		registerInMockedObservable( listenerManager, listenersDefinitions );
-		return createProxy( listenerManager, listenersDefinitions );
-	}
-
-
-	/**
-	 * Flag: should notifier object implements detected listeners (default: true).
-	 * <p>
-	 * If true - all new {@code ListenersNotifier} returned from {@link #create} implement all detected listener interfaces.
-	 * So events can be fired using both ways: {@code ((MyListener) notifier).somethingChanged(...);} or
-	 * {@code notifier.notifierFor( MyListener.class ).somethingChanged(...);}.
-	 * <p>
-	 * if false - all new {@code ListenersNotifier} returned from {@link #create} does not implement listener interfaces.
-	 * So there is only one way to fire events: {@code notifier.notifierFor( MyListener.class ).somethingChanged(...);}
-	 *
-	 * @param implementListeners true to implement detected listeners in notifier object(s); false - to not implement
-	 */
-	@SuppressWarnings( "unused" )
-	public void setImplementListeners( boolean implementListeners ) {
-		this.implementListeners = implementListeners;
+		return createProxy( listenerManager, listenersDefinitions, settings );
 	}
 
 
@@ -181,10 +162,11 @@ public class NotifierFactory {
 	// ==================================================================================
 
 	private ListenersNotifier createProxy( @NonNull ListenersNotifier listenersNotifier,
-	                                       @NonNull List<ListenersDefinition> listenersDefinitions ) {
+	                                       @NonNull List<ListenersDefinition> listenersDefinitions,
+	                                       @NonNull NotifierSettings settings ) {
 		// collect interfaces to implement
 		Set<Class<?>> additionalInterfaces = collectAdditionalInterfaces( listenersDefinitions );
-		Set<Class<?>> detectedListenerToImplement = collectDetectedListenerToImplement( listenersDefinitions );
+		Set<Class<?>> detectedListenerToImplement = collectDetectedListenerToImplement( listenersDefinitions, settings );
 		Set<Class<?>> interfacesToImplement = new LinkedHashSet<>( additionalInterfaces );
 		interfacesToImplement.add( ListenersNotifier.class ); // ListenersNotifier must be always implemented
 		interfacesToImplement.addAll( detectedListenerToImplement );
@@ -266,9 +248,10 @@ public class NotifierFactory {
 		return interfaces;
 	}
 
-	private @NonNull Set<Class<?>> collectDetectedListenerToImplement( @NonNull List<ListenersDefinition> listenersDefinitions ) {
+	private @NonNull Set<Class<?>> collectDetectedListenerToImplement( @NonNull List<ListenersDefinition> listenersDefinitions,
+	                                                                   @NonNull NotifierSettings settings ) {
 		Set<Class<?>> interfaces = new LinkedHashSet<>();
-		if( implementListeners ) {
+		if( settings.shouldNotifierImplementListenersInterfaces() ) {
 			listenersDefinitions.forEach( ld -> interfaces.addAll( ld.getDetectedListeners() ) );
 		}
 		return interfaces;

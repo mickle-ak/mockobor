@@ -16,14 +16,13 @@ import static org.mockobor.listener_detectors.ListenerSelector.selector;
 
 /**
  * Base interface for observable-specific notifiers returned by {@link Mockobor#createNotifierFor}.
- * <p>
- * Usually it does not needed to use methods of this interface (probably except {@link #allListenersAreUnregistered()}).
- * <p>
- * In same cases (if you listeners have methods with same signature or you need selectors (see {@link ListenerSelector})
- * to register/find your listeners) your can use:<ul>
+ * <p></p>
+ * Some useful methods:<ul>
  * <li>{@link #notifierFor(Class)}</li>
  * <li>{@link #notifierFor(Object, Class)}</li>
  * <li>{@link #notifierFor(Class, ListenerSelector...)}</li>
+ * <li>{@link #allListenersAreUnregistered()}</li>
+ * <li>{@link #setStrictCheckListenerList}</li>
  * </ul>
  */
 @SuppressWarnings( "unused" )
@@ -176,7 +175,7 @@ public interface ListenersNotifier {
 
 
 	/**
-	 * Set flag: strict check of listener list by fire notification.<ul>
+	 * Set flag: strict (true) or lenient (false) checking if list of listeners selected to send notification contains any listener.<ul>
 	 * <li>true - exception if no listener found in {@link #notifierFor}</li>
 	 * <li>false - do nothing if no listener found in {@link #notifierFor}</li>
 	 * </ul>

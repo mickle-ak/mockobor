@@ -6,6 +6,9 @@ import lombok.NonNull;
 import org.mockobor.listener_detectors.ListenerDefinitionDetector;
 import org.mockobor.listener_detectors.ListenerDetectorsRegistry;
 import org.mockobor.listener_detectors.ListenerDetectorsRegistryImpl;
+import org.mockobor.mockedobservable.NotifierSettings;
+import org.mockobor.mockedobservable.NotifierSettingsImpl;
+import org.mockobor.mockedobservable.NotifierSettingsUpdater;
 import org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler;
 import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistry;
 import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistryImpl;
@@ -33,6 +36,9 @@ public class MockoborContext {
 
 	/** Mocking tool registry used in static context. */
 	static final MockingToolsRegistry MOCKING_TOOLS_REGISTRY = new MockingToolsRegistryImpl();
+
+	/** Settings to create a new notifier used in static context. */
+	static NotifierSettingsImpl notifierSettingsImpl = NotifierSettingsImpl.createDefaultSettings();
 
 
 	/**
@@ -63,8 +69,18 @@ public class MockoborContext {
 	 * @param registrationHandler implementation of {@link ListenerRegistrationHandler} for your mocking tool.
 	 * @see #reset()
 	 */
-	void registerListenerRegistrationHandler( @NonNull ListenerRegistrationHandler registrationHandler ) {
+	public static void registerListenerRegistrationHandler( @NonNull ListenerRegistrationHandler registrationHandler ) {
 		MOCKING_TOOLS_REGISTRY.registerListenerRegistrationHandler( registrationHandler );
+	}
+
+
+	/**
+	 * To get {@link NotifierSettingsUpdater} for update statically store {@link NotifierSettings}.
+	 *
+	 * @return updater for settings used to create a new listener notifiers.
+	 */
+	public static NotifierSettingsUpdater updateNotifierSettings() {
+		return notifierSettingsImpl;
 	}
 
 
@@ -72,12 +88,13 @@ public class MockoborContext {
 	 * To remove all registered custom listener definition detectors.
 	 * <p><br>
 	 * Usually you don't need to call it.
-	 * Only if you want to reset changes made by registration of custom detectors or mocking tools.
+	 * Only if you want to reset changes made by settings or registration of custom detectors or mocking tools.
 	 *
 	 * @see ListenerDetectorsRegistry#reset()
 	 */
 	public static void reset() {
 		LISTENER_DETECTORS_REGISTRY.reset();
 		MOCKING_TOOLS_REGISTRY.reset();
+		notifierSettingsImpl = NotifierSettingsImpl.createDefaultSettings();
 	}
 }

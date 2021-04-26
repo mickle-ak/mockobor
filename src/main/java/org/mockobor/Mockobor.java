@@ -9,10 +9,7 @@ import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.UnregisteredListenersFoundException;
 import org.mockobor.listener_detectors.ListenerDefinitionDetector;
 import org.mockobor.listener_detectors.ListenerSelector;
-import org.mockobor.mockedobservable.ListenersNotifier;
-import org.mockobor.mockedobservable.NotifierFactory;
-import org.mockobor.mockedobservable.ObservableNotifier;
-import org.mockobor.mockedobservable.PropertyChangeNotifier;
+import org.mockobor.mockedobservable.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -145,6 +142,10 @@ public final class Mockobor {
 	private static final NotifierFactory NOTIFIER_FACTORY = new NotifierFactory( MockoborContext.LISTENER_DETECTORS_REGISTRY,
 	                                                                             MockoborContext.MOCKING_TOOLS_REGISTRY );
 
+	// ==================================================================================
+	// ============================== Listener notifier =================================
+	// ==================================================================================
+
 	/**
 	 * To create notifier for the specified mocked observable.
 	 * <p>
@@ -169,19 +170,63 @@ public final class Mockobor {
 	 * <li>another kind of observer provided by custom {@link ListenerDefinitionDetector}s<br>
 	 * (see {@link MockoborContext#registerListenerDefinitionDetector(ListenerDefinitionDetector)})
 	 * </li></ul>
+	 * <p></p>
+	 * It uses globally settings statically stored in {@link MockoborContext} -
 	 * <p>
-	 * See javadoc of {@link Mockobor} for usage examples.
+	 * Invocation of this methods is equal to call {@code Mockobor.createNotifierFor(mockedObservable, Mockobor.notifierSettings())}.
+	 * <p></p>
+	 * See {@link Mockobor} for usage examples.
 	 *
 	 * @param mockedObservable mock of observable object
 	 * @return notifier used to simulate notification calls from the specified mocked observable
 	 * @throws ListenerRegistrationMethodsNotDetectedException if neither of listener definition detectors can detect listener registration methods
 	 * @throws MockingToolNotDetectedException                 if the specified object not a mock or mocking tool used to mock it not supported
+	 * @see Mockobor
 	 * @see MockoborContext
+	 * @see #createNotifierFor(Object, NotifierSettings)
 	 */
 	@NonNull
 	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
-		return NOTIFIER_FACTORY.create( mockedObservable );
+		return createNotifierFor( mockedObservable, notifierSettings() );
+	}
+
+	/**
+	 * To create notifier for the specified mocked observable with the specified settings.
+	 * <p>
+	 * It searchs for registration (add/remove listener) methods for all possible observer/listeners,
+	 * detect used mocking tool,
+	 * redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and
+	 * creates dynamic proxy as notifier object.
+	 * <p></p>
+	 * Typical usage:
+	 * <pre class="code"><code class="java">
+	 * ObservableObject mockedObservableObject = mock( ObservableObject.class )
+	 * ListenerNotifier notifier = Mockobor.createNotifierFor( mockedObservableObject, Mockobor.notifierSettings().lenientListenerListCheck() );
+	 * </code></pre>
+	 * <p>
+	 * See {@link Mockobor} and {@link #createNotifierFor(Object)} for usage examples.
+	 *
+	 * @param mockedObservable mock of observable object
+	 * @param settings         settings used to create a new listener notifier
+	 * @return notifier used to simulate notification calls from the specified mocked observable
+	 * @throws ListenerRegistrationMethodsNotDetectedException if neither of listener definition detectors can detect listener registration methods
+	 * @throws MockingToolNotDetectedException                 if the specified object not a mock or mocking tool used to mock it not supported
+	 * @see Mockobor
+	 * @see MockoborContext
+	 * @see #createNotifierFor(Object)
+	 */
+	@NonNull
+	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable, NotifierSettings settings )
+			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
+		return NOTIFIER_FACTORY.create( mockedObservable, settings );
+	}
+
+
+	/** @return a new copy of {@link NotifierSettings} created on base of settings statically stored in {@link MockoborContext}. */
+	@NonNull
+	public static NotifierSettingsUpdater notifierSettings() {
+		return MockoborContext.notifierSettingsImpl.toBuilder().build();
 	}
 
 

@@ -36,6 +36,8 @@ class NotifierFactory_Exceptions_Test {
 	// ==================================== tests =======================================
 	// ==================================================================================
 
+	private final NotifierSettings defaultSettings = NotifierSettingsImpl.createDefaultSettings();
+
 	private final NotifierFactory factory = new NotifierFactory( new ListenerDetectorsRegistryImpl(),
 	                                                             new MockingToolsRegistryImpl() );
 
@@ -43,32 +45,32 @@ class NotifierFactory_Exceptions_Test {
 	@Test
 	void no_listener_registration_methods_detected_Mockito() {
 
-		assertThatThrownBy( () -> factory.create( Mockito.mock( WithoutAddListener.class ) ) )
+		assertThatThrownBy( () -> factory.create( Mockito.mock( WithoutAddListener.class ), defaultSettings ) )
 				.isInstanceOf( ListenerRegistrationMethodsNotDetectedException.class );
 
-		assertThatThrownBy( () -> factory.create( Mockito.mock( OnlyRemoveMethod.class ) ) )
+		assertThatThrownBy( () -> factory.create( Mockito.mock( OnlyRemoveMethod.class ), defaultSettings ) )
 				.isInstanceOf( ListenerRegistrationMethodsNotDetectedException.class );
 
-		assertThatNoException().isThrownBy( () -> factory.create( Mockito.mock( OnlyAddMethod.class ) ) );
+		assertThatNoException().isThrownBy( () -> factory.create( Mockito.mock( OnlyAddMethod.class ), defaultSettings ) );
 	}
 
 	@SuppressWarnings( "java:S5778" )
 	@Test
 	void no_listener_registration_methods_detected_EasyMock() {
 
-		assertThatThrownBy( () -> factory.create( EasyMock.mock( WithoutAddListener.class ) ) )
+		assertThatThrownBy( () -> factory.create( EasyMock.mock( WithoutAddListener.class ), defaultSettings ) )
 				.isInstanceOf( ListenerRegistrationMethodsNotDetectedException.class );
 
-		assertThatThrownBy( () -> factory.create( EasyMock.mock( OnlyRemoveMethod.class ) ) )
+		assertThatThrownBy( () -> factory.create( EasyMock.mock( OnlyRemoveMethod.class ), defaultSettings ) )
 				.isInstanceOf( ListenerRegistrationMethodsNotDetectedException.class );
 
-		assertThatNoException().isThrownBy( () -> factory.create( EasyMock.mock( OnlyAddMethod.class ) ) );
+		assertThatNoException().isThrownBy( () -> factory.create( EasyMock.mock( OnlyAddMethod.class ), defaultSettings ) );
 	}
 
 	@SuppressWarnings( "java:S5778" )
 	@Test
 	void no_mock() {
-		assertThatThrownBy( () -> factory.create( new OnlyAddMethodsObject() ) )
+		assertThatThrownBy( () -> factory.create( new OnlyAddMethodsObject(), defaultSettings ) )
 				.isInstanceOf( MockingToolNotDetectedException.class );
 	}
 }
