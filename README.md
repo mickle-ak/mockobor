@@ -50,7 +50,7 @@ To use Mockobor in your unit tests, you need to:
 ### listen for mocked observable object + check completely deregistration of listeners
 
 To simulate sending of events (via java listeners) from mocked collaborator to tested object, Mockobor creates for
-mocked observable object(s) a special notifier object:
+mocked observable object a special notifier object:
 ```java
 ListenersNotifier notifier=Mockobor.createNotifierFor(mockedObservableObject)
 ```
@@ -59,10 +59,10 @@ of `Mockobor.createNotifierFor`._
 
 This notifier object implements follow interfaces (depended on methods found in the specified mocked observable object):
 - `ListenerNotifer` - always
-- `XxxListener` (typical java style listener) if found methods like `addXxxListener(XxxListener)`
-- `PropertyChangeNotifier` + `PropertyChangeListener` if found methods like `addPropertyChangeListener
-  (PropertyChangeListener)`
-- `ObservableNotifier` + `Observer` if found methods like `addObserver(Observer)`
+- `XxxListener` (typical java style listener) if methods like `addXxxListener(XxxListener)` are found
+- `PropertyChangeNotifier` + `PropertyChangeListener` if methods like `addPropertyChangeListener
+  (PropertyChangeListener)` are found
+- `ObservableNotifier` + `Observer` if methods like `addObserver(Observer)` are found
 
 This notifier object can be used to
 - send events to test object:
@@ -91,14 +91,22 @@ registration methods and allows adding selectors by sending of notifications:
         observable.addMyListener("q3",listener2); // "q3" is selector here
         observable.addMyListener(listener3); // here is selector empty
         ...
-        // somewhere in tests send notification only to qualified listener in object under test
+        ...
+        // somewhere in tests send notification to listeners in object under test
+
+        // to listener registered with selector ("q1" "q2):
         notifier.notiferFor(listner1.class,selector("q1","q2")).listener_method();
 
-        // same as notifier.notifierFor(listener2.class,selector("q3")).listener_method()
+        // to listener registered with selector "q3":
         notifier.notiferFor("q3",listner2.class).listener_method();
+        notifier.notifierFor(listener2.class,selector("q3")).listener_method(); // the same as above
 
-        // same as notifier.notifierFor(listener3.class,selector()).listener_method()
+        // to listener registered with empty selector: 
         notifier.notiferFor(listner3.class).listener_method();
+        notifier.notifierFor(listener3.class,selector()).listener_method();  // the same as above
+
+        // to listeners registered with one of the specified selectors (in this case - to all three listeners):
+        notifier.notiferFor(listner1.class,selector("q1","q2"),selector("q3"),selector()).listener_method();
         ...
 ```
 For more detail see [Examples / typical java style listeners](#typical-java-style-listeners)
@@ -259,9 +267,9 @@ class TestedObserver_Test {
     int answer2 = notifier.notifierFor( MyListener.class ).somethingChanged2( newValue2 );
     notifier.notifierFor( MyAnotherListener.class ).somethingOtherChanged( newValue3 );
 
-    // if you need to select listeners registered with certain qualifier 
+    // if you have listeners registered with certain non-empty qualifier 
     // (see TestedObserver's constructor: mockedObservable.addMyListener( "sel", myListener )),
-    // then you can do it with "selector":
+    // then you can send events to such listeners:
     notifier.notifierFor( "sel", MyListener.class ).somethingChanged1( newValue );
     notifier.notifierFor( MyListener.class, selector( "sel" ) ).somethingChanged1( newValue ); // exactly as above
 
@@ -300,8 +308,8 @@ class TestedObserver_Test {
     notifier.notifierFor( PropertyChangeListener.class )
             .propertyChange( new PropertyChangeEvent( mockedObservable, "p4", "o4", "n4" ) );
 
+    // exactly the same as propertyChangeNotifier.firePropertyChange( 'prop', 'o5', 'n5')
     notifier.notifierFor( PropertyChangeListener.class, selector(), selector( "prop" ) )
-            .as( "exactly the same as propertyChangeNotifier.firePropertyChange( 'prop', 'o5', 'n5')" )
             .propertyChange( new PropertyChangeEvent( mockedObservable, "prop", "o5", "n5" ) );
 
     ( (PropertyChangeListener) notifier )
@@ -399,9 +407,9 @@ follow methods:
 
 For more details see
 javadoc, [Custom listener detector example](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java)
-and [PropertyChangeDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/PropertyChangeDetector.java)
+and [PropertyChangeDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/listener_detectors/PropertyChangeDetector.java)
 or
-[TypicalJavaListenerDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/TypicalJavaListenerDetector.java)
+[TypicalJavaListenerDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/listener_detectors/TypicalJavaListenerDetector.java)
 as implementation examples.
 
 
@@ -434,10 +442,6 @@ as implementation examples.
   `addMyListener(MyListener[] listeners)` or `addMyListener(MyListener... listeners)` will be not recognised as
   registration methods.
 
-- It can have troubles by compiling with java 16+, because lombok actually has a
-  [problem with Java 16](https://github.com/rzwitserloot/lombok/issues/2681). Compiled with java 8+ it runs with java 16
-  without problems.
-
 
 ### _EasyMock_ restrictions
 
@@ -455,8 +459,6 @@ If you mock a collaborator object using _EasyMock_:
 
 
 ## Installation
-
-!!! **Not deployed yet** !!! Probably in a few days.
 
 To use the Mockobor in your unit tests, use this dependency entry:
 
@@ -481,7 +483,7 @@ testImplementation( "io.github.mickle-ak.mockobor:mockobor:1.0" )
 
 ## Changelog
 
-- **1.0** (??.0?.2021)
+- **1.0** (27.04.2021)
   - simulation of sending of events from mocked collaborator to tested object
   - take over listeners registered before notifier object created (Mockito only)
   - checking of completely deregistration of listeners

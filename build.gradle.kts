@@ -1,25 +1,37 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import java.util.*
 
-plugins {
-    `java-library`
-    `maven-publish`
-    jacoco
-}
 
 group = "io.github.mickle-ak.mockobor"
-version = "1.0-SNAPSHOT"
+version = "1.0"
+description = "Mocked Observable Observation - library to simplifying some aspects of unit testing with java."
 
+
+plugins {
+    // build
+    `java-library`
+    jacoco
+
+    // publishing
+    `maven-publish`
+    signing
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+// ==================================================================================
+// ==================================== build =======================================
+// ==================================================================================
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
     withJavadocJar()
     withSourcesJar()
-}
-
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -56,7 +68,7 @@ tasks.test {
         showExceptions = true
         showCauses = true
         showStackTraces = true
-        exceptionFormat = FULL
+        exceptionFormat = TestExceptionFormat.FULL
     }
     enableAssertions = true
     failFast = false
@@ -91,10 +103,64 @@ tasks.jacocoTestReport {
 }
 
 
+// ==================================================================================
+// ================================== publishing ====================================
+// ==================================================================================
+
+nexusPublishing {
+    repositories {
+        sonatype {  //only for users registered in Sonatype after 24 Feb 2021
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username.set(project.findProperty("sonatypeUsername")?.toString())
+            password.set(base64Decode("sonatypePassword64"))
+        }
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mockobor") {
             from(components["java"])
+            pom {
+
+                name.set("${project.group}:${project.name}")
+                description.set(project.description)
+                url.set("https://github.com/mickle-ak/mockobor")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("mickle-ak")
+                        name.set("Mikhail Kiselev")
+                        email.set("mickle.ak@gmail.com")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/mickle-ak/mockobor.git")
+                    developerConnection.set("scm:git:ssh://github.com:mickle-ak/mockobor.git")
+                    url.set("http://github.com/mickle-ak/mockobor")
+                }
+            }
         }
+    }
+}
+
+signing {
+    // use
+    useInMemoryPgpKeys(base64Decode("signingKey64"), base64Decode("signingPassword64"))
+    sign(publishing.publications)
+}
+
+fun base64Decode(prop: String): String? {
+    return project.findProperty(prop)?.let {
+        String(Base64.getDecoder().decode(it.toString())).trim()
     }
 }
