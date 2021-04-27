@@ -1,16 +1,18 @@
 import org.gradle.api.JavaVersion.VERSION_1_8
 
+
+group = "io.github.mickle-ak.mockobor"
+version = "1.0"
+
 plugins {
     java
 }
-
-group = "io.github.mickle-ak.mockobor"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
+
 
 java {
     sourceCompatibility = VERSION_1_8
@@ -32,15 +34,34 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertjVersion")
 }
 
-tasks.getByName<Test>("test") {
+tasks.test {
     useJUnitPlatform()
+    systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
+
     testLogging {
+        events("skipped", "failed")
         showStandardStreams = true
         showExceptions = true
-        events("passed", "skipped", "failed")
+        showCauses = true
+        showStackTraces = true
     }
     enableAssertions = true
     failFast = false
 
-    systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
+    addTestListener(object : TestListener {
+        override fun beforeSuite(suite: TestDescriptor) {}
+        override fun beforeTest(testDescriptor: TestDescriptor) {}
+        override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {}
+        override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+            if (suite.parent == null) { // will match the outermost suite
+                println(
+                    "Test result: ${result.resultType} " +
+                            "(${result.testCount} tests, " +
+                            "${result.successfulTestCount} successes, " +
+                            "${result.failedTestCount} failures, " +
+                            "${result.skippedTestCount} skipped)"
+                )
+            }
+        }
+    })
 }

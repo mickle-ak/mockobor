@@ -30,8 +30,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: publis mockobor to maven local
+        env:
+          signingKey64: ${{secrets.SIGNING_KEY_64}}
+          signingPassword64: ${{secrets.SIGNING_PASSWORD_64}}
         run: ./gradlew publishToMavenLocal
 
       - name: test dependencies if no mocking tools/only mockito/only easymock etc. available
         run: ./gradlew --project-dir=./subprojects/dependencies-tests check --continue
-

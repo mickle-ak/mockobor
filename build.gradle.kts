@@ -3,7 +3,7 @@ import java.util.*
 
 
 group = "io.github.mickle-ak.mockobor"
-version = "1.0"
+version = System.getenv("RELEASE_VERSION") ?: "1.0.1"
 description = "Mocked Observable Observation - library to simplifying some aspects of unit testing with java."
 
 
@@ -112,7 +112,7 @@ nexusPublishing {
         sonatype {  //only for users registered in Sonatype after 24 Feb 2021
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-            username.set(project.findProperty("sonatypeUsername")?.toString())
+            username.set(findProperty("sonatypeUsername")?.toString())
             password.set(base64Decode("sonatypePassword64"))
         }
     }
@@ -154,13 +154,28 @@ publishing {
 }
 
 signing {
-    // use
+    isRequired = findProperty("signingKey64") != null && findProperty("signingPassword64") != null
     useInMemoryPgpKeys(base64Decode("signingKey64"), base64Decode("signingPassword64"))
     sign(publishing.publications)
 }
 
 fun base64Decode(prop: String): String? {
-    return project.findProperty(prop)?.let {
+    return findProperty(prop)?.let {
         String(Base64.getDecoder().decode(it.toString())).trim()
     }
 }
+
+fun findProperty(prop: String) = project.findProperty(prop) ?: System.getenv(prop)
+
+
+/*
+tasks.create("testEnvironment") {
+    doLast {
+        println("RELEASE_VERSION=" + findProperty("RELEASE_VERSION"))
+        println("signingKey64=" + findProperty("signingKey64"))
+        println("signingPassword64=" + findProperty("signingPassword64"))
+        println("sonatypeUsername=" + findProperty("sonatypeUsername"))
+        println("sonatypePassword64=" + findProperty("sonatypePassword64"))
+    }
+}
+*/
