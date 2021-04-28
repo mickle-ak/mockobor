@@ -7,19 +7,19 @@ import java.lang.reflect.Method;
 
 
 /**
- * Describe delegation from (mocked) registration method to destination method of {@link ListenerContainer}.
+ * Describe delegation from (mocked) registration method (add/remove listener) to destination method of {@link ListenerContainer}.
  */
 @Value
 public class RegistrationDelegate {
 
+	/** Method of mocked object - source of redirection. */
 	@NonNull Method source;
 
+	/** Destination of registration as a function. */
 	@NonNull RegistrationInvocation destination;
 
 
-	/**
-	 * Specified destination as function with arguments passed to invoked method.
-	 */
+	/** Function used as destination of registration method (add/remove listeners). */
 	@FunctionalInterface
 	public interface RegistrationInvocation {
 
@@ -27,11 +27,10 @@ public class RegistrationDelegate {
 		 * To invoke delegation method.
 		 *
 		 * @param listeners invocation destination (container with registered listeners)
-		 * @param method    invoked method
-		 * @param arguments arguments passed to invoked method
+		 * @param method    invoked registration method
+		 * @param arguments arguments passed to invoked registration method
 		 * @return result of invocation
 		 */
 		Object invoke( @NonNull ListenerContainer listeners, @NonNull Method method, @NonNull Object... arguments );
 	}
-
 }

@@ -1,6 +1,7 @@
 package org.mockobor.mockedobservable;
 
 import lombok.NonNull;
+import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerSelector;
 
@@ -14,7 +15,12 @@ import static org.mockobor.listener_detectors.ListenerSelector.selector;
 
 /**
  * Interface to simulate notification calls from mocked beans that support bound properties (see {@link PropertyChangeSupport}).
- * <p>
+ * <p></p>
+ * Created from {@link Mockobor#createNotifierFor} if the specified observable object has methods like:<ul>
+ * <li>{@code void addPropertyChangeListener(PropertyChangeListener listener)} or</li>
+ * <li>{@code void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)}</li>
+ * </ul>
+ * <p></p>
  * Example:
  *
  * <pre class="code"><code class="java">
@@ -28,6 +34,7 @@ import static org.mockobor.listener_detectors.ListenerSelector.selector;
  *
  * // send events to testObject
  * notifier.firePropertyChange( "myProperty", oldValue, newValue );
+ * notifier.firePropertyChange( null, oldValue, newValue );
  *
  * </code></pre>
  */

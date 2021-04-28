@@ -1,5 +1,6 @@
 package org.mockobor.mockedobservable;
 
+import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenersNotFoundException;
 
 import java.util.Observable;
@@ -8,7 +9,10 @@ import java.util.Observer;
 
 /**
  * Interface to simulate notification calls from mocked {@link Observable}.
- * <p>
+ * <p></p>
+ * Created from {@link Mockobor#createNotifierFor} if the specified observable object has method like:<br>
+ * {@code void addObserver(Observer observer)}.
+ * <p></p>
  * Example:
  *
  * <pre class="code"><code class="java">
@@ -22,6 +26,7 @@ import java.util.Observer;
  *
  * // send events to testObject
  * notifier.notifyObservers( updateParameter );
+ * notifier.notifyObservers();
  *
  * </code></pre>
  */

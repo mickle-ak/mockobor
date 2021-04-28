@@ -10,18 +10,20 @@ import java.lang.reflect.Method;
 /**
  * Describe delegation from notification method to custom implementation.
  * <p>
- * {@link ListenersNotifier} is as context provided.
+ * {@link ListenersNotifier} provided as context.
  */
 @Value
 public class NotificationMethodDelegate {
 
+	/** Method of notifier object - interface methods, which should be redirected to implementation method. */
 	@NonNull Method source;
 
+	/** Implementation method as a function. */
 	@NonNull NotificationMethodInvocation destination;
 
 
 	/**
-	 * Specified destination as function with arguments passed to invoked method.
+	 * Specified destination as a function with arguments passed to invoked method.
 	 */
 	@FunctionalInterface
 	public interface NotificationMethodInvocation {

@@ -38,11 +38,11 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 
 	@Override
 	public void registerInMock( @NonNull ListenerContainer listeners, @NonNull RegistrationDelegate registration ) {
-		Object mockedObject = listeners.getObservableMock();
-		if( !MockUtil.isMock( mockedObject ) ) throw new MockoborImplementationError( "observable (%s) must be a mockito mock", mockedObject );
+		Object mockedObservable = listeners.getObservableMock();
+		if( !MockUtil.isMock( mockedObservable ) ) throw new MockoborImplementationError( "observable (%s) must be a mockito mock", mockedObservable );
 
 		try {
-			Object stabbingObject = lenient().doAnswer( createAnswer( listeners, registration.getDestination() ) ).when( mockedObject );
+			Object stabbingObject = lenient().doAnswer( createAnswer( listeners, registration.getDestination() ) ).when( mockedObservable );
 			Method sourceMethod = registration.getSource();
 			sourceMethod.invoke( stabbingObject, createArgumentMatchers( sourceMethod ) );
 		}
@@ -87,6 +87,8 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 
 	@Override
 	public Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
+		if( !MockUtil.isMock( mockedObservable ) ) throw new MockoborImplementationError( "observable (%s) must be a mockito mock", mockedObservable );
+
 		return Mockito.mockingDetails( mockedObservable )
 		              .getInvocations().stream()
 		              .map( i -> new Invocation( i.getMethod(), i.getArguments() ) )

@@ -1,16 +1,21 @@
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/mickle-ak/mockobor)][releases]
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mickle-ak/mockobor/Java%20CI%20with%20Gradle)](https://github.com/mickle-ak/mockobor/actions/workflows/gradle_CI.yml)
+[![javadoc](https://javadoc.io/badge2/io.github.mickle-ak.mockobor/mockobor/javadoc.svg)](https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor)
+[![GitHub](https://img.shields.io/github/license/mickle-ak/mockobor)](LICENSE)
+
+
 # Mockobor
 
-**Moc**ked **Ob**servable **O**bse**r**vation - library to simplifying some aspects of unit testing
-with java.
+Mocked Observable Observation - library to simplify some aspects of unit testing with java.
 
-If you write a lot of unit tests for a big java enterprise application, you can see, that some
-problems come again and again - you offen need to:
+If you write a lot of unit tests for a big java enterprise application, you can see, that some problems come again and
+again - you offen need to:
 
-1. simulate sending of events (via java listeners) from mocked collaborator to tested object,
-1. check completely deregistration of listeners registered by mocked collaborator,
-1. collect and verify events sent from test object
-1. synchrone start of `Feature`, `SwingWorker` etc. to simpler verify of result of (in production
-   asynchrone) invocations.
+- simulate sending of events (via java listeners) from mocked collaborator to tested object,
+- check completely deregistration of listeners registered by mocked collaborator,
+- collect and verify events sent from test object
+- synchrone start of `Feature`, `SwingWorker` etc. to simpler verify of result of (in production asynchrone)
+  invocations.
 
 And all of this should be done without changing of production code.
 
@@ -38,11 +43,11 @@ your tests.
 
 Mockobor propagates no dependencies.
 
-To use Mockobor in your unit tests, you need to:
-- start your test with _java 8+_
+To use Mockobor in unit tests:
+- start test with _java 8+_
 - use at least one of follow mocking tools in your tests:
-  - _Mockito 2.20.1+_
-  - _EasyMock 3.4+_
+  - _[Mockito](https://github.com/mockito/mockito) 2.20.1+_
+  - _[EasyMock](https://github.com/easymock/easymock) 3.4+_
 
 
 ## Usage
@@ -64,7 +69,7 @@ This notifier object implements follow interfaces (depended on methods found in 
   (PropertyChangeListener)` are found
 - `ObservableNotifier` + `Observer` if methods like `addObserver(Observer)` are found
 
-This notifier object can be used to
+This notifier object can be used to:
 - send events to test object:
   + using `notifierFor` method: `notifier.notifierFor(XxxListener.class).<listner method>(arguments)`
   + or direct using listener interface: `((XxxListener) notifier).<listner method>(arguments)`
@@ -74,8 +79,10 @@ This notifier object can be used to
   + `Mockobor.assertThatAllListenersAreUnregistered( notifier1, ..., notifierN )`
   + or for single notifier `assertThat( notifier.allListenersAreUnregistered() ).isTrue()`
 
-For more details see JavaDoc for `Mockobor`, `Mocobor.createNotifierFor`, `ListenerNotifer`,
-`Mockobor.assertThatAllListenersAreUnregistered` and [Examples](#examples) bellow.
+For more details see [JavaDoc][javadoc] ([Mockobor][Mockobor], [Mockobor.createNotifierFor][Mockobor.createNotifierFor]
+, [Mockobor.assertThatAllListenersAreUnregistered][Mockobor.assertThatAllListenersAreUnregistered],
+[ListenerNotifier][ListenerNotifier])
+and [Examples](#examples) bellow.
 
 
 #### listener selectors
@@ -94,18 +101,18 @@ registration methods and allows adding selectors by sending of notifications:
         ...
         // somewhere in tests send notification to listeners in object under test
 
-        // to listener registered with selector ("q1" "q2):
+        // send to listener registered with selector ("q1" "q2):
         notifier.notiferFor(listner1.class,selector("q1","q2")).listener_method();
 
-        // to listener registered with selector "q3":
+        // send to listener registered with selector "q3":
         notifier.notiferFor("q3",listner2.class).listener_method();
         notifier.notifierFor(listener2.class,selector("q3")).listener_method(); // the same as above
 
-        // to listener registered with empty selector: 
+        // sen to listener registered with empty selector: 
         notifier.notiferFor(listner3.class).listener_method();
         notifier.notifierFor(listener3.class,selector()).listener_method();  // the same as above
 
-        // to listeners registered with one of the specified selectors (in this case - to all three listeners):
+        // send to listeners registered with one of the specified selectors (in this case - to all three listeners):
         notifier.notiferFor(listner1.class,selector("q1","q2"),selector("q3"),selector()).listener_method();
         ...
 ```
@@ -281,8 +288,7 @@ class TestedObserver_Test {
   }
 }
 ```
-See
-also [UsageExample_TypicalJavaListener_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_TypicalJavaListener_Test.java)
+See also [UsageExample_TypicalJavaListener_Test.java][UsageExample_TypicalJavaListener_Test]
 
 
 #### PropertyChangeListener
@@ -317,8 +323,7 @@ class TestedObserver_Test {
   }
 }
 ```
-See
-also [UsageExample_BeanPropertyChange_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_BeanPropertyChange_Test.java)
+See also [UsageExample_BeanPropertyChange_Test.java][UsageExample_BeanPropertyChange_Test]
 
 
 #### Observable, Observer
@@ -344,8 +349,7 @@ class TestedObserver_Test {
   }
 }
 ```
-See
-also [UsageExample_Observable_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_Observable_Test.java)
+See also [UsageExample_Observable_Test.java][UsageExample_Observable_Test]
 
 
 ### check completely deregistration of listeners
@@ -368,13 +372,12 @@ class TestedObserver_Test {
   }
 }
 ```
-See
-also [UsageExample_allListenersAreUnregistered_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_allListenersAreUnregistered_Test.java)
+See also [UsageExample_allListenersAreUnregistered_Test.java][UsageExample_allListenersAreUnregistered_Test]
 
 
 ### NotifierSettings
 
-See [UsageExample_NotifierSettings_Test.java](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_NotifierSettings_Test.java)
+See [UsageExample_NotifierSettings_Test.java][UsageExample_NotifierSettings_Test]
 
 
 
@@ -405,12 +408,13 @@ follow methods:
   + implement some methods of your additional interfaces (better use default implementations in interface itself)
   + override some methods of `ListenersNotifier` (do you want it indeed?)
 
-For more details see
-javadoc, [Custom listener detector example](https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java)
-and [PropertyChangeDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/listener_detectors/PropertyChangeDetector.java)
-or
-[TypicalJavaListenerDetector.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/listener_detectors/TypicalJavaListenerDetector.java)
-as implementation examples.
+For more details see [JavaDoc][javadoc] ([ListenerDefinitionDetector][ListenerDefinitionDetector], [AbstractDetector]
+[AbstractDetector]
+and [MockoborContext.registerListenerDefinitionDetector][MockoborContext.registerListenerDefinitionDetector])
+
+See also [Custom listener detector example][Custom listener detector example],
+[PropertyChangeDetector.java][PropertyChangeDetector] or [TypicalJavaListenerDetector.java]
+[TypicalJavaListenerDetector] as implementation examples.
 
 
 ### Another mocking tool
@@ -424,10 +428,11 @@ tool, it is possible to add support for them:
 - create custom implementation of `ListenerRegistrationHandler`
 - register it using `MockoborContext.registerListenerRegistrationHandler`
 
-For more details see
-javadoc, [ListenerRegistrationHandler .java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/ListenerRegistrationHandler.java)
-and [MockitoListenerRegistrationHandler.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/MockitoListenerRegistrationHandler.java)
-or [EasymockListenerRegistrationHandler.java](https://github.com/mickle-ak/mockobor/blob/master/src/main/java/org/mockobor/mockedobservable/mocking_tools/EasymockListenerRegistrationHandler.java)
+For more details see [JavaDoc][javadoc] ([ListenerRegistrationHandler][ListenerRegistrationHandler]
+and [MockoborContext.registerListenerRegistrationHandler][MockoborContext.registerListenerRegistrationHandler])
+
+See also [MockitoListenerRegistrationHandler.java][MockitoListenerRegistrationHandler]
+and [EasymockListenerRegistrationHandler.java][EasymockListenerRegistrationHandler]
 as implementation examples.
 
 
@@ -447,7 +452,7 @@ as implementation examples.
 
 If you mock a collaborator object using _EasyMock_:
 
-- a notifier object must be created (by calling `Mocobor.createNotifierFor`) before a tested object registers its
+- a notifier object must be created (by calling `Mockobor.createNotifierFor`) before a tested object registers its
   listener by the mocked collaborator! It is necessary, because registration methods must be redirected to the notifier
   before they will be called from the tested object. As consequence, it is not possible to inject mocks to the observer
   test object using `@TestSubject` annotation.
@@ -469,7 +474,7 @@ in `pom.xml`:
 <dependency>
   <groupId>io.github.mickle-ak.mockobor</groupId>
   <artifactId>mockobor</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -478,14 +483,68 @@ in `pom.xml`:
 
 in `build.gradle.kts`:
 ```kotlin
-testImplementation( "io.github.mickle-ak.mockobor:mockobor:1.0" )
+testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.1")
 ```
 
 ## Changelog
 
+- **1.0.1** (29.04.2021)
+  - Changed
+    - Documentation + javadoc
+  - Removed
+    - subclasses of `Observer` or `PropertyChangeListener` as types of listener parameters no more supported. Only
+      methods with exactly the same argument type (`Observer.class`, `PropertyChangeListener.class`) can be recognised
+      as listener registration methods with a special support
+
 - **1.0** (27.04.2021)
-  - simulation of sending of events from mocked collaborator to tested object
-  - take over listeners registered before notifier object created (Mockito only)
-  - checking of completely deregistration of listeners
-  - listener notifier settings
-  - support for Mockito and EasyMock
+  - Added
+    - simulation of sending of events from mocked collaborator to tested object
+    - take over listeners registered before notifier object created (Mockito only)
+    - checking of completely deregistration of listeners
+    - listener notifier settings
+    - support for Mockito and EasyMock
+
+
+
+[releases]: https://github.com/mickle-ak/mockobor/releases
+
+[UsageExample_TypicalJavaListener_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_TypicalJavaListener_Test.java
+
+[UsageExample_BeanPropertyChange_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_BeanPropertyChange_Test.java
+
+[UsageExample_Observable_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_Observable_Test.java
+
+[UsageExample_allListenersAreUnregistered_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_allListenersAreUnregistered_Test.java
+
+[UsageExample_NotifierSettings_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_NotifierSettings_Test.java
+
+[Custom listener detector example]: src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java
+
+[PropertyChangeDetector]: src/main/java/org/mockobor/listener_detectors/PropertyChangeDetector.java
+
+[TypicalJavaListenerDetector]: src/main/java/org/mockobor/listener_detectors/TypicalJavaListenerDetector.java
+
+[MockitoListenerRegistrationHandler]: src/main/java/org/mockobor/mockedobservable/mocking_tools/MockitoListenerRegistrationHandler.java
+
+[EasymockListenerRegistrationHandler]: src/main/java/org/mockobor/mockedobservable/mocking_tools/EasymockListenerRegistrationHandler.java
+
+
+[javadoc]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/index.html?overview-summary.html
+
+[Mockobor]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/Mockobor.html
+
+[Mockobor.createNotifierFor]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/Mockobor.html#createNotifierFor-java.lang.Object-
+
+[Mockobor.assertThatAllListenersAreUnregistered]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/Mockobor.html#assertThatAllListenersAreUnregistered-org.mockobor.mockedobservable.ListenersNotifier...-
+
+[ListenerNotifier]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/mockedobservable/ListenersNotifier.html
+
+[AbstractDetector]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/listener_detectors/AbstractDetector.html
+
+[ListenerDefinitionDetector]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/listener_detectors/ListenerDefinitionDetector.html
+
+[MockoborContext.registerListenerDefinitionDetector]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/MockoborContext.html#registerListenerDefinitionDetector-org.mockobor.listener_detectors.ListenerDefinitionDetector-
+
+[ListenerRegistrationHandler]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/mockedobservable/mocking_tools/ListenerRegistrationHandler.html
+
+[MockoborContext.registerListenerRegistrationHandler]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/MockoborContext.html#registerListenerRegistrationHandler-org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler-

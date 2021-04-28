@@ -20,6 +20,7 @@ import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistryImpl;
  * Usually you don't need to use it. Only if you want to <ul>
  * <li>register custom listener definition detectors, use {@link #registerListenerDefinitionDetector}</li>
  * <li>register custom mocking tool detectors, use {@link #registerListenerRegistrationHandler}</li>
+ * <li>change global settings, use {@link #updateNotifierSettings()}</li>
  * </ul>
  * <p></p>
  * Important: Registered detectors are kept statically so it will stick between your unit tests.
@@ -67,6 +68,7 @@ public class MockoborContext {
 	 * Make sure you reset it if needed.
 	 *
 	 * @param registrationHandler implementation of {@link ListenerRegistrationHandler} for your mocking tool.
+	 * @see MockingToolsRegistry#registerListenerRegistrationHandler
 	 * @see #reset()
 	 */
 	public static void registerListenerRegistrationHandler( @NonNull ListenerRegistrationHandler registrationHandler ) {
@@ -76,8 +78,19 @@ public class MockoborContext {
 
 	/**
 	 * To get {@link NotifierSettingsUpdater} for update statically store {@link NotifierSettings}.
+	 * <p>
+	 * Example:
+	 * <pre class="code"><code class="java">
+	 * MockoborContext.updateNotifierSettings()
+	 *     .ignoreListenersInterfaces()
+	 *     .lenientListenerListCheck();
+	 * </code></pre>
+	 * <p></p>
+	 * Important: Settings are kept statically so it will stick between your unit tests.
+	 * Make sure you reset it if needed.
 	 *
 	 * @return updater for settings used to create a new listener notifiers.
+	 * @see #reset()
 	 */
 	public static NotifierSettingsUpdater updateNotifierSettings() {
 		return notifierSettingsImpl;
@@ -88,9 +101,10 @@ public class MockoborContext {
 	 * To remove all registered custom listener definition detectors.
 	 * <p><br>
 	 * Usually you don't need to call it.
-	 * Only if you want to reset changes made by settings or registration of custom detectors or mocking tools.
+	 * Only if you want to reset changes made by settings or by registration of custom detectors or mocking tools.
 	 *
 	 * @see ListenerDetectorsRegistry#reset()
+	 * @see MockingToolsRegistry#reset()
 	 */
 	public static void reset() {
 		LISTENER_DETECTORS_REGISTRY.reset();

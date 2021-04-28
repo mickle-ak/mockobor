@@ -4,7 +4,7 @@ import org.mockobor.Mockobor;
 
 
 /**
- * Settings used to create a new notifier (see {@link Mockobor#createNotifierFor}.
+ * Settings used to create a new notifier (used in {@link Mockobor#createNotifierFor(Object, NotifierSettings)}).
  */
 public interface NotifierSettings {
 	/**

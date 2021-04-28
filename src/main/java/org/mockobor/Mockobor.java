@@ -67,6 +67,11 @@ import java.util.Observer;
  *
  *      // to notify (send the same event to) all listeners registered with selector "s1" OR selector "s2":
  *      notifier.notifierFor( MyListener.class, selector( "s1" ), selector( "s2" ) ).somethingChanged1( newValue );
+ *
+ *      // send events to testObject using "empty selector" (it is exactly the same as "((MyListener) notifier).somethingChanged1( newValue );"
+ *      // because registration without any qualifier is the same as registration with empty selector):
+ *      notifier.notifierFor( MyListener.class, selector() ).somethingChanged1( newValue );
+ *      notifier.notifierFor( MyListener.class, selector() ).somethingChanged2( newValue1, newValue2 );
  * ...
  * }
  * </code></pre>
@@ -119,14 +124,35 @@ import java.util.Observer;
  * testObject.close(); // or dispose() etc.
  *
  * // check that all listeners are unregistered
- * assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are unregistered" ).isTrue();
+ * Mockobor.assertThatAllListenersAreUnregistered( notifier );
  * </code></pre>
  * See {@link ListenersNotifier#allListenersAreUnregistered()} for details.
  * <p></p>
  * For more details see tests:<ul>
- * <li>UsageExample_Observable_Test</li>
- * <li>UsageExample_BeanPropertyChange_Test</li>
- * <li>UsageExample_TypicalJavaListener_Test</li>
+ * <li>
+ * <a href="https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_BeanPropertyChange_Test.java">
+ * UsageExample_BeanPropertyChange_Test</a>
+ * </li>
+ * <li>
+ * <a href="https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_Observable_Test.java">
+ * UsageExample_Observable_Test</a>
+ * </li>
+ * <li>
+ * <a href="https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_TypicalJavaListener_Test.java">
+ * UsageExample_TypicalJavaListener_Test</a>
+ * </li>
+ * <li>
+ * <a href="https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_CustomDetector_Test.java">
+ * UsageExample_CustomDetector_Test</a>
+ * </li>
+ * <li>
+ * <a href="https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_MockitoAnnotation_Test.java">
+ * UsageExample_MockitoAnnotation_Test</a>
+ * </li>
+ * <li>
+ * <a href="https://github.com/mickle-ak/mockobor/blob/master/src/test/java/org/mockobor/mockedobservable/UsageExample_allListenersAreUnregistered_Test.java">
+ * UsageExample_allListenersAreUnregistered_Test</a>
+ * </li>
  * </ul>
  *
  * @see #createNotifierFor
@@ -148,11 +174,13 @@ public final class Mockobor {
 
 	/**
 	 * To create notifier for the specified mocked observable.
-	 * <p>
-	 * It searchs for registration (add/remove listener) methods for all possible observer/listeners,
-	 * detect used mocking tool,
-	 * redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and
-	 * creates dynamic proxy as notifier object.
+	 * <p></p>
+	 * This method does follows:<ul>
+	 * <li>searchs for registration (add/remove listener) methods for all (known) observer/listeners,</li>
+	 * <li>detect used mocking tool,</li>
+	 * <li>redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and</li>
+	 * <li>creates dynamic proxy as notifier object.</li>
+	 * </ul>
 	 * <p></p>
 	 * According to the specified mocked observable the returned notifier implements follow interfaces (in any combinations): <ul>
 	 * <li>{@link ObservableNotifier} + {@link Observer} if methods for {@code Observer} registration found:<ul>
@@ -171,7 +199,7 @@ public final class Mockobor {
 	 * (see {@link MockoborContext#registerListenerDefinitionDetector(ListenerDefinitionDetector)})
 	 * </li></ul>
 	 * <p></p>
-	 * It uses globally settings statically stored in {@link MockoborContext} -
+	 * It uses globally settings statically stored in {@link MockoborContext} (use {@link MockoborContext#updateNotifierSettings()} to change global settings).
 	 * <p>
 	 * Invocation of this methods is equal to call {@code Mockobor.createNotifierFor(mockedObservable, Mockobor.notifierSettings())}.
 	 * <p></p>
@@ -180,7 +208,7 @@ public final class Mockobor {
 	 * @param mockedObservable mock of observable object
 	 * @return notifier used to simulate notification calls from the specified mocked observable
 	 * @throws ListenerRegistrationMethodsNotDetectedException if neither of listener definition detectors can detect listener registration methods
-	 * @throws MockingToolNotDetectedException                 if the specified object not a mock or mocking tool used to mock it not supported
+	 * @throws MockingToolNotDetectedException                 if the specified object is not a mock or used mocking tool does not supported
 	 * @see Mockobor
 	 * @see MockoborContext
 	 * @see #createNotifierFor(Object, NotifierSettings)
@@ -193,31 +221,36 @@ public final class Mockobor {
 
 	/**
 	 * To create notifier for the specified mocked observable with the specified settings.
-	 * <p>
-	 * It searchs for registration (add/remove listener) methods for all possible observer/listeners,
-	 * detect used mocking tool,
-	 * redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and
-	 * creates dynamic proxy as notifier object.
+	 * <p></p>
+	 * This method does follows:<ul>
+	 * <li>searchs for registration (add/remove listener) methods for all (known) observer/listeners,</li>
+	 * <li>detect used mocking tool,</li>
+	 * <li>redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and</li>
+	 * <li>creates dynamic proxy as notifier object.</li>
+	 * </ul>
 	 * <p></p>
 	 * Typical usage:
 	 * <pre class="code"><code class="java">
 	 * ObservableObject mockedObservableObject = mock( ObservableObject.class )
-	 * ListenerNotifier notifier = Mockobor.createNotifierFor( mockedObservableObject, Mockobor.notifierSettings().lenientListenerListCheck() );
+	 * NotifierSettings settings = Mockobor.notifierSettings().lenientListenerListCheck()
+	 * ListenerNotifier notifier = Mockobor.createNotifierFor( mockedObservableObject, settings );
 	 * </code></pre>
 	 * <p>
-	 * See {@link Mockobor} and {@link #createNotifierFor(Object)} for usage examples.
+	 * See {@link Mockobor} and {@link #createNotifierFor(Object)} for more usage examples.
+	 * <p>
+	 * See {@link NotifierSettings} and {@link NotifierSettingsUpdater} for possible settings.
 	 *
 	 * @param mockedObservable mock of observable object
 	 * @param settings         settings used to create a new listener notifier
 	 * @return notifier used to simulate notification calls from the specified mocked observable
 	 * @throws ListenerRegistrationMethodsNotDetectedException if neither of listener definition detectors can detect listener registration methods
-	 * @throws MockingToolNotDetectedException                 if the specified object not a mock or mocking tool used to mock it not supported
+	 * @throws MockingToolNotDetectedException                 if the specified object is not a mock or used mocking tool does not supported
+	 * @see #notifierSettings()
 	 * @see Mockobor
-	 * @see MockoborContext
 	 * @see #createNotifierFor(Object)
 	 */
 	@NonNull
-	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable, NotifierSettings settings )
+	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
 		return NOTIFIER_FACTORY.create( mockedObservable, settings );
 	}

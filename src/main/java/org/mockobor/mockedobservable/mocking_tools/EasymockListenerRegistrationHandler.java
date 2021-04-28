@@ -31,14 +31,14 @@ public class EasymockListenerRegistrationHandler implements ListenerRegistration
 
 	@Override
 	public void registerInMock( @NonNull ListenerContainer listeners, @NonNull RegistrationDelegate registration ) {
-		Object mockedObject = listeners.getObservableMock();
-		if( !canHandle( mockedObject ) ) throw new MockoborImplementationError( "observable (%s) must be mocked by easymock", mockedObject );
+		Object mockedObservable = listeners.getObservableMock();
+		if( !canHandle( mockedObservable ) ) throw new MockoborImplementationError( "observable (%s) must be mocked by easymock", mockedObservable );
 
 		try {
 			Method sourceMethod = registration.getSource();
 			Object[] argumentMatchers = createArgumentMatchers( sourceMethod );
 
-			sourceMethod.invoke( mockedObject, argumentMatchers );
+			sourceMethod.invoke( mockedObservable, argumentMatchers );
 			EasyMock.expectLastCall().andStubAnswer( createAnswer( sourceMethod, listeners, registration.getDestination() ) );
 		}
 		catch( IllegalAccessException | InvocationTargetException e ) {

@@ -4,7 +4,7 @@ import java.util.*
 
 group = "io.github.mickle-ak.mockobor"
 version = System.getenv("RELEASE_VERSION") ?: "1.0.1"
-description = "Mocked Observable Observation - library to simplifying some aspects of unit testing with java."
+description = "Mocked Observable Observation - library to simplify some aspects of unit testing with java."
 
 
 plugins {
@@ -92,6 +92,7 @@ tasks.test {
 // disable strict checking of javadoc in java 8+
 tasks.javadoc {
     (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    options.overview = "src/main/javadoc/overview.html"
 }
 
 // configure jacoco report task
@@ -124,7 +125,7 @@ publishing {
             from(components["java"])
             pom {
 
-                name.set("${project.group}:${project.name}")
+                name.set("Mockobor")
                 description.set(project.description)
                 url.set("https://github.com/mickle-ak/mockobor")
 

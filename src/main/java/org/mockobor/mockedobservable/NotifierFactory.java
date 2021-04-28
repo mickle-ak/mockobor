@@ -31,10 +31,12 @@ import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
 /**
  * Factory for notifier objects.
  * <p></p>
- * It searchs for registration (add/remove listener) methods for all possible observer/listeners,
- * detect used mocking tool,
- * redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and
- * creates dynamic proxy as notifier object.
+ * This method {@link #create} does follows:<ul>
+ * <li>searchs for registration (add/remove listener) methods for all (known) observer/listeners,</li>
+ * <li>detect used mocking tool,</li>
+ * <li>redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and</li>
+ * <li>creates dynamic proxy as notifier object.</li>
+ * </ul>
  * <p></p>
  * It used in {@link Mockobor#createNotifierFor} to do real work.
  */
@@ -46,6 +48,7 @@ public class NotifierFactory {
 
 	@NonNull
 	private final MockingToolsRegistry mockingToolsRegistry;
+
 
 	/**
 	 * To create notifier object for the specified mocked observable.
@@ -59,6 +62,7 @@ public class NotifierFactory {
 	@NonNull
 	public ListenersNotifier create( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
+
 		List<ListenersDefinition> listenersDefinitions = detectListenersDefinitions( mockedObservable );
 		ListenersManager listenerManager = new ListenersManager( mockedObservable );
 		listenerManager.setStrictCheckListenerList( settings.getStrictCheckListenerList() );
