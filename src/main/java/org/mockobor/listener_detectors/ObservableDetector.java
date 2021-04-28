@@ -31,7 +31,7 @@ public class ObservableDetector extends AbstractDetector implements ListenerDefi
 
 	@Override
 	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
-		return Observer.class.isAssignableFrom( parameterType );
+		return parameterType.equals( Observer.class );
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class PropertyChangeDetector extends AbstractDetector implements Listener
 
 	@Override
 	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
-		return PropertyChangeListener.class.isAssignableFrom( parameterType );
+		return parameterType.equals( PropertyChangeListener.class );
 	}
 
 	@Override
