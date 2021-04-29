@@ -2,6 +2,7 @@ package org.mockobor.mockedobservable;
 
 import lombok.Value;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerSelector;
@@ -104,7 +105,7 @@ public interface ListenersNotifier {
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 * @see #notifierFor(Class, ListenerSelector...)
 	 */
-	default <L> @NonNull L notifierFor( @NonNull Object listenerSelectorValue, @NonNull Class<L> listenerClass )
+	default <L> @NonNull L notifierFor( @Nullable Object listenerSelectorValue, @NonNull Class<L> listenerClass )
 			throws ListenersNotFoundException {
 		return notifierFor( listenerClass, selector( listenerSelectorValue ) );
 	}

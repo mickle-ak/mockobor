@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -66,8 +67,8 @@ public final class ListenerSelector {
 
 	private final Object[] objects;
 
-	public static @NonNull ListenerSelector selector( @NonNull Object... objects ) {
-		return new ListenerSelector( objects );
+	public static @NonNull ListenerSelector selector( @Nullable Object... objects ) {
+		return new ListenerSelector( objects != null ? objects : new Object[]{ null } );
 	}
 
 	@Override
