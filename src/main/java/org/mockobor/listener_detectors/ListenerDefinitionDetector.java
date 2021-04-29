@@ -1,6 +1,6 @@
 package org.mockobor.listener_detectors;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -38,6 +38,5 @@ public interface ListenerDefinitionDetector {
 	 * @param methods readonly list of methods to examine (defined in mocked observable)
 	 * @return definition of detected listeners.
 	 */
-	@NonNull
-	ListenersDefinition detect( @NonNull Collection<Method> methods );
+	@NonNull ListenersDefinition detect( @NonNull Collection<Method> methods );
 }

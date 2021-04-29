@@ -3,6 +3,7 @@ package org.mockobor.utils.reflection;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.eclipse.jdt.annotation.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -38,7 +39,7 @@ public final class TypeUtils {
 	 * @return default value for the specified class
 	 */
 	@SuppressWarnings( "unchecked" )
-	public static <T> T getDefaultReturnValue( Class<T> clazz ) {
+	public static <T> @Nullable T getDefaultReturnValue( Class<T> clazz ) {
 
 		if( PRIMITIVE_DEFAULTS.containsKey( clazz ) ) {
 			return (T) PRIMITIVE_DEFAULTS.get( clazz );

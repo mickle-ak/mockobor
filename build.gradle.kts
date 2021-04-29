@@ -42,6 +42,8 @@ dependencies {
     val easymock_version = "4.3"
     val lombok_version = "1.18.20"
 
+    implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.600")
+
     compileOnly("org.mockito:mockito-core:$mockito_version")
     compileOnly("org.easymock:easymock:$easymock_version")
     compileOnly("org.projectlombok:lombok:$lombok_version")

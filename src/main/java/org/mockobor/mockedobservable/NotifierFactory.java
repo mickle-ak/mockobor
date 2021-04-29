@@ -1,7 +1,8 @@
 package org.mockobor.mockedobservable;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenerRegistrationMethodsNotDetectedException;
 import org.mockobor.exceptions.MethodNotFoundException;
@@ -59,8 +60,7 @@ public class NotifierFactory {
 	 * @throws ListenerRegistrationMethodsNotDetectedException if neither of listener definition detectors can detect listener registration methods
 	 * @throws MockingToolNotDetectedException                 if the specified object not a mock or mocking tool used to mock it not supported
 	 */
-	@NonNull
-	public ListenersNotifier create( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
+	public @NonNull ListenersNotifier create( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
 
 		List<ListenersDefinition> listenersDefinitions = detectListenersDefinitions( mockedObservable );
@@ -98,7 +98,7 @@ public class NotifierFactory {
 	// ==================================================================================
 
 	/** To find all possible listener registration in the specified mocked observable. */
-	private List<ListenersDefinition> detectListenersDefinitions( @NonNull Object mockedObservable ) {
+	private @NonNull List<ListenersDefinition> detectListenersDefinitions( @NonNull Object mockedObservable ) {
 		List<ListenersDefinition> listenersDefinitions = new ArrayList<>();
 		Collection<Method> methods = getReachableMethods( mockedObservable );
 		Collection<ListenerDefinitionDetector> detectors = listenerDetectorsRegistry.getDetectors();
@@ -132,6 +132,7 @@ public class NotifierFactory {
 	                                                       @NonNull ListenerRegistrationHandler registrationHandler,
 	                                                       @NonNull ListenerContainer listenerManager,
 	                                                       @NonNull List<ListenersDefinition> listenersDefinitions ) {
+
 		Collection<Invocation> previouslyInvocations = registrationHandler.getPreviouslyRegistrations( observableMock );
 
 		if( !previouslyInvocations.isEmpty() ) {
@@ -156,7 +157,7 @@ public class NotifierFactory {
 				delegation -> registrationHandler.registerInMock( listenerManager, delegation ) );
 	}
 
-	private Stream<RegistrationDelegate> registrationDelegateStream( @NonNull List<ListenersDefinition> listenersDefinitions ) {
+	private @NonNull Stream<RegistrationDelegate> registrationDelegateStream( @NonNull List<ListenersDefinition> listenersDefinitions ) {
 		return listenersDefinitions.stream().flatMap( definition -> definition.getRegistrations().stream() );
 	}
 
@@ -165,9 +166,9 @@ public class NotifierFactory {
 	// ================================ create proxy ====================================
 	// ==================================================================================
 
-	private ListenersNotifier createProxy( @NonNull ListenersNotifier listenersNotifier,
-	                                       @NonNull List<ListenersDefinition> listenersDefinitions,
-	                                       @NonNull NotifierSettings settings ) {
+	private @NonNull ListenersNotifier createProxy( @NonNull ListenersNotifier listenersNotifier,
+	                                                @NonNull List<ListenersDefinition> listenersDefinitions,
+	                                                @NonNull NotifierSettings settings ) {
 		// collect interfaces to implement
 		Set<Class<?>> additionalInterfaces = collectAdditionalInterfaces( listenersDefinitions );
 		Set<Class<?>> detectedListenerToImplement = collectDetectedListenerToImplement( listenersDefinitions, settings );
@@ -189,7 +190,7 @@ public class NotifierFactory {
 	}
 
 	@SuppressWarnings( "java:S3776" ) // sonarlint, the methods is not too complex.
-	private static InvocationHandler createInvocationHandler(
+	private static @NonNull InvocationHandler createInvocationHandler(
 			@NonNull ListenersNotifier listenersNotifier,
 			@NonNull Map<Method, NotificationMethodInvocation> customNotificationDelegates,
 			@NonNull Set<Class<?>> additionalInterfaces,
@@ -239,8 +240,8 @@ public class NotifierFactory {
 		};
 	}
 
-	private static NotificationMethodInvocation findDelegate( @NonNull Map<Method, NotificationMethodInvocation> delegates,
-	                                                          @NonNull Method invokedMethod ) {
+	private static @Nullable NotificationMethodInvocation findDelegate( @NonNull Map<Method, NotificationMethodInvocation> delegates,
+	                                                                    @NonNull Method invokedMethod ) {
 		Method delegateSourceMethod = findSimilarMethod( delegates.keySet(), invokedMethod );
 		return delegateSourceMethod != null ? delegates.get( delegateSourceMethod ) : null;
 	}

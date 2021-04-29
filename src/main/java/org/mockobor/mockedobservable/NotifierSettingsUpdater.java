@@ -1,5 +1,8 @@
 package org.mockobor.mockedobservable;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+
 /**
  * Update methods for {@link NotifierSettings}.
  */
@@ -16,7 +19,7 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * @see #getStrictCheckListenerList()
 	 * @see ListenersNotifier#setStrictCheckListenerList
 	 */
-	NotifierSettingsUpdater strickListenerListCheck();
+	@NonNull NotifierSettingsUpdater strickListenerListCheck();
 
 	/**
 	 * To lenient check if list of listeners selected to send notification contains any listener (see {@link ListenersNotifier#notifierFor}).
@@ -27,7 +30,7 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * @see #getStrictCheckListenerList()
 	 * @see ListenersNotifier#setStrictCheckListenerList
 	 */
-	NotifierSettingsUpdater lenientListenerListCheck();
+	@NonNull NotifierSettingsUpdater lenientListenerListCheck();
 
 
 	/**
@@ -40,7 +43,7 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * @return itself for fluent calls
 	 * @see #shouldNotifierImplementListenersInterfaces()
 	 */
-	NotifierSettingsUpdater implementListenersInterfaces();
+	@NonNull NotifierSettingsUpdater implementListenersInterfaces();
 
 	/**
 	 * To disallow listener notifier to implement interfaces of detected listeners.
@@ -50,5 +53,5 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * @return itself for fluent calls
 	 * @see #shouldNotifierImplementListenersInterfaces()
 	 */
-	NotifierSettingsUpdater ignoreListenersInterfaces();
+	@NonNull NotifierSettingsUpdater ignoreListenersInterfaces();
 }

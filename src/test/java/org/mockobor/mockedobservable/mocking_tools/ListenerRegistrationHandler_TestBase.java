@@ -1,7 +1,8 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
+import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.RegistrationDelegate;
 import org.mockobor.mockedobservable.ListenersManager;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 abstract class ListenerRegistrationHandler_TestBase {
@@ -41,6 +43,7 @@ abstract class ListenerRegistrationHandler_TestBase {
 	void canHandle() {
 		assertThat( handler.canHandle( mock ) ).isTrue();
 		assertThat( handler.canHandle( listeners ) ).isFalse();
+		assertThat( handler.canHandle( null ) ).isFalse();
 	}
 
 	@Test
@@ -130,6 +133,14 @@ abstract class ListenerRegistrationHandler_TestBase {
 		mock.varargInt( "p1", 3, 5, 8, 13, 21 );
 		assertThat( invocationArguments ).containsExactly( "p1", 3, 5, 8, 13, 21 );
 		assertThat( usedListenerContainers ).containsExactly( listeners );
+	}
+
+	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	@Test
+	void registerInMock_notMock() {
+		assertThatThrownBy( () -> handler.registerInMock( new ListenersManager( new Object() ), createDelegate( "returnType" ) ) )
+				.isInstanceOf( MockoborImplementationError.class )
+				.hasMessageContaining( "mock" );
 	}
 
 

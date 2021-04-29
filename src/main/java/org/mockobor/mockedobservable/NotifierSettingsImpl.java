@@ -1,6 +1,7 @@
 package org.mockobor.mockedobservable;
 
 import lombok.Builder;
+import org.eclipse.jdt.annotation.NonNull;
 
 
 @Builder( toBuilder = true )
@@ -24,13 +25,13 @@ public class NotifierSettingsImpl implements NotifierSettingsUpdater {
 	}
 
 	@Override
-	public NotifierSettingsUpdater strickListenerListCheck() {
+	public @NonNull NotifierSettingsUpdater strickListenerListCheck() {
 		strictCheckListenerList = true;
 		return this;
 	}
 
 	@Override
-	public NotifierSettingsUpdater lenientListenerListCheck() {
+	public @NonNull NotifierSettingsUpdater lenientListenerListCheck() {
 		strictCheckListenerList = false;
 		return this;
 	}
@@ -42,12 +43,13 @@ public class NotifierSettingsImpl implements NotifierSettingsUpdater {
 	}
 
 	@Override
-	public NotifierSettingsUpdater implementListenersInterfaces() {
+	public @NonNull NotifierSettingsUpdater implementListenersInterfaces() {
 		implementListeners = true;
 		return this;
 	}
+	
 	@Override
-	public NotifierSettingsUpdater ignoreListenersInterfaces() {
+	public @NonNull NotifierSettingsUpdater ignoreListenersInterfaces() {
 		implementListeners = false;
 		return this;
 	}

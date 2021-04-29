@@ -1,6 +1,6 @@
 package org.mockobor.utils.reflection.mockito;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockito.plugins.PluginSwitch;
 
 

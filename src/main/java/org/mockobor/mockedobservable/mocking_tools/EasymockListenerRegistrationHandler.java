@@ -1,8 +1,9 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.exceptions.MockoborException;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenerContainer;
@@ -23,7 +24,7 @@ import java.util.function.Supplier;
 public class EasymockListenerRegistrationHandler implements ListenerRegistrationHandler {
 
 	@Override
-	public boolean canHandle( Object mockedObservable ) {
+	public boolean canHandle( @Nullable Object mockedObservable ) {
 		return mockedObservable != null
 		       && ( mockedObservable.toString().startsWith( "EasyMock for " )
 		            || ReflectionUtils.isEasymockMock( mockedObservable.getClass() ) );
@@ -48,16 +49,14 @@ public class EasymockListenerRegistrationHandler implements ListenerRegistration
 	}
 
 	/** To create answer as redirection to the specified registration delegate. */
-	@NonNull
-	private IAnswer<Object> createAnswer( @NonNull Method sourceMethod,
-	                                      @NonNull ListenerContainer listeners,
-	                                      @NonNull RegistrationInvocation destination ) {
+	private @NonNull IAnswer<Object> createAnswer( @NonNull Method sourceMethod,
+	                                               @NonNull ListenerContainer listeners,
+	                                               @NonNull RegistrationInvocation destination ) {
 		return () -> destination.invoke( listeners, sourceMethod, EasyMock.getCurrentArguments() );
 	}
 
 	/** To create argument matchers for stabbing invocation using {@link EasyMock#anyObject()} for all arguments. */
-	@NonNull
-	private Object[] createArgumentMatchers( @NonNull Method sourceMethod ) {
+	private @NonNull Object[] createArgumentMatchers( @NonNull Method sourceMethod ) {
 		Class<?>[] parameterTypes = sourceMethod.getParameterTypes();
 		Object[] result = new Object[parameterTypes.length];
 		for( int i = 0; i < result.length; i++ ) {

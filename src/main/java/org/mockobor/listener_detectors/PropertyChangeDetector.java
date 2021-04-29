@@ -1,6 +1,6 @@
 package org.mockobor.listener_detectors;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.Mockobor;
 import org.mockobor.mockedobservable.PropertyChangeNotifier;
 import org.mockobor.utils.reflection.ReflectionUtils;

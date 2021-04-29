@@ -1,6 +1,6 @@
 package org.mockobor.listener_detectors;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;

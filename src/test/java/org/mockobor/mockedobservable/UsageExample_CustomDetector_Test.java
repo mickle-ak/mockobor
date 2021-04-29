@@ -1,8 +1,8 @@
 package org.mockobor.mockedobservable;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.SneakyThrows;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

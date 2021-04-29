@@ -1,6 +1,6 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 
 

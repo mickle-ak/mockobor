@@ -1,8 +1,9 @@
 package org.mockobor.mockedobservable;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.ListenerSelector;
@@ -45,8 +46,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 
 
 	@Override
-	@NonNull
-	public Object getObservableMock() {
+	public @NonNull Object getObservableMock() {
 		return observable;
 	}
 
@@ -81,8 +81,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	// ==================================================================================
 
 	@Override
-	@NonNull
-	public <L> L notifierFor( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors ) {
+	public @NonNull <L> L notifierFor( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors ) {
 		Collection<L> listenersToNotify = getListeners( listenerClass, selectors );
 		if( strictCheckListenerList && listenersToNotify.isEmpty() ) throw new ListenersNotFoundException( listenerClass, selectors );
 
@@ -93,7 +92,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	}
 
 	@SneakyThrows
-	private static <L> Object sendNotifications( @NonNull Collection<L> listenersToNotify, @NonNull Method method, @NonNull Object[] args ) {
+	private static @Nullable <L> Object sendNotifications( @NonNull Collection<L> listenersToNotify, @NonNull Method method, @NonNull Object[] args ) {
 		Object result = null;
 		for( L listener : listenersToNotify ) {
 			result = method.invoke( listener, args );
@@ -123,8 +122,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	}
 
 	@Override
-	@NonNull
-	public Collection<Object> getAllListeners() {
+	public @NonNull Collection<Object> getAllListeners() {
 		return listeners.values().stream().flatMap( List::stream ).collect( Collectors.toList() );
 	}
 
@@ -138,8 +136,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	}
 
 	@Override
-	@NonNull
-	public <L> Collection<L> getListeners( Class<L> listenerClass, ListenerSelector... selectors ) {
+	public @NonNull <L> Collection<L> getListeners( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors ) {
 		Set<ListenerKey<L>> requiredKeys = Arrays.stream( selectors )
 		                                         .map( s -> new ListenerKey<>( listenerClass, s ) )
 		                                         .collect( Collectors.toSet() );

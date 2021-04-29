@@ -1,6 +1,6 @@
 package org.mockobor.mockedobservable;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenersNotFoundException;
 import org.mockobor.listener_detectors.ListenerSelector;

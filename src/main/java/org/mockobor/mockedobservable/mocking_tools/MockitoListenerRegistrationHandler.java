@@ -1,6 +1,7 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.util.MockUtil;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.lenient;
 public class MockitoListenerRegistrationHandler implements ListenerRegistrationHandler {
 
 	@Override
-	public boolean canHandle( Object mockedObservable ) {
+	public boolean canHandle( @Nullable Object mockedObservable ) {
 		return MockUtil.isMock( mockedObservable );
 	}
 
@@ -52,14 +53,12 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 	}
 
 	/** To create answer as redirection to the specified registration delegate. */
-	@NonNull
-	private Answer<Object> createAnswer( @NonNull ListenerContainer listeners, @NonNull RegistrationInvocation destination ) {
+	private @NonNull Answer<Object> createAnswer( @NonNull ListenerContainer listeners, @NonNull RegistrationInvocation destination ) {
 		return invocation -> destination.invoke( listeners, invocation.getMethod(), invocation.getArguments() );
 	}
 
 	/** To create argument matchers for stabbing invocation using {@link Mockito#any()} for all arguments. */
-	@NonNull
-	private Object[] createArgumentMatchers( @NonNull Method sourceMethod ) {
+	private @NonNull Object[] createArgumentMatchers( @NonNull Method sourceMethod ) {
 		Class<?>[] parameterTypes = sourceMethod.getParameterTypes();
 		Object[] result = new Object[parameterTypes.length];
 		for( int i = 0; i < result.length; i++ ) {
@@ -86,7 +85,7 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 	// ==================================================================================
 
 	@Override
-	public Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
+	public @NonNull Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
 		if( !MockUtil.isMock( mockedObservable ) ) throw new MockoborImplementationError( "observable (%s) must be a mockito mock", mockedObservable );
 
 		return Mockito.mockingDetails( mockedObservable )

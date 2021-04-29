@@ -2,7 +2,7 @@ package org.mockobor;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.listener_detectors.ListenerDefinitionDetector;
 import org.mockobor.listener_detectors.ListenerDetectorsRegistry;
 import org.mockobor.listener_detectors.ListenerDetectorsRegistryImpl;
@@ -39,6 +39,7 @@ public class MockoborContext {
 	static final MockingToolsRegistry MOCKING_TOOLS_REGISTRY = new MockingToolsRegistryImpl();
 
 	/** Settings to create a new notifier used in static context. */
+	@NonNull
 	static NotifierSettingsImpl notifierSettingsImpl = NotifierSettingsImpl.createDefaultSettings();
 
 
@@ -54,7 +55,7 @@ public class MockoborContext {
 	 * @see ListenerDetectorsRegistry#registerListenerDefinitionDetector
 	 * @see #reset()
 	 */
-	public static void registerListenerDefinitionDetector( ListenerDefinitionDetector listenerDefinitionDetector ) {
+	public static void registerListenerDefinitionDetector( @NonNull ListenerDefinitionDetector listenerDefinitionDetector ) {
 		LISTENER_DETECTORS_REGISTRY.registerListenerDefinitionDetector( listenerDefinitionDetector );
 	}
 
@@ -92,7 +93,7 @@ public class MockoborContext {
 	 * @return updater for settings used to create a new listener notifiers.
 	 * @see #reset()
 	 */
-	public static NotifierSettingsUpdater updateNotifierSettings() {
+	public static @NonNull NotifierSettingsUpdater updateNotifierSettings() {
 		return notifierSettingsImpl;
 	}
 

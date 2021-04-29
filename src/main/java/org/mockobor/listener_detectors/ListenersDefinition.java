@@ -1,6 +1,6 @@
 package org.mockobor.listener_detectors;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.exceptions.MockoborIllegalArgumentException;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.NotificationMethodDelegate.NotificationMethodInvocation;
@@ -120,7 +120,7 @@ public interface ListenersDefinition {
 		 * @throws MockoborImplementationError if at least one of the specified listener classes does not represent an interface type
 		 * @see #getDetectedListeners()
 		 */
-		public void addDetectedListeners( Collection<Class<?>> listenerClasses ) throws MockoborImplementationError {
+		public void addDetectedListeners( @NonNull Collection<Class<?>> listenerClasses ) throws MockoborImplementationError {
 			if( !listenerClasses.stream().allMatch( Class::isInterface ) ) {
 				throw new MockoborImplementationError( "Unexpected: only interfaces allowed here (was: %s)", listenerClasses );
 			}
@@ -139,7 +139,7 @@ public interface ListenersDefinition {
 		 * @param registration registration delegate to add
 		 * @see #getRegistrations()
 		 */
-		public void addRegistration( RegistrationDelegate registration ) {
+		public void addRegistration( @NonNull RegistrationDelegate registration ) {
 			registrations.add( registration );
 		}
 
@@ -155,7 +155,7 @@ public interface ListenersDefinition {
 		 * @param delegate delegate for notification method to add
 		 * @see #getCustomNotificationMethodDelegates()
 		 */
-		public void addNotification( NotificationMethodDelegate delegate ) {
+		public void addNotification( @NonNull NotificationMethodDelegate delegate ) {
 			notifications.put( delegate.getSource(), delegate.getDestination() );
 		}
 
@@ -172,7 +172,7 @@ public interface ListenersDefinition {
 		 * @throws MockoborIllegalArgumentException if at least one of the specified classes does not represent an interface type
 		 * @see #getAdditionalInterfaces()
 		 */
-		public void addAdditionalInterfaces( Collection<Class<?>> ifaces ) throws MockoborIllegalArgumentException {
+		public void addAdditionalInterfaces( @NonNull Collection<Class<?>> ifaces ) throws MockoborIllegalArgumentException {
 			if( !ifaces.stream().allMatch( Class::isInterface ) ) {
 				throw new MockoborIllegalArgumentException( "only interface allowed here (but was: %s)", ifaces );
 			}

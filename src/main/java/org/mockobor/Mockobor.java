@@ -3,7 +3,7 @@ package org.mockobor;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.exceptions.ListenerRegistrationMethodsNotDetectedException;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.UnregisteredListenersFoundException;
@@ -213,8 +213,7 @@ public final class Mockobor {
 	 * @see MockoborContext
 	 * @see #createNotifierFor(Object, NotifierSettings)
 	 */
-	@NonNull
-	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable )
+	public static @NonNull ListenersNotifier createNotifierFor( @NonNull Object mockedObservable )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
 		return createNotifierFor( mockedObservable, notifierSettings() );
 	}
@@ -249,16 +248,14 @@ public final class Mockobor {
 	 * @see Mockobor
 	 * @see #createNotifierFor(Object)
 	 */
-	@NonNull
-	public static ListenersNotifier createNotifierFor( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
+	public static @NonNull ListenersNotifier createNotifierFor( @NonNull Object mockedObservable, @NonNull NotifierSettings settings )
 			throws ListenerRegistrationMethodsNotDetectedException, MockingToolNotDetectedException {
 		return NOTIFIER_FACTORY.create( mockedObservable, settings );
 	}
 
 
 	/** @return a new copy of {@link NotifierSettings} created on base of settings statically stored in {@link MockoborContext}. */
-	@NonNull
-	public static NotifierSettingsUpdater notifierSettings() {
+	public static @NonNull NotifierSettingsUpdater notifierSettings() {
 		return MockoborContext.notifierSettingsImpl.toBuilder().build();
 	}
 

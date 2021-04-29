@@ -1,5 +1,6 @@
 package org.mockobor.mockedobservable;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.Mockobor;
 import org.mockobor.exceptions.ListenersNotFoundException;
 
@@ -68,7 +69,7 @@ public interface ObservableNotifier extends ListenersNotifier {
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 * @see Observable#notifyObservers(Object)
 	 */
-	default void notifyObservers( Object updateParameter )
+	default void notifyObservers( @Nullable Object updateParameter )
 			throws ListenersNotFoundException {
 		Object observableMock = getObservableMock();
 		notifierFor( Observer.class ).update( observableMock instanceof Observable ? (Observable) observableMock : null,

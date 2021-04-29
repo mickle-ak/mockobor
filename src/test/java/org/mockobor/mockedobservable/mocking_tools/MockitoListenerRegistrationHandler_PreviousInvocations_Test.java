@@ -2,6 +2,7 @@ package org.mockobor.mockedobservable.mocking_tools;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenerSelector;
 import org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler.Invocation;
 
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doReturn;
@@ -63,5 +65,14 @@ class MockitoListenerRegistrationHandler_PreviousInvocations_Test {
 						tuple( "int2int", Collections.singletonList( -5 ) )
 				);
 		assertThat( Arrays.asList( rc1, rc2, rc3, rc4 ) ).containsExactly( 0, -1, -200, 5 );
+	}
+
+
+	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	@Test
+	void getPreviouslyRegistrations_notMock() {
+		assertThatThrownBy( () -> handler.getPreviouslyRegistrations( new Object() ) )
+				.isInstanceOf( MockoborImplementationError.class )
+				.hasMessageContainingAll( "mockito", "mock" );
 	}
 }

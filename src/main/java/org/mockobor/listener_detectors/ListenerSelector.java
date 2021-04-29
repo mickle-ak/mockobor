@@ -2,8 +2,8 @@ package org.mockobor.listener_detectors;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.Arrays;
 import java.util.Objects;

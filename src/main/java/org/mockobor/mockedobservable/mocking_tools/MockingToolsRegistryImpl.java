@@ -2,7 +2,7 @@ package org.mockobor.mockedobservable.mocking_tools;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.MockoborIllegalArgumentException;
 

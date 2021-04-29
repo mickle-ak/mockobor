@@ -32,10 +32,8 @@ abstract class NotifierFactory_TestBase {
 
 	@BeforeEach
 	void setUp() {
-		notifier = new NotifierFactory( new ListenerDetectorsRegistryImpl(),
-		                                new MockingToolsRegistryImpl() )
-				           .create( mockedObservable,
-				                    NotifierSettingsImpl.createDefaultSettings() );
+		notifier = new NotifierFactory( new ListenerDetectorsRegistryImpl(), new MockingToolsRegistryImpl() )
+				           .create( mockedObservable, NotifierSettingsImpl.createDefaultSettings() );
 		endOfStubbingMode( mockedObservable );
 
 		testedObserver = new TestedObserver( mockedObservable );

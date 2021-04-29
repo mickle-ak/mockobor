@@ -2,7 +2,8 @@ package org.mockobor.utils.reflection;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -153,8 +154,8 @@ public final class ReflectionUtils {
 	 * @return similar method from the specified list or null if not found
 	 * @see #isSimilar
 	 */
-	public static Method findSimilarMethod( @NonNull Collection<Method> declaredMethods,
-	                                        @NonNull Method invokedMethods ) {
+	public static @Nullable Method findSimilarMethod( @NonNull Collection<Method> declaredMethods,
+	                                                  @NonNull Method invokedMethods ) {
 		return declaredMethods.stream().filter( m -> isSimilar( m, invokedMethods ) ).findFirst().orElse( null );
 	}
 
@@ -189,7 +190,7 @@ public final class ReflectionUtils {
 	 * @return result of invocation
 	 * @throws Throwable on error
 	 */
-	public static Object invokeDefaultMethod( Object proxy, Method method, Object... args ) throws Throwable {
+	public static @Nullable Object invokeDefaultMethod( Object proxy, Method method, Object... args ) throws Throwable {
 		assert method.isDefault() : "only default methods expected (method: " + method + ")"; // NOSONAR
 		return isJava9plus()
 		       ? invokeDefaultJava9plus( proxy, method, args )
@@ -197,7 +198,7 @@ public final class ReflectionUtils {
 	}
 
 	/** to invoke default method if run with java 8. */
-	private static Object invokeDefaultJava8( Object proxy, Method method, Object... args ) throws Throwable {
+	private static @Nullable Object invokeDefaultJava8( Object proxy, Method method, Object... args ) throws Throwable {
 		Class<?> clazz = method.getDeclaringClass();
 		Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class );
 		constructor.setAccessible( true ); // NOSONAR
@@ -209,7 +210,7 @@ public final class ReflectionUtils {
 	}
 
 	/** to invoke default method if run with java 9+. */
-	private static Object invokeDefaultJava9plus( Object proxy, Method method, Object... args ) throws Throwable {
+	private static @Nullable Object invokeDefaultJava9plus( Object proxy, Method method, Object... args ) throws Throwable {
 		MethodType methodType = MethodType.methodType( method.getReturnType(), method.getParameterTypes() );
 		return MethodHandles.lookup()
 		                    .findSpecial( method.getDeclaringClass(), method.getName(), methodType, method.getDeclaringClass() )

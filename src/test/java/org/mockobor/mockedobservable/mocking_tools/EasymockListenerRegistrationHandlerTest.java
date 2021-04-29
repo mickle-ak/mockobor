@@ -1,7 +1,7 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
 import org.easymock.EasyMock;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Disabled;
 
 

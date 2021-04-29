@@ -1,7 +1,7 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
 import org.easymock.EasyMock;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -74,7 +74,7 @@ class MockingToolsRegistryImplTest {
 				.isInstanceOf( AnotherListenerRegistrationHandler.class );
 	}
 
-	@SuppressWarnings( "java:S5778" )
+	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
 	@Test
 	void registerUnknownMockingTool() {
 		// mocking tool not in classpath
@@ -84,11 +84,19 @@ class MockingToolsRegistryImplTest {
 				.isInstanceOf( MockingToolNotDetectedException.class );
 	}
 
-	@SuppressWarnings( "java:S5778" )
+	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
 	@Test
 	void register_invalid_handle_not_implemented_ListenerRegistrationHandler() {
 		// Object as mocking tool :-), but always in classpath
 		assertThatThrownBy( () -> mockingToolsRegistry.addDefaultMockingTool( Object.class.getName(), Object.class.getName() ) )
+				.isInstanceOf( MockoborIllegalArgumentException.class );
+	}
+
+	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	@Test
+	void register_invalid_handle_unknownHandlerClass() {
+		// Object as mocking tool :-), but always in classpath
+		assertThatThrownBy( () -> mockingToolsRegistry.addDefaultMockingTool( Object.class.getName(), "org.mockobor.unknown.HandlerClass" ) )
 				.isInstanceOf( MockoborIllegalArgumentException.class );
 	}
 }

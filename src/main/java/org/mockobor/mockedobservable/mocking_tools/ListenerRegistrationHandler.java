@@ -1,7 +1,8 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
-import lombok.NonNull;
 import lombok.Value;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.RegistrationDelegate;
 
@@ -28,7 +29,7 @@ public interface ListenerRegistrationHandler {
 	 * @param mockedObservable object to check (can be null)
 	 * @return true if this handler can handle the specified object; false otherwise
 	 */
-	boolean canHandle( Object mockedObservable );
+	boolean canHandle( @Nullable Object mockedObservable );
 
 	/**
 	 * To create stubbing in the specified mock as a redirection from source (mocked) method to destination method of listeners container.
@@ -50,7 +51,7 @@ public interface ListenerRegistrationHandler {
 	 * @param mockedObservable object to inspect
 	 * @return list of previously invocations
 	 */
-	default Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
+	default @NonNull Collection<Invocation> getPreviouslyRegistrations( @NonNull Object mockedObservable ) {
 		return Collections.emptyList();
 	}
 

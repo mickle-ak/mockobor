@@ -1,11 +1,12 @@
 package org.mockobor.listener_detectors;
 
-import lombok.NonNull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockobor.exceptions.MockoborException;
+import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.AbstractDetector.ListenerRegistrationParameters;
 import org.mockobor.mockedobservable.MockedObservable;
 import org.mockobor.mockedobservable.MockedObservable.MyAnotherListener;
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
 import static org.mockobor.listener_detectors.ListenerSelector.selector;
@@ -29,7 +31,7 @@ class AbstractDetectorTest {
 	private final AbstractDetector detector = new AbstractDetector() {
 
 		@Override
-		protected boolean isListenerClass( Class<?> parameterType, Method method ) {
+		protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
 			return parameterType.getSimpleName().endsWith( "Listener" );
 		}
 
@@ -176,6 +178,7 @@ class AbstractDetectorTest {
 	@MethodSource( "hasListenerParameter_listener_found" )
 	void hasListenerParameter_listener_found( String methodName, Integer[] expectedListenerIndexes, Integer[] expectedSelectorIndexes ) {
 		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( findMethod( methodName ) );
+		assertThat( registrationParameters ).isNotNull();
 		assertThat( registrationParameters.getListenerIndexes() ).containsExactly( expectedListenerIndexes );
 		assertThat( registrationParameters.getSelectorIndexes() ).containsExactly( expectedSelectorIndexes );
 	}
@@ -204,6 +207,7 @@ class AbstractDetectorTest {
 	// =========================== RegistrationParameters ===============================
 	// ==================================================================================
 
+	@SuppressWarnings( "ConstantConditions" )
 	@ParameterizedTest( name = "[{index}] registrationParameters_selector({argumentsWithNames})" )
 	@MethodSource( "registrationParameters_selector" )
 	void registrationParameters_selector( String methodName, Object[] arguments, ListenerSelector expectedSelector ) {
@@ -223,6 +227,52 @@ class AbstractDetectorTest {
 				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1 }, selector( 1 ) ),
 				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1, 2 }, selector( 1, 2 ) )
 		);
+	}
+
+	@SuppressWarnings( "ConstantConditions" )
+	@Test
+	void registrationParameters_selector_errors_unexpectedMethod() {
+		Method sourceMethod = findMethod( "stringAndListener" );
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( sourceMethod );
+
+		Method realInvokedMethod = findMethod( "noListeners" );
+		assertThatThrownBy( () -> registrationParameters.createSelector( realInvokedMethod, new Object[2] ) )
+				.isInstanceOf( MockoborImplementationError.class )
+				.hasMessageContainingAll( "unexpected method", "stringAndListener", "noListeners" );
+	}
+
+	@SuppressWarnings( "ConstantConditions" )
+	@Test
+	void registrationParameters_selector_errors_tooLittleArguments() {
+		Method method = findMethod( "stringAndListener" );
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( method );
+
+		assertThatThrownBy( () -> registrationParameters.createSelector( method, new Object[]{ mock( MyListener.class ) } ) )
+				.isInstanceOf( MockoborImplementationError.class )
+				.hasMessageContainingAll( "unexpected number of parameters", "stringAndListener" );
+	}
+
+	@SuppressWarnings( "ConstantConditions" )
+	@Test
+	void registrationParameters_selector_errors_tooMuchArguments() {
+		Method method = findMethod( "stringAndListener" );
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( method );
+
+		assertThatThrownBy( () -> registrationParameters.createSelector( method, new Object[]{ "s1", mock( MyListener.class ), "s2" } ) )
+				.isInstanceOf( MockoborImplementationError.class )
+				.hasMessageContainingAll( "unexpected number of parameters", "stringAndListener" );
+	}
+
+	@SuppressWarnings( "ConstantConditions" )
+	@Test
+	void registrationParameters_selector_errors_tooLittleArgumentsVararg() {
+		Method method = findMethod( "addVarargListener" );
+		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( method );
+
+		assertThatThrownBy( () -> registrationParameters.createSelector( method, new Object[0] ) )
+				.isInstanceOf( MockoborImplementationError.class )
+				.hasMessageContainingAll( "unexpected number of parameters", "vararg method", "addVarargListener",
+				                          "expected>=1", "was: 0" );
 	}
 
 

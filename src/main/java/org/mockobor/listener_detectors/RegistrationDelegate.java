@@ -1,7 +1,7 @@
 package org.mockobor.listener_detectors;
 
-import lombok.NonNull;
 import lombok.Value;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.lang.reflect.Method;
 

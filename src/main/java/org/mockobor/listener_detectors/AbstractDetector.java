@@ -2,8 +2,9 @@ package org.mockobor.listener_detectors;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenersDefinition.ListenersDefinitionImpl;
 import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocation;
@@ -90,7 +91,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	// ==================================================================================
 
 	@Override
-	public ListenersDefinition detect( @NonNull Collection<Method> methods ) {
+	public @NonNull ListenersDefinition detect( @NonNull Collection<Method> methods ) {
 		ListenersDefinitionImpl listenersDefinition = detectRegistrations( methods );
 		if( listenersDefinition.hasListenerDetected() ) {
 			listenersDefinition.addAdditionalInterfaces( getAdditionalInterfaces() );
@@ -111,7 +112,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 * @return listenersDefinition with detected listeners
 	 * @see ListenersDefinition#hasListenerDetected()
 	 */
-	protected ListenersDefinitionImpl detectRegistrations( @NonNull Collection<Method> methods ) {
+	protected @NonNull ListenersDefinitionImpl detectRegistrations( @NonNull Collection<Method> methods ) {
 		ListenersDefinitionImpl listenersDefinition = new ListenersDefinitionImpl();
 		for( Method method : methods ) {
 			ListenerRegistrationParameters registrationParameters = getListenerRegistrationParameter( method );
@@ -130,19 +131,19 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		return listenersDefinition;
 	}
 
-	protected RegistrationInvocation createAddDelegate( ListenerRegistrationParameters rp ) {
+	protected @NonNull RegistrationInvocation createAddDelegate( ListenerRegistrationParameters rp ) {
 		return ( listeners, method, arguments ) -> createDelegate( rp, method, arguments, listeners::addListener );
 	}
 
-	protected RegistrationInvocation createRemoveDelegate( ListenerRegistrationParameters rp ) {
+	protected @NonNull RegistrationInvocation createRemoveDelegate( ListenerRegistrationParameters rp ) {
 		return ( listeners, method, arguments ) -> createDelegate( rp, method, arguments, listeners::removeListener );
 	}
 
 	@SuppressWarnings( "unchecked" )
-	private <L> Object createDelegate( @NonNull ListenerRegistrationParameters rp,
-	                                   @NonNull Method method,
-	                                   Object[] arguments,
-	                                   @NonNull ListenerRegistration registration ) {
+	private <L> @Nullable Object createDelegate( @NonNull ListenerRegistrationParameters rp,
+	                                             @NonNull Method method,
+	                                             Object[] arguments,
+	                                             @NonNull ListenerRegistration registration ) {
 		if( arguments == null ) arguments = new Object[0];
 		ListenerSelector selector = rp.createSelector( method, arguments );
 		List<Integer> listenerIndexes = rp.getListenerIndexes();
@@ -158,7 +159,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	@FunctionalInterface
 	private interface ListenerRegistration {
 
-		<L> void invoke( ListenerSelector selector, Class<L> listenerClass, L listener );
+		<L> void invoke( @NonNull ListenerSelector selector, @NonNull Class<L> listenerClass, @NonNull L listener );
 	}
 
 
@@ -167,7 +168,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 * @return registration parameters if the specified method has one listener parameter; null otherwise
 	 * @see #isListenerClass
 	 */
-	protected ListenerRegistrationParameters getListenerRegistrationParameter( @NonNull Method method ) {
+	protected @Nullable ListenerRegistrationParameters getListenerRegistrationParameter( @NonNull Method method ) {
 		List<Integer> selectorIndexes = new ArrayList<>();
 		List<Integer> listenerIndexes = new ArrayList<>();
 		List<Class<?>> listenerClasses = new ArrayList<>();
@@ -219,13 +220,15 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		 * @param arguments     actual parameters used by real call of registration method
 		 * @return listener selector used in this invocation of registration method
 		 */
-		public ListenerSelector createSelector( @NonNull Method invokedMethod, @NonNull Object[] arguments ) {
+		public @NonNull ListenerSelector createSelector( @NonNull Method invokedMethod, @NonNull Object[] arguments ) {
 			checkIsSameMethod( invokedMethod, arguments );
 			return createSelector( invokedMethod, arguments, new ArrayList<>( selectorIndexes ) );
 		}
 
 
-		private static ListenerSelector createSelector( Method invokedMethod, Object[] arguments, List<Integer> selectorIndexesCopy ) {
+		private static @NonNull ListenerSelector createSelector( @NonNull Method invokedMethod,
+		                                                         @NonNull Object[] arguments,
+		                                                         @NonNull List<Integer> selectorIndexesCopy ) {
 			if( invokedMethod.isVarArgs() ) {
 				if( arguments.length < invokedMethod.getParameterCount() ) {
 					// vararg omitted => remove vararg elements from selector indexes

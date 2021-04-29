@@ -24,6 +24,9 @@ your tests.
 
 - [Dependencies](#Dependencies)
 - [Usage](#Usage)
+  - [listen for mocked observable object and check completely deregistration of listeners](#listen-for-mocked-observable-object-and-check-completely-deregistration-of-listeners)
+    - [listener selectors](#listener-selectors)
+    - [listener notifier settings](#listener-notifier-settings)
 - [Examples](#examples)
   - [simulate sending of events from mocked collaborator to tested object](#simulate-sending-of-events-from-mocked-collaborator-to-tested-object)
   - [check completely deregistration of listeners](#check-completely-deregistration-of-listeners)
@@ -41,18 +44,20 @@ your tests.
 
 ## Dependencies
 
-Mockobor propagates no dependencies.
-
 To use Mockobor in unit tests:
 - start test with _java 8+_
 - use at least one of follow mocking tools in your tests:
   - _[Mockito](https://github.com/mockito/mockito) 2.20.1+_
   - _[EasyMock](https://github.com/easymock/easymock) 3.4+_
 
+Mockobor propagates follow dependencies:
+- eclipse non-null
+  annotations ([org.eclipse.jdt.annotation](https://search.maven.org/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation))
+
 
 ## Usage
 
-### listen for mocked observable object + check completely deregistration of listeners
+### listen for mocked observable object and check completely deregistration of listeners
 
 To simulate sending of events (via java listeners) from mocked collaborator to tested object, Mockobor creates for
 mocked observable object a special notifier object:
@@ -137,9 +142,7 @@ For more detail see [Examples / typical java style listeners](#typical-java-styl
 `NotifierSettings` can be changed globally - for all next created `ListenersNotifier` - using settings stored statically
 in `MockoborContext`:
 ```java
-  MockoborContext.updateNotifierSettings()
-        .ignoreListenersInterfaces()
-        .lenientListenerListCheck();
+  MockoborContext.updateNotifierSettings().ignoreListenersInterfaces().lenientListenerListCheck();
 ```
 or for one creation only:
 ```java
