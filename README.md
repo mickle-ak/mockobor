@@ -2,6 +2,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mickle-ak/mockobor/Java%20CI%20with%20Gradle)](https://github.com/mickle-ak/mockobor/actions/workflows/gradle_CI.yml)
 [![javadoc](https://javadoc.io/badge2/io.github.mickle-ak.mockobor/mockobor/javadoc.svg)](https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor)
 [![GitHub](https://img.shields.io/github/license/mickle-ak/mockobor)](LICENSE)
+[![codecov](https://codecov.io/gh/mickle-ak/mockobor/branch/master/graph/badge.svg?token=E7MOZ69GSA)](https://codecov.io/gh/mickle-ak/mockobor)
 
 
 # Mockobor
@@ -37,8 +38,6 @@ your tests.
   - [Another mocking tool](#another-mocking-tool)
 - [Restrictions](#Restrictions)
 - [Installation](#Installation)
-  - [maven](#maven)
-  - [gradle](#gradle)
 - [Changelog](#Changelog)
 
 
@@ -468,7 +467,8 @@ If you mock a collaborator object using _EasyMock_:
 
 ## Installation
 
-To use the Mockobor in your unit tests, use this dependency entry:
+To use the Mockobor in your unit tests, you can download it from maven central: [mockobor][maven-central-mockobor] or
+add this dependency entry:
 
 ### maven
 
@@ -551,3 +551,5 @@ testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.1")
 [ListenerRegistrationHandler]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/mockedobservable/mocking_tools/ListenerRegistrationHandler.html
 
 [MockoborContext.registerListenerRegistrationHandler]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/MockoborContext.html#registerListenerRegistrationHandler-org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler-
+
+[maven-central-mockobor]: https://search.maven.org/search?q=a:mockobor

@@ -100,6 +100,8 @@ tasks.javadoc {
 // configure jacoco report task
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    reports.xml.isEnabled = true
+    reports.html.isEnabled = true
     doLast {
         println("full jacoco report: " + reports.html.entryPoint.absolutePath)
     }
