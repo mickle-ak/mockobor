@@ -491,7 +491,7 @@ testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.1")
 
 ## Changelog
 
-- **1.0.1** (29.04.2021)
+- **1.0.1** (30.04.2021)
   - Changed
     - Documentation + javadoc
   - Removed

@@ -2,7 +2,7 @@ import org.gradle.api.JavaVersion.VERSION_1_8
 
 
 group = "io.github.mickle-ak.mockobor"
-version = "1.0"
+version = "1.0.1"
 
 plugins {
     java
