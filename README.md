@@ -15,8 +15,6 @@ again - you offen need to:
 - simulate sending of events (via java listeners) from mocked collaborator to tested object,
 - check completely deregistration of listeners registered by mocked collaborator,
 - collect and verify events sent from test object
-- synchrone start of `Feature`, `SwingWorker` etc. to simpler verify of result of (in production asynchrone)
-  invocations.
 
 And all of this should be done without changing of production code.
 
@@ -32,7 +30,6 @@ your tests.
   - [simulate sending of events from mocked collaborator to tested object](#simulate-sending-of-events-from-mocked-collaborator-to-tested-object)
   - [check completely deregistration of listeners](#check-completely-deregistration-of-listeners)
   - [collect and verify events from test object](#collect-and-verify-events-from-test-object)
-  - [synchrone start of asynchrone subprocesses](#synchrone-start-of-asynchrone-subprocesses)
 - [Extension](#Extension)
   - [Custom listener detector](#Custom-listener-detector)
   - [Another mocking tool](#another-mocking-tool)
@@ -155,12 +152,6 @@ For more detail see [Examples / NotifierSettings](#notifiersettings)
 
 ### collect and verify events from test object
 (not implemented jet, probably in version 1.1)
-
-
-
-### synchrone start of asynchrone subprocesses
-(not implemented jet, probably in version 1.2)
-
 
 
 ## Examples
