@@ -36,9 +36,9 @@ java {
 
 dependencies {
 
-    val junit5_version = "5.7.1"
-    val assertj_version = "3.19.0"
-    val mockito_version = "3.9.0"
+    val junit5_version = "5.8.0"
+    val assertj_version = "3.20.2"
+    val mockito_version = "3.12.4"
     val easymock_version = "4.3"
     val lombok_version = "1.18.20"
 

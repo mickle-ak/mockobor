@@ -23,7 +23,7 @@ import org.mockobor.mockedobservable.mocking_tools.MockingToolsRegistryImpl;
  * <li>change global settings, use {@link #updateNotifierSettings()}</li>
  * </ul>
  * <p></p>
- * Important: Registered detectors are kept statically so it will stick between your unit tests.
+ * Important: Registered detectors are kept statically, so it will stick between your unit tests.
  * Make sure you reset it if needed (using {@link #reset()} method).
  *
  * @see ListenerDetectorsRegistry
@@ -48,8 +48,8 @@ public class MockoborContext {
 	 * <p></p>
 	 * Usually you don't need to call it. Only if you want to register custom listener definition detectors.
 	 * <p></p>
-	 * Important: Registered detectors are kept statically so it will stick between your unit tests.
-	 * Make sure you reset it if needed.
+	 * Important: Registered detectors are kept statically, so it will stick between your unit tests.
+	 * Make sure you reset it if needed (see {@link #reset()}).
 	 *
 	 * @param listenerDefinitionDetector custom listener definition detector
 	 * @see ListenerDetectorsRegistry#registerListenerDefinitionDetector
@@ -65,8 +65,8 @@ public class MockoborContext {
 	 * Usually you don't need to use this.
 	 * Only if you want to register custom implementation of {@link ListenerRegistrationHandler} for your mocking tool.
 	 * <p></p>
-	 * Important: Registered handler are kept statically so it will stick between your unit tests.
-	 * Make sure you reset it if needed.
+	 * Important: Registered handler are kept statically, so it will stick between your unit tests.
+	 * Make sure you reset it if needed (see {@link #reset()}).
 	 *
 	 * @param registrationHandler implementation of {@link ListenerRegistrationHandler} for your mocking tool.
 	 * @see MockingToolsRegistry#registerListenerRegistrationHandler
@@ -87,8 +87,8 @@ public class MockoborContext {
 	 *     .lenientListenerListCheck();
 	 * </code></pre>
 	 * <p></p>
-	 * Important: Settings are kept statically so it will stick between your unit tests.
-	 * Make sure you reset it if needed.
+	 * Important: Settings are kept statically, so it will stick between your unit tests.
+	 * Make sure you reset it if needed (see {@link #reset()}).
 	 *
 	 * @return updater for settings used to create a new listener notifiers.
 	 * @see #reset()
@@ -99,7 +99,11 @@ public class MockoborContext {
 
 
 	/**
-	 * To remove all registered custom listener definition detectors.
+	 * To remove/reset all:<ul>
+	 *     <li>custom listener definition detectors (added with {@link #registerListenerDefinitionDetector})</li>
+	 *     <li>custom support for your mocking tool (added with {@link #registerListenerRegistrationHandler})</li>
+	 *     <li>custom global settings (set with {@link #updateNotifierSettings()})</li>
+	 * </ul>
 	 * <p><br>
 	 * Usually you don't need to call it.
 	 * Only if you want to reset changes made by settings or by registration of custom detectors or mocking tools.
