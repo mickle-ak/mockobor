@@ -25,11 +25,13 @@ your tests.
 - [Usage](#Usage)
   - [listen for mocked observable object and check completely deregistration of listeners](#listen-for-mocked-observable-object-and-check-completely-deregistration-of-listeners)
     - [listener selectors](#listener-selectors)
+    - [registration order](#registration-order)
     - [listener notifier settings](#listener-notifier-settings)
+  - [collect and verify events from test object (not implemented yet)](#collect-and-verify-events-from-test-object)
 - [Examples](#examples)
   - [simulate sending of events from mocked collaborator to tested object](#simulate-sending-of-events-from-mocked-collaborator-to-tested-object)
   - [check completely deregistration of listeners](#check-completely-deregistration-of-listeners)
-  - [collect and verify events from test object](#collect-and-verify-events-from-test-object)
+  - [use Mockito annotations and Mockobor together](#use-mockito-annotations-and-mockobor-together)
 - [Extension](#Extension)
   - [Custom listener detector](#Custom-listener-detector)
   - [Another mocking tool](#another-mocking-tool)
@@ -118,6 +120,36 @@ registration methods and allows adding selectors by sending of notifications:
         ...
 ```
 For more detail see [Examples / typical java style listeners](#typical-java-style-listeners)
+
+
+#### registration order
+
+Be normal practice you create listener notifier object BEFORE tested object registers its listeners by mocked
+observable. It works well, and it works with all mocking tool:
+```java
+private final MockedObservable mockedObservable=EasyMock.mock(MockedObservable.class );
+private final ListenersNotifier notifier=Mockobor.createNotifierFor(mockedObservable);
+private final TestedObserver testObject=new TestedObserver(mockedObservable);
+```
+
+At the same time, **if you use Mockito**, you can create listener notifier object whenever you like:
+```java
+private final MockedObservable mockedObservable=Mockito.mock(MockedObservable.class );
+private final TestedObserver testObject=new TestedObserver(mockedObservable);
+
+@Test
+void test_notifications(){
+        ...
+        notifier=Mockobor.createNotifierFor(mockedObservable);
+        ...
+        notifier.notifierFor(XxxListener.class).onChange(...);
+        ...
+        }
+```
+It allows usage of Mockito annotations together with Mockobor.
+See [Examples / use Mockito annotations and Mockobor together](#use-mockito-annotations-and-mockobor-together)
+
+_Note: It does not work with EasyMock! See [Restrictions / EasyMock restrictions](#easymock-restrictions)_
 
 
 #### listener notifier settings
@@ -368,10 +400,32 @@ class TestedObserver_Test {
 See also [UsageExample_allListenersAreUnregistered_Test.java][UsageExample_allListenersAreUnregistered_Test]
 
 
+### use Mockito annotations and Mockobor together
+
+If you use Mockito as mocking tool, you can simply use Mockito annotations together with Mockobor:
+```java
+@Mock
+private MockedObservable mockedObservable;
+
+@InjectMocks
+private AnnotationsTestObject testedObserver;
+
+private ListenersNotifier notifier;
+
+@Test
+void test_notifications(){
+        ...
+        notifier=Mockobor.createNotifierFor(mockedObservable);
+        ...
+        notifier.notifierFor(MyListener.class).onChange(1f);
+        ...
+        }
+```
+See [UsageExample_MockitoAnnotation_Test.java][UsageExample_MockitoAnnotation_Test]
+
+
 ### NotifierSettings
-
 See [UsageExample_NotifierSettings_Test.java][UsageExample_NotifierSettings_Test]
-
 
 
 ## Extension
@@ -441,7 +495,7 @@ as implementation examples.
   registration methods.
 
 
-### _EasyMock_ restrictions
+### EasyMock restrictions
 
 If you mock a collaborator object using _EasyMock_:
 
@@ -509,6 +563,8 @@ testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.1")
 [UsageExample_Observable_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_Observable_Test.java
 
 [UsageExample_allListenersAreUnregistered_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_allListenersAreUnregistered_Test.java
+
+[UsageExample_MockitoAnnotation_Test]:src/test/java/org/mockobor/mockedobservable/UsageExample_MockitoAnnotation_Test.java
 
 [UsageExample_NotifierSettings_Test]: src/test/java/org/mockobor/mockedobservable/UsageExample_NotifierSettings_Test.java
 
