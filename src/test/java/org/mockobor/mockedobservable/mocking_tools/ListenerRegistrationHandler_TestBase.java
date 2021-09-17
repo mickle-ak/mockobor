@@ -1,11 +1,13 @@
 package org.mockobor.mockedobservable.mocking_tools;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockobor.exceptions.MockoborImplementationError;
 import org.mockobor.listener_detectors.ListenerContainer;
 import org.mockobor.listener_detectors.RegistrationDelegate;
 import org.mockobor.mockedobservable.ListenersManager;
+import org.mockobor.utils.reflection.ReflectionUtils;
 import org.mockobor.utils.reflection.TypeUtils;
 
 import java.lang.reflect.Method;
@@ -48,6 +50,9 @@ abstract class ListenerRegistrationHandler_TestBase {
 
 	@Test
 	void canHandle_partial_mock() {
+		Assumptions.assumeFalse( this.getClass().getSimpleName().startsWith( "Easymock" ) && ReflectionUtils.javaSpecificationVersion() >= 17,
+		                         "EasyMock and Java 17+" );
+
 		assertThat( handler.canHandle( createPartialMock( listeners ) ) ).isTrue();
 	}
 

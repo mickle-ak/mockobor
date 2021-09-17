@@ -6,6 +6,8 @@ group = "io.github.mickle-ak.mockobor"
 version = System.getenv("RELEASE_VERSION") ?: "1.0.1"
 description = "Mocked Observable Observation - library to simplify some aspects of unit testing with java."
 
+println("version = $version")
+
 
 plugins {
     // build

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @NoArgsConstructor( access = AccessLevel.PRIVATE )
@@ -97,8 +99,8 @@ public final class ReflectionUtils {
 	 * To check if the specified class CAN be a class created by Mockito.
 	 * <p>
 	 * It does not use {@code MockUtil.isMock} because of Mockito can be not in classpath.
-	 * Therefore it is not 100% correct, but is OK for our purpose
-	 * (for example, if inline mockito mock-macker used, it returns always false).
+	 * Therefore, it is not 100% correct, but is OK for our purpose
+	 * (for example, if inline mockito mock-macker used, it always returns false).
 	 *
 	 * @param clazz class to test
 	 * @return true if specified class CAN be a class created by Mockito
@@ -218,8 +220,33 @@ public final class ReflectionUtils {
 		                    .invokeWithArguments( args );
 	}
 
-	public static boolean isJava9plus() {
-		String javaSpecificationVersion = System.getProperty( "java.specification.version", "1." );
+
+	// ==================================================================================
+	// ================================ java version ====================================
+	// ==================================================================================
+
+	/**
+	 * To check if the currently running java has version 9 or above.
+	 * It is clearly faster as {@link #javaSpecificationVersion()}.
+	 *
+	 * @return true if current java version is 9 or higher; false for java 8 or less
+	 */
+	private static boolean isJava9plus() {
+		String javaSpecificationVersion = System.getProperty( "java.specification.version", "1.8" );
 		return !javaSpecificationVersion.startsWith( "1." );
+	}
+
+
+	/** @return java version as int (1 for 1.1, ..., 5 for 1.5, ..., 8 for 1.8, 9 for 9 etc.) */
+	public static int javaSpecificationVersion() {
+		String javaSpecificationVersion = System.getProperty( "java.specification.version", "1.8" );
+		return parseJavaSpecificationVersion( javaSpecificationVersion );
+	}
+
+	private static final Pattern JAVA_VERSION_REGEX = Pattern.compile( "^(1\\.)?(\\d+).*" );
+
+	static int parseJavaSpecificationVersion( @NonNull String javaSpecificationVersion ) {
+		Matcher versionMatcher = JAVA_VERSION_REGEX.matcher( javaSpecificationVersion );
+		return versionMatcher.matches() ? Integer.parseInt( versionMatcher.group( 2 ) ) : 8;
 	}
 }

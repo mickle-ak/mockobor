@@ -499,15 +499,16 @@ as implementation examples.
 
 If you mock a collaborator object using _EasyMock_:
 
-- a notifier object must be created (by calling `Mockobor.createNotifierFor`) before a tested object registers its
-  listener by the mocked collaborator! It is necessary, because registration methods must be redirected to the notifier
-  before they will be called from the tested object. As consequence, it is not possible to inject mocks to the observer
-  test object using `@TestSubject` annotation.
+- a notifier object must be created (by calling `Mockobor.createNotifierFor`) before a tested object registers its listener by the mocked
+  collaborator! It is necessary, because registration methods must be redirected to the notifier before they will be called from the tested
+  object. As consequence, it is not possible to inject mocks to the observer test object using `@TestSubject` annotation.
 
 - If listener registration methods of the mocked collaborator object have _varargs_ (
-  like `addListener(MyListener l, Object...selector)`), then it can be problematic - during recording mode Mockobor
-  can't forecast how many arguments will be used by real invocation of such method, therefore recorded and real
-  invocations don't have to match (see [here](https://github.com/easymock/easymock/issues/130)).
+  like `addListener(MyListener l, Object...selector)`), then it can be problematic - during recording mode Mockobor can't forecast how many
+  arguments will be used by real invocation of such method, therefore recorded and real invocations don't have to match (
+  see [here](https://github.com/easymock/easymock/issues/130)).
+
+- EasyMock (<=4.3) does not work with Java 17
 
 
 ## Installation

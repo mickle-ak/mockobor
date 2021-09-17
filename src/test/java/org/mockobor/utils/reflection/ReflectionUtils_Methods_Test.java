@@ -25,6 +25,14 @@ class ReflectionUtils_Methods_Test {
 		}
 	}
 
+	private interface TestMethods2 {
+		void method( String s );
+		void method( Object s );
+		int method( Integer s );
+		void method();
+		void anotherMethod();
+	}
+
 
 	// ==================================================================================
 	// ============================ invoke default method ===============================
@@ -33,9 +41,9 @@ class ReflectionUtils_Methods_Test {
 	@Test
 	void testInvokeDefaultMethod() {
 		TestMethods testMethods = (TestMethods) Proxy.newProxyInstance(
-			Thread.currentThread().getContextClassLoader(),
-			new Class[]{ TestMethods.class },
-			ReflectionUtils::invokeDefaultMethod );
+				Thread.currentThread().getContextClassLoader(),
+				new Class[]{ TestMethods.class },
+				ReflectionUtils::invokeDefaultMethod );
 
 		assertThat( testMethods.defaultMethod( "paramValue" ) ).isEqualTo( "paramValue" );
 	}
@@ -70,15 +78,6 @@ class ReflectionUtils_Methods_Test {
 	// ============================= compatible methods =================================
 	// ==================================================================================
 
-	private interface TestMethods2 {
-		void method( String s );
-		void method( Object s );
-		int method( Integer s );
-		void method();
-		void anotherMethod();
-	}
-
-
 	@Test
 	void testFindCompatibleMethod_found() throws NoSuchMethodException {
 		Collection<Method> declaredMethods = Arrays.asList( TestMethods.class.getDeclaredMethods() );
@@ -88,9 +87,10 @@ class ReflectionUtils_Methods_Test {
 
 		Method declaredMethod = findSimilarMethod( declaredMethods, invokedMethod );
 
-		assertThat( declaredMethods ).as( "result from the methods list" ).contains( declaredMethod );
-		assertThat( isSimilar( declaredMethod, invokedMethod ) ).as( "compatible methods" ).isTrue();
-		assertThat( declaredMethod ).as( "compatible method is another method" ).isNotEqualTo( invokedMethod );
+		assertThat( declaredMethod ).as( "declared method found" ).isNotNull();
+		assertThat( declaredMethods ).as( "declared method from the methods list" ).contains( declaredMethod );
+		assertThat( isSimilar( declaredMethod, invokedMethod ) ).as( "declared method is compatible to invoked methods" ).isTrue();
+		assertThat( declaredMethod ).as( "declared method is not same as invoked method" ).isNotEqualTo( invokedMethod );
 		assertThat( declaredMethod.getDeclaringClass() ).as( "because of another declaring class" ).isNotEqualTo( invokedMethod.getDeclaringClass() );
 	}
 

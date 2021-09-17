@@ -1,6 +1,7 @@
 package org.mockobor.utils.reflection;
 
 import org.easymock.EasyMock;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -50,7 +51,7 @@ class ReflectionUtils_ReachableMethods_Test {
 	private final static class FinalDerived extends Derived implements Interface {
 		@Override
 		protected void protectedOverriddenMethod() {}
-		public final void finalMethod() {}
+		public void finalMethod() {}
 	}
 
 	private interface Interface2 {
@@ -82,6 +83,8 @@ class ReflectionUtils_ReachableMethods_Test {
 	@ParameterizedTest( name = "getReachableMethods_Derived - {0}" )
 	@MethodSource( "mockingTools" )
 	void getReachableMethods_Derived( String name, Function<Class<?>, Object> mocker ) {
+		Assumptions.assumeFalse( name.equals( "EasyMock" ) && ReflectionUtils.javaSpecificationVersion() >= 17, "EasyMock and Java 17+" );
+
 		Collection<Method> methods = getReachableMethods( mocker.apply( Derived.class ) );
 
 		assertThat( methods ).extracting( Method::getName ).containsExactlyInAnyOrder( EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS );
