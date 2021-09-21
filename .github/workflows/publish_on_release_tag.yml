@@ -4,6 +4,8 @@ on:
   push:
     tags: [ 'v*' ]
 
+  workflow_dispatch:
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -27,5 +29,5 @@ jobs:
           sonatypeUsername: ${{secrets.SONATYPE_USERNAME}}
           sonatypePassword64: ${{secrets.SONATYPE_PASSWORD_64}}
         run: |
-          echo "RELEASE_VERSION=${GITHUB_REF:11}" >> $GITHUB_ENV
+          [[ $GITHUB_REF =~ SNAPSHOT ]] && echo "can not publish SNAPSHOT version" && exit 1
           ./gradlew build publishToSonatype closeAndReleaseSonatypeStagingRepository

@@ -5,6 +5,7 @@ name: Java CI with Gradle
 
 on:
   push:
+    branches: [ '*' ]
     paths-ignore:
       - 'subprojects/**'
       - '**/README.md'
@@ -16,7 +17,6 @@ on:
       - '**/README.md'
       - '.github/workflows/test_dependencies.yml'
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:

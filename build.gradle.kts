@@ -1,9 +1,11 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import pl.allegro.tech.build.axion.release.domain.ChecksConfig
+import pl.allegro.tech.build.axion.release.domain.hooks.HooksConfig
 import java.util.*
 
 
 group = "io.github.mickle-ak.mockobor"
-version = System.getenv("RELEASE_VERSION") ?: "1.0.1"
+version = scmVersion.version
 description = "Mocked Observable Observation - library to simplify some aspects of unit testing with java."
 
 println("version = $version")
@@ -18,7 +20,11 @@ plugins {
     `maven-publish`
     signing
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+
+    // versioning
+    id("pl.allegro.tech.build.axion-release") version "1.13.3"
 }
+
 
 repositories {
     mavenCentral()
@@ -107,6 +113,25 @@ tasks.jacocoTestReport {
     doLast {
         println("full jacoco report: " + reports.html.entryPoint.absolutePath)
     }
+}
+
+
+// ==================================================================================
+// =================================== versioning ===================================
+// ==================================================================================
+
+scmVersion {
+    hooks(closureOf<HooksConfig> {
+        pre("fileUpdate", mapOf(
+                "file" to "README.md",
+                "pattern" to KotlinClosure2({ v: Any, _: Any -> """(<version>|mockobor:)$v(</version>|"\))""" }),
+                "replacement" to KotlinClosure2({ v: Any, _: Any -> """$1$v$2""" })))
+        pre("commit")
+    })
+    checks(closureOf<ChecksConfig> {
+        uncommittedChanges = false
+        aheadOfRemote = false
+    })
 }
 
 
