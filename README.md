@@ -523,7 +523,7 @@ in `pom.xml`:
 <dependency>
   <groupId>io.github.mickle-ak.mockobor</groupId>
   <artifactId>mockobor</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -532,10 +532,16 @@ in `pom.xml`:
 
 in `build.gradle.kts`:
 ```kotlin
-testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.1")
+testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.2")
 ```
 
 ## Changelog
+
+- **1.0.2** (21.09.2021)
+  - Changed
+    - Test with Java 17 (exclude EasyMock)
+    - Documentation + javadoc
+    - use axion-release gradle plugin for versioning
 
 - **1.0.1** (30.04.2021)
   - Changed
