@@ -537,6 +537,11 @@ testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.2")
 
 ## Changelog
 
+- **In the next Version**
+  - Changed
+    - create release on version tag
+    - automatically update version in Changelog
+
 - **1.0.2** (21.09.2021)
   - Changed
     - Test with Java 17 (exclude EasyMock)

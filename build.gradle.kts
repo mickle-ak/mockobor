@@ -1,6 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import pl.allegro.tech.build.axion.release.domain.ChecksConfig
 import pl.allegro.tech.build.axion.release.domain.hooks.HooksConfig
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -44,8 +46,8 @@ java {
 
 dependencies {
 
-    val junit5_version = "5.8.0"
-    val assertj_version = "3.20.2"
+    val junit5_version = "5.8.1"
+    val assertj_version = "3.21.0"
     val mockito_version = "3.12.4"
     val easymock_version = "4.3"
     val lombok_version = "1.18.20"
@@ -120,12 +122,23 @@ tasks.jacocoTestReport {
 // =================================== versioning ===================================
 // ==================================================================================
 
+// see https://axion-release-plugin.readthedocs.io/en/latest/configuration/tasks/
+// usage:
+// ./gradlew currentVersion
+// ./gradlew createRelease
+
 scmVersion {
     hooks(closureOf<HooksConfig> {
+        // update version in dependency examples
         pre("fileUpdate", mapOf(
                 "file" to "README.md",
                 "pattern" to KotlinClosure2({ v: Any, _: Any -> """(<version>|mockobor:)$v(</version>|"\))""" }),
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> """$1$v$2""" })))
+        // update version in change log
+        pre("fileUpdate", mapOf(
+                "file" to "README.md",
+                "pattern" to KotlinClosure2({ v: Any, _: Any -> """- \*\*In the next Version\*\*""" }),
+                "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })))
         pre("commit")
     })
     checks(closureOf<ChecksConfig> {
@@ -133,6 +146,8 @@ scmVersion {
         aheadOfRemote = false
     })
 }
+
+fun currentDate() = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now())
 
 
 // ==================================================================================
