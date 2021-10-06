@@ -539,6 +539,7 @@ testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.2")
 
 - **In the next Version**
   - Changed
+    - add defaults values for further types
     - create release on version tag
     - automatically update version in Changelog
 

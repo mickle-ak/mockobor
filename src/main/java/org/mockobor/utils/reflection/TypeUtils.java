@@ -6,9 +6,14 @@ import lombok.NoArgsConstructor;
 import org.eclipse.jdt.annotation.Nullable;
 
 import java.lang.reflect.Array;
+import java.time.Duration;
+import java.time.Period;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 
@@ -85,8 +90,14 @@ public final class TypeUtils {
 		putPrimitive( float.class, 0f );
 		putPrimitive( double.class, 0d );
 
-		// empty string for strings
+		// default values for some types
 		putValue( String.class, "" );
+		putValue( Duration.class, Duration.ZERO );
+		putValue( Period.class, Period.ZERO );
+		putValue( Optional.class, Optional.empty() );
+		putValue( OptionalDouble.class, OptionalDouble.empty() );
+		putValue( OptionalLong.class, OptionalLong.empty() );
+		putValue( OptionalInt.class, OptionalInt.empty() );
 
 		//  speed-up for common types
 		putValue( Object.class, null );
@@ -113,16 +124,21 @@ public final class TypeUtils {
 		putSupplier( TreeSet.class, TreeSet::new );
 		putSupplier( HashSet.class, HashSet::new );
 		putSupplier( LinkedHashSet.class, LinkedHashSet::new );
+		putSupplier( LinkedHashMap.class, LinkedHashMap::new );
 		putSupplier( WeakHashMap.class, WeakHashMap::new );
 		putSupplier( Map.class, HashMap::new );
 		putSupplier( SortedMap.class, TreeMap::new );
 		putSupplier( NavigableMap.class, TreeMap::new );
 		putSupplier( TreeMap.class, TreeMap::new );
 		putSupplier( HashMap.class, HashMap::new );
+
 		// stream
 		putSupplier( Stream.class, Stream::of );
+		putSupplier( DoubleStream.class, DoubleStream::of );
+		putSupplier( LongStream.class, LongStream::of );
+		putSupplier( IntStream.class, IntStream::of );
+
 		// concurrent collections
-		putSupplier( LinkedHashMap.class, LinkedHashMap::new );
 		putSupplier( BlockingQueue.class, LinkedTransferQueue::new );
 		putSupplier( TransferQueue.class, LinkedTransferQueue::new );
 		putSupplier( LinkedTransferQueue.class, LinkedTransferQueue::new );
@@ -141,6 +157,7 @@ public final class TypeUtils {
 		putSupplier( ConcurrentSkipListSet.class, ConcurrentSkipListSet::new );
 		putSupplier( ConcurrentLinkedQueue.class, ConcurrentLinkedQueue::new );
 		putSupplier( ConcurrentLinkedDeque.class, ConcurrentLinkedDeque::new );
+
 		// old collections
 		putSupplier( Vector.class, Vector::new );
 		putSupplier( Stack.class, Stack::new );

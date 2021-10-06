@@ -2,7 +2,12 @@ package org.mockobor.utils.reflection;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.Period;
 import java.util.*;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,9 +22,8 @@ class TypeUtilsTest {
 	// =============================== getDefaultValue ==================================
 	// ==================================================================================
 
-	@SuppressWarnings( "ConstantConditions" )
 	@Test
-	void getDefaultValue_primitive() {
+	void defaultValue_primitive() {
 		assertThat( getDefaultReturnValue( byte.class ) ).isZero();
 		assertThat( getDefaultReturnValue( short.class ) ).isZero();
 		assertThat( getDefaultReturnValue( int.class ) ).isZero();
@@ -41,23 +45,30 @@ class TypeUtilsTest {
 	}
 
 	@Test
-	void getDefaultValue_flat_objects() {
+	void defaultValue_flat_objects() {
 		assertThat( getDefaultReturnValue( String.class ) ).isEmpty();
+		assertThat( getDefaultReturnValue( Duration.class ) ).isEqualTo( Duration.ZERO );
+		assertThat( getDefaultReturnValue( Period.class ) ).isEqualTo( Period.ZERO );
+
+		assertThat( (Optional<?>) getDefaultReturnValue( Optional.class ) ).isNotPresent();
+		assertThat( getDefaultReturnValue( OptionalDouble.class ) ).isNotPresent();
+		assertThat( getDefaultReturnValue( OptionalLong.class ) ).isNotPresent();
+		assertThat( getDefaultReturnValue( OptionalInt.class ) ).isNotPresent();
 
 		assertThat( getDefaultReturnValue( Object.class ) ).isNull();
-		assertThat( getDefaultReturnValue( TypeUtils.class ) ).isNull();
+		assertThat( getDefaultReturnValue( TypeUtils.class ) ).as( "null for 'unknown' classes" ).isNull();
 	}
 
 	@Test
-	void getDefaultValue_arrays() {
+	void defaultValue_arrays() {
 		assertThat( getDefaultReturnValue( Object[].class ) ).isEqualTo( new Object[0] );
 		assertThat( getDefaultReturnValue( String[].class ) ).isEqualTo( new String[0] );
 		assertThat( getDefaultReturnValue( Integer[].class ) ).isEqualTo( new Integer[0] );
-
+		assertThat( getDefaultReturnValue( int[].class ) ).isEqualTo( new int[0] );
 	}
 
 	@Test
-	void getDefaultValue_collections() {
+	void defaultValue_collections() {
 		assertThat( (Collection<?>) getDefaultReturnValue( Collection.class ) ).isEmpty();
 		assertThat( (List<?>) getDefaultReturnValue( List.class ) ).isEmpty();
 		assertThat( (List<?>) getDefaultReturnValue( LinkedList.class ) ).isEmpty();
@@ -72,14 +83,18 @@ class TypeUtilsTest {
 
 	@SuppressWarnings( { "unchecked", "ConstantConditions" } )
 	@Test
-	void getDefaultValue_collections_are_mutable() {
+	void defaultValue_collections_are_mutable() {
 		assertThatNoException().isThrownBy( () -> getDefaultReturnValue( LinkedList.class ).add( "" ) );
 		assertThatNoException().isThrownBy( () -> getDefaultReturnValue( TreeMap.class ).put( "", new Object() ) );
 	}
 
+	@SuppressWarnings( "RedundantOperationOnEmptyContainer" )
 	@Test
 	void getDefaultValue_streams() {
 		assertThat( ( (Stream<?>) getDefaultReturnValue( Stream.class ) ) ).isEmpty();
 		assertThat( ( (Stream<?>) getDefaultReturnValue( new HashMap<String, Object>().entrySet().stream().getClass() ) ) ).isEmpty();
+		assertThat( getDefaultReturnValue( IntStream.class ) ).isEmpty();
+		assertThat( getDefaultReturnValue( LongStream.class ) ).isEmpty();
+		assertThat( getDefaultReturnValue( DoubleStream.class ) ).isEmpty();
 	}
 }
