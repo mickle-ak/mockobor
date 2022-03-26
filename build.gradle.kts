@@ -10,8 +10,6 @@ group = "io.github.mickle-ak.mockobor"
 version = scmVersion.version
 description = "Mocked Observable Observation - library to simplify some aspects of unit testing with java."
 
-println("version = $version")
-
 
 plugins {
     // build
@@ -119,7 +117,7 @@ tasks.jacocoTestReport {
 
 
 // ==================================================================================
-// =================================== versioning ===================================
+// ============================ versioning / changelog ==============================
 // ==================================================================================
 
 // see https://axion-release-plugin.readthedocs.io/en/latest/configuration/tasks/
@@ -136,7 +134,7 @@ scmVersion {
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> """$1$v$2""" })))
         // update version in change log
         pre("fileUpdate", mapOf(
-                "file" to "README.md",
+                "file" to "CHANGELOG.md",
                 "pattern" to KotlinClosure2({ v: Any, _: Any -> """- \*\*In the next Version\*\*""" }),
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })))
         pre("commit")
@@ -148,6 +146,18 @@ scmVersion {
 }
 
 fun currentDate() = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now())
+
+tasks.create("getLastChangesFromChangelog") {
+    doLast {
+        val readmeText = File("CHANGELOG.md").readText(Charsets.UTF_8)
+        val versionPattern = """[\d+.]+"""
+        val regex = Regex("""- \*\*$versionPattern\*\*.*?\n+(.*?)(?:\n*- \*\*[\d.]+\*\*|\n\n|$)""", RegexOption.DOT_MATCHES_ALL)
+        val matchResult = regex.find(readmeText)
+        if (matchResult != null && matchResult.groupValues.size > 1) {
+            println(matchResult.groupValues[1])
+        }
+    }
+}
 
 
 // ==================================================================================
