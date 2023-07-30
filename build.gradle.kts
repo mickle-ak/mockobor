@@ -131,23 +131,31 @@ tasks.jacocoTestReport {
 // ./gradlew createRelease
 
 scmVersion {
-    hooks({
-        // update version in dependency examples
-        pre("fileUpdate", mapOf(
+    hooks {
+        pre( // update version in dependency examples
+            "fileUpdate", mapOf(
                 "file" to "README.md",
                 "pattern" to KotlinClosure2({ v: Any, _: Any -> """(<version>|mockobor:)$v(</version>|"\))""" }),
-                "replacement" to KotlinClosure2({ v: Any, _: Any -> """$1$v$2""" })))
-        // update version in change log
-        pre("fileUpdate", mapOf(
+                "replacement" to KotlinClosure2({ v: Any, _: Any -> """$1$v$2""" })
+            )
+        )
+        pre( // update version in change log
+            "fileUpdate", mapOf(
                 "file" to "CHANGELOG.md",
                 "pattern" to KotlinClosure2({ _: Any, _: Any -> """- \*\*In the next Version\*\*""" }),
-                "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })))
+                "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })
+            )
+        )
         pre("commit")
-    })
-    checks({
+    }
+    checks {
         uncommittedChanges = false
         aheadOfRemote = false
-    })
+    }
+}
+
+tasks.currentVersion {
+    doNotTrackState("axion-release-plugin uses old deprecated api (accessing unreadable inputs or outputs)")
 }
 
 fun currentDate() = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now())
@@ -170,7 +178,7 @@ tasks.create("getLastChangesFromChangelog") {
 // ==================================================================================
 
 nexusPublishing {
-    repositories {
+    this.repositories {
         sonatype {  //only for users registered in Sonatype after 24 Feb 2021
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
@@ -193,7 +201,7 @@ publishing {
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
 
@@ -208,7 +216,7 @@ publishing {
                 scm {
                     connection.set("scm:git:git://github.com/mickle-ak/mockobor.git")
                     developerConnection.set("scm:git:ssh://github.com:mickle-ak/mockobor.git")
-                    url.set("http://github.com/mickle-ak/mockobor")
+                    url.set("https://github.com/mickle-ak/mockobor")
                 }
             }
         }

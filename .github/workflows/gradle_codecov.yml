@@ -6,8 +6,8 @@ on:
       - master
     paths-ignore:
       - 'subprojects/**'
-      - '**/README.md'
-      - '.github/workflows/test_dependencies.yml'
+      - '**.md'
+      - '.github/workflows/**'
 
   workflow_dispatch:
 
@@ -18,10 +18,10 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up JDK 8
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 8
           distribution: 'adopt'
