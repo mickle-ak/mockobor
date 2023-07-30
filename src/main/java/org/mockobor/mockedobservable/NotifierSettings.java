@@ -45,5 +45,5 @@ public interface NotifierSettings {
 	 * @see Mockobor#createNotifierFor(Object, NotifierSettings)
 	 * @see Mockobor
 	 */
-	boolean shouldNotifierImplementListenersInterfaces();
+	boolean shouldNotifierImplementListenerInterfaces();
 }

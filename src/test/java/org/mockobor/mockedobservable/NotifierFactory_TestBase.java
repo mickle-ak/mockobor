@@ -42,7 +42,7 @@ abstract class NotifierFactory_TestBase {
 
 	@SuppressWarnings( "ResultOfMethodCallIgnored" )
 	@Test
-	void ListenersNotifier_all_methods_throw_no_exception() {
+	void all_methods_of_ListenersNotifier_throw_no_exception() {
 
 		assertThat( notifier.getObservableMock() ).isSameAs( mockedObservable );
 		assertThat( notifier.allListenersAreUnregistered() ).isFalse();

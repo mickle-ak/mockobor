@@ -22,25 +22,25 @@ class ObservableDetectorTest {
 		MockedObservable testObservable = mock( MockedObservable.class );
 		Collection<Method> allMethods = ReflectionUtils.getReachableMethods( testObservable );
 
-		ListenersDefinition listenersDefinition = new ObservableDetector().detect( allMethods );
+		ListenerDefinition listenerDefinition = new ObservableDetector().detect( allMethods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
+		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
 
-		assertThat( listenersDefinition.getRegistrations() )
+		assertThat( listenerDefinition.getRegistrations() )
 			.as( "expected registration methods" )
 			.extracting( RegistrationDelegate::getSource )
 			.extracting( Method::getName )
 			.containsExactlyInAnyOrder( "addObserver", "deleteObserver" );
 
-		assertThat( listenersDefinition.getDetectedListeners() )
+		assertThat( listenerDefinition.getDetectedListeners() )
 			.as( "detected listener" )
 			.containsExactly( Observer.class );
 
-		assertThat( listenersDefinition.getAdditionalInterfaces() )
+		assertThat( listenerDefinition.getAdditionalInterfaces() )
 			.as( "expected interfaces" )
 			.containsExactly( ObservableNotifier.class );
 
 		// no additional notifications expected because all methods of {@link ObservableNotifier} have the default implementation
-		assertThat( listenersDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
+		assertThat( listenerDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
 	}
 }

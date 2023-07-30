@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 
+@SuppressWarnings("unused")
 class UsageExample_CustomDetector_Test {
 
 	/** Custom listener interface used by observer to receive notifications from {@link MyObservable}. */

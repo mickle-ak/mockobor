@@ -36,7 +36,7 @@ class UsageExample_NotifierSettings_Test {
 	@Test
 	void doNotImplementListenerInterfaces_using_MockoborContext() {
 		// set global flag to ignore listener interfaces
-		MockoborContext.updateNotifierSettings().ignoreListenersInterfaces();
+		MockoborContext.updateNotifierSettings().ignoreListenerInterfaces();
 
 		// create notifier with global settings
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable );
@@ -55,11 +55,11 @@ class UsageExample_NotifierSettings_Test {
 	@Test
 	void doNotImplementListenerInterfaces_using_local_settings() {
 		// set the global flag to implement listener interfaces (it is the default, for better readability only)
-		MockoborContext.updateNotifierSettings().implementListenersInterfaces();
+		MockoborContext.updateNotifierSettings().implementListenerInterfaces();
 
 		// create notifier with local setting, it overrides global settings
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable,
-		                                                         Mockobor.notifierSettings().ignoreListenersInterfaces() );
+		                                                         Mockobor.notifierSettings().ignoreListenerInterfaces() );
 
 		// notifier does not implement listener interfaces
 		//noinspection deprecation
@@ -75,11 +75,11 @@ class UsageExample_NotifierSettings_Test {
 	@Test
 	void implementInterfaces_using_local_settings() {
 		// set global flag to ignore listener interfaces
-		MockoborContext.updateNotifierSettings().ignoreListenersInterfaces();
+		MockoborContext.updateNotifierSettings().ignoreListenerInterfaces();
 
 		// create notifier with local setting, it overrides global settings
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable,
-		                                                         Mockobor.notifierSettings().implementListenersInterfaces() );
+		                                                         Mockobor.notifierSettings().implementListenerInterfaces() );
 
 		// notifier implements listener interfaces
 		//noinspection deprecation
@@ -98,7 +98,7 @@ class UsageExample_NotifierSettings_Test {
 	// ==================================================================================
 
 	@Test
-	void lenientCheckListenersList_using_MockoborContext() {
+	void lenientCheckListenerList_using_MockoborContext() {
 		// set the global flag to lenient check of the listener list by notify
 		MockoborContext.updateNotifierSettings().lenientListenerListCheck();
 
@@ -113,9 +113,9 @@ class UsageExample_NotifierSettings_Test {
 	}
 
 	@Test
-	void lenientCheckListenersList_using_local_settings() {
+	void lenientCheckListenerList_using_local_settings() {
 		// set the global flag to strict check of ths listener list by notify (it is the default, for better readability only)
-		MockoborContext.updateNotifierSettings().strickListenerListCheck();
+		MockoborContext.updateNotifierSettings().strictListenerListCheck();
 
 		// create notifier with local setting, it overrides global settings
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable,
@@ -129,13 +129,13 @@ class UsageExample_NotifierSettings_Test {
 	}
 
 	@Test
-	void strictCheckListenersList_using_local_settings() {
+	void strictCheckListenerList_using_local_settings() {
 		// set the global flag to lenient check of the listener list by notify
 		MockoborContext.updateNotifierSettings().lenientListenerListCheck();
 
 		// create notifier with local setting, it overrides global settings
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable,
-		                                                         Mockobor.notifierSettings().strickListenerListCheck() );
+		                                                         Mockobor.notifierSettings().strictListenerListCheck() );
 
 		// exception on try to notify listener with unknown selector
 		ListenerSelector unknownSelector = selector( "unknowing" );
@@ -153,16 +153,16 @@ class UsageExample_NotifierSettings_Test {
 	@Test
 	void local_settings_does_not_change_global_settings() {
 		// set global settings
-		MockoborContext.updateNotifierSettings().lenientListenerListCheck().ignoreListenersInterfaces();
+		MockoborContext.updateNotifierSettings().lenientListenerListCheck().ignoreListenerInterfaces();
 
 		// create first notifier with local settings
 		@SuppressWarnings("unused")
 		ListenersNotifier localSettingsNotifier = Mockobor.createNotifierFor( mockedObservable,
 		                                                                      Mockobor.notifierSettings()
-		                                                                              .strickListenerListCheck()
-		                                                                              .implementListenersInterfaces() );
+		                                                                              .strictListenerListCheck()
+		                                                                              .implementListenerInterfaces() );
 
-		// create second notifier with global settings (lenientListenerListCheck + ignoreListenersInterfaces())
+		// create second notifier with global settings (lenientListenerListCheck + ignoreListenerInterfaces())
 		ListenersNotifier globalSettingsNotifier = Mockobor.createNotifierFor( mockedObservable );
 
 		// no exception on try to notify listener with unknown selector

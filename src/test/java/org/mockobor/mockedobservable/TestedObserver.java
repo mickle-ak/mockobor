@@ -11,6 +11,7 @@ import java.util.*;
 
 
 /** Test-object to simulate SUT-object, which registers itself in constructor by provided {@link MockedObservable}. */
+@SuppressWarnings("unused")
 @Getter
 public class TestedObserver {
 

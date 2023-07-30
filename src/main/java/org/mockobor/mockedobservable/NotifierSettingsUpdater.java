@@ -20,7 +20,7 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * @see #getStrictCheckListenerList()
 	 * @see ListenersNotifier#setStrictCheckListenerList
 	 */
-	@NonNull NotifierSettingsUpdater strickListenerListCheck();
+	@NonNull NotifierSettingsUpdater strictListenerListCheck();
 
 	/**
 	 * To lenient check if the list of listeners selected to send notification contains any listener
@@ -43,9 +43,9 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * It is a default behavior.
 	 *
 	 * @return itself for fluent calls
-	 * @see #shouldNotifierImplementListenersInterfaces()
+	 * @see #shouldNotifierImplementListenerInterfaces()
 	 */
-	@NonNull NotifierSettingsUpdater implementListenersInterfaces();
+	@NonNull NotifierSettingsUpdater implementListenerInterfaces();
 
 	/**
 	 * To disallow listener notifier to implement interfaces of detected listeners.
@@ -53,7 +53,7 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * It applies only to {@link ListenersNotifier}s created after change this setting.
 	 *
 	 * @return itself for fluent calls
-	 * @see #shouldNotifierImplementListenersInterfaces()
+	 * @see #shouldNotifierImplementListenerInterfaces()
 	 */
-	@NonNull NotifierSettingsUpdater ignoreListenersInterfaces();
+	@NonNull NotifierSettingsUpdater ignoreListenerInterfaces();
 }

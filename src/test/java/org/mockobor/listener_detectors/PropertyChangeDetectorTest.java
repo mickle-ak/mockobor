@@ -21,27 +21,27 @@ class PropertyChangeDetectorTest {
 		MockedObservable testObservable = mock( MockedObservable.class );
 		Collection<Method> allMethods = ReflectionUtils.getReachableMethods( testObservable );
 
-		ListenersDefinition listenersDefinition = new PropertyChangeDetector().detect( allMethods );
+		ListenerDefinition listenerDefinition = new PropertyChangeDetector().detect( allMethods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
+		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
 
-		assertThat( listenersDefinition.getRegistrations() )
+		assertThat( listenerDefinition.getRegistrations() )
 			.as( "expected registration methods" )
 			.extracting( RegistrationDelegate::getSource )
 			.extracting( Method::getName )
 			.containsExactlyInAnyOrder( "addPropertyChangeListener", "addPropertyChangeListener",
 			                            "removePropertyChangeListener", "removePropertyChangeListener" );
 
-		assertThat( listenersDefinition.getDetectedListeners() )
+		assertThat( listenerDefinition.getDetectedListeners() )
 			.as( "detected listener" )
 			.containsExactly( PropertyChangeListener.class );
 
-		assertThat( listenersDefinition.getAdditionalInterfaces() )
+		assertThat( listenerDefinition.getAdditionalInterfaces() )
 			.as( "expected interfaces" )
 			.containsExactly( PropertyChangeNotifier.class );
 
 		// no additional notifications expected
 		// because all methods of {@link PropertyChangeNotifier} have the default implementation
-		assertThat( listenersDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
+		assertThat( listenerDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
 	}
 }

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.mockobor.exceptions.MockoborImplementationError;
-import org.mockobor.listener_detectors.ListenersDefinition.ListenersDefinitionImpl;
+import org.mockobor.listener_detectors.ListenerDefinition.ListenerDefinitionImpl;
 import org.mockobor.listener_detectors.RegistrationDelegate.RegistrationInvocation;
 import org.mockobor.utils.reflection.TypeUtils;
 
@@ -61,7 +61,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 * It returns an empty list per default.
 	 *
 	 * @return list of desirable notification delegates or empty list if no notification delegates needed
-	 * @see ListenersDefinition#getCustomNotificationMethodDelegates()
+	 * @see ListenerDefinition#getCustomNotificationMethodDelegates()
 	 */
 	protected @NonNull List<NotificationMethodDelegate> getCustomNotificationMethodDelegates() {
 		return Collections.emptyList();
@@ -80,7 +80,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 * It returns an empty list per default.
 	 *
 	 * @return list of desirable additional interfaces or empty list if no additional interface needed
-	 * @see ListenersDefinition#getAdditionalInterfaces()
+	 * @see ListenerDefinition#getAdditionalInterfaces()
 	 */
 	protected @NonNull List<Class<?>> getAdditionalInterfaces() {
 		return Collections.emptyList();
@@ -92,13 +92,13 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	// ==================================================================================
 
 	@Override
-	public @NonNull ListenersDefinition detect( @NonNull Collection<Method> methods ) {
-		ListenersDefinitionImpl listenersDefinition = detectRegistrations( methods );
-		if( listenersDefinition.hasListenerDetected() ) {
-			listenersDefinition.addAdditionalInterfaces( getAdditionalInterfaces() );
-			getCustomNotificationMethodDelegates().forEach( listenersDefinition::addNotification );
+	public @NonNull ListenerDefinition detect(@NonNull Collection<Method> methods ) {
+		ListenerDefinitionImpl listenerDefinition = detectRegistrations( methods );
+		if( listenerDefinition.hasListenerDetected() ) {
+			listenerDefinition.addAdditionalInterfaces( getAdditionalInterfaces() );
+			getCustomNotificationMethodDelegates().forEach( listenerDefinition::addNotification );
 		}
-		return listenersDefinition;
+		return listenerDefinition;
 	}
 
 
@@ -111,25 +111,25 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 *
 	 * @param methods methods of observable object
 	 * @return listenersDefinition with detected listeners
-	 * @see ListenersDefinition#hasListenerDetected()
+	 * @see ListenerDefinition#hasListenerDetected()
 	 */
-	protected @NonNull ListenersDefinitionImpl detectRegistrations( @NonNull Collection<Method> methods ) {
-		ListenersDefinitionImpl listenersDefinition = new ListenersDefinitionImpl();
+	protected @NonNull ListenerDefinitionImpl detectRegistrations(@NonNull Collection<Method> methods ) {
+		ListenerDefinitionImpl listenerDefinition = new ListenerDefinitionImpl();
 		for( Method method : methods ) {
 			ListenerRegistrationParameters registrationParameters = getListenerRegistrationParameter( method );
 			if( registrationParameters != null ) {
 				if( isAddMethods( method ) ) {
 					RegistrationInvocation addDelegate = createAddDelegate( registrationParameters );
-					listenersDefinition.addRegistration( new RegistrationDelegate( method, addDelegate ) );
-					listenersDefinition.addDetectedListeners( registrationParameters.getListenerClasses() );
+					listenerDefinition.addRegistration( new RegistrationDelegate( method, addDelegate ) );
+					listenerDefinition.addDetectedListeners( registrationParameters.getListenerClasses() );
 				}
 				else if( isRemoveMethods( method ) ) {
 					RegistrationInvocation removeDelegate = createRemoveDelegate( registrationParameters );
-					listenersDefinition.addRegistration( new RegistrationDelegate( method, removeDelegate ) );
+					listenerDefinition.addRegistration( new RegistrationDelegate( method, removeDelegate ) );
 				}
 			}
 		}
-		return listenersDefinition;
+		return listenerDefinition;
 	}
 
 	protected @NonNull RegistrationInvocation createAddDelegate( ListenerRegistrationParameters rp ) {

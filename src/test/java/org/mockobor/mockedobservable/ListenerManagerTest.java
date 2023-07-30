@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockobor.listener_detectors.ListenerSelector.selector;
 
 
-class ListenersManagerTest {
+class ListenerManagerTest {
 
 	private final Object testObservable = mock( Object.class );
 

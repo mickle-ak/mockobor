@@ -102,13 +102,13 @@ class AbstractDetectorTest {
 	@Test
 	void detectRegistrations_detected() {
 		Collection<Method> methods = ReflectionUtils.getReachableMethods( MockedObservable.class );
-		ListenersDefinition listenersDefinition = detector.detectRegistrations( methods );
+		ListenerDefinition listenerDefinition = detector.detectRegistrations( methods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
-		assertThat( listenersDefinition.getRegistrations() )
+		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
+		assertThat( listenerDefinition.getRegistrations() )
 				.as( "12 add/removeXxxListener methods in MockedObservable" )
 				.hasSize( 12 );
-		assertThat( listenersDefinition.getDetectedListeners() )
+		assertThat( listenerDefinition.getDetectedListeners() )
 				.as( "add/removeXxxListener methods for follow listeners in MockedObservable" )
 				.containsExactlyInAnyOrder( MyListener.class, MyAnotherListener.class, PropertyChangeListener.class );
 	}
@@ -116,13 +116,13 @@ class AbstractDetectorTest {
 	@Test
 	void detectRegistrations_detected_even_only_add_method() {
 		Collection<Method> methods = ReflectionUtils.getReachableMethods( OnlyAddMethod.class );
-		ListenersDefinition listenersDefinition = detector.detectRegistrations( methods );
+		ListenerDefinition listenerDefinition = detector.detectRegistrations( methods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
-		assertThat( listenersDefinition.getRegistrations() )
+		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
+		assertThat( listenerDefinition.getRegistrations() )
 				.as( "only 1 addListener methods in OnlyAddMethod" )
 				.hasSize( 1 );
-		assertThat( listenersDefinition.getDetectedListeners() )
+		assertThat( listenerDefinition.getDetectedListeners() )
 				.as( "addListener methods for follow listeners in OnlyAddMethod" )
 				.containsExactly( MyListener.class );
 	}
@@ -131,21 +131,21 @@ class AbstractDetectorTest {
 	@Test
 	void detectRegistrations_nothing_detected_because_no_registration_methods() {
 		Collection<Method> methods = ReflectionUtils.getReachableMethods( Method.class );
-		ListenersDefinition listenersDefinition = detector.detectRegistrations( methods );
+		ListenerDefinition listenerDefinition = detector.detectRegistrations( methods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isFalse();
-		assertThat( listenersDefinition.getDetectedListeners() ).as( "no listener detected" ).isEmpty();
-		assertThat( listenersDefinition.getRegistrations() ).as( "no registration found" ).isEmpty();
+		assertThat( listenerDefinition.hasListenerDetected() ).isFalse();
+		assertThat( listenerDefinition.getDetectedListeners() ).as( "no listener detected" ).isEmpty();
+		assertThat( listenerDefinition.getRegistrations() ).as( "no registration found" ).isEmpty();
 	}
 
 	@Test
 	void detectRegistrations_nothing_detected_because_only_remove_methods() {
 		Collection<Method> methods = ReflectionUtils.getReachableMethods( OnlyRemoveMethod.class );
-		ListenersDefinition listenersDefinition = detector.detectRegistrations( methods );
+		ListenerDefinition listenerDefinition = detector.detectRegistrations( methods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isFalse();
-		assertThat( listenersDefinition.getDetectedListeners() ).as( "no listener detected" ).isEmpty();
-		assertThat( listenersDefinition.getRegistrations() ).as( "remove method found" ).hasSize( 1 );
+		assertThat( listenerDefinition.hasListenerDetected() ).isFalse();
+		assertThat( listenerDefinition.getDetectedListeners() ).as( "no listener detected" ).isEmpty();
+		assertThat( listenerDefinition.getRegistrations() ).as( "remove method found" ).hasSize( 1 );
 	}
 
 
@@ -154,17 +154,17 @@ class AbstractDetectorTest {
 		InvalidRegistrationMethods testObservable = mock( InvalidRegistrationMethods.class );
 		Collection<Method> allMethods = ReflectionUtils.getReachableMethods( testObservable );
 
-		ListenersDefinition listenersDefinition = new TypicalJavaListenerDetector().detect( allMethods );
+		ListenerDefinition listenerDefinition = new TypicalJavaListenerDetector().detect( allMethods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
+		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
 
-		assertThat( listenersDefinition.getRegistrations() )
+		assertThat( listenerDefinition.getRegistrations() )
 				.as( "expected registration methods" )
 				.extracting( RegistrationDelegate::getSource )
 				.extracting( Method::getName )
 				.containsExactly( "addCorrectListener" );
 
-		assertThat( listenersDefinition.getDetectedListeners() )
+		assertThat( listenerDefinition.getDetectedListeners() )
 				.as( "detected listener" )
 				.containsExactly( MyListener.class );
 	}

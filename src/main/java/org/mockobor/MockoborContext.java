@@ -83,7 +83,7 @@ public class MockoborContext {
 	 * Example:
 	 * <pre class="code"><code class="java">
 	 * MockoborContext.updateNotifierSettings()
-	 *     .ignoreListenersInterfaces()
+	 *     .ignoreListenerInterfaces()
 	 *     .lenientListenerListCheck();
 	 * </code></pre>
 	 * <p></p>

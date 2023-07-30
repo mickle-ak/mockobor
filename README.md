@@ -177,7 +177,7 @@ _Note: It does not work with EasyMock! See [Restrictions / EasyMock restrictions
 in `MockoborContext`:
 
 ```java
-  MockoborContext.updateNotifierSettings().ignoreListenersInterfaces().lenientListenerListCheck();
+  MockoborContext.updateNotifierSettings().ignoreListenerInterfaces().lenientListenerListCheck();
 ```
 
 or for one creation only:
@@ -185,7 +185,7 @@ or for one creation only:
 ```java
   ListenersNotifier notifier=Mockobor.createNotifierFor(
         mockedObservable,
-        Mockobor.notifierSettings().ignoreListenersInterfaces().lenientListenerListCheck();
+        Mockobor.notifierSettings().ignoreListenerInterfaces().lenientListenerListCheck();
 ```
 
 For more detail see [Examples / NotifierSettings](#notifiersettings)

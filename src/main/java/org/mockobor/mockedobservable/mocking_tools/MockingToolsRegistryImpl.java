@@ -72,7 +72,8 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 
 		try {
 			// create and add registration handler
-			Object registrationHandler = Class.forName( registrationHandlerClassName ).newInstance();
+			Class<?> registrationHandlerClass = Class.forName(registrationHandlerClassName);
+			Object registrationHandler = registrationHandlerClass.getDeclaredConstructor().newInstance();
 			if( !( registrationHandler instanceof ListenerRegistrationHandler ) ) {
 				throw new MockoborIllegalArgumentException( "Registration handle (%s) must implement ListenerRegistrationHandler",
 						registrationHandlerClassName );
@@ -80,7 +81,8 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 			availableHandlers.add( (ListenerRegistrationHandler) registrationHandler );
 			return true;
 		}
-		catch(InstantiationException | IllegalAccessException | ClassNotFoundException e ) {
+		catch(InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException |
+			  InvocationTargetException e ) {
 			throw new MockoborIllegalArgumentException( "Can not create registration handle (%s)", registrationHandlerClassName );
 		}
 	}

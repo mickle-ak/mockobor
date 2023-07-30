@@ -25,7 +25,7 @@ public class NotifierSettingsImpl implements NotifierSettingsUpdater {
 	}
 
 	@Override
-	public @NonNull NotifierSettingsUpdater strickListenerListCheck() {
+	public @NonNull NotifierSettingsUpdater strictListenerListCheck() {
 		strictCheckListenerList = true;
 		return this;
 	}
@@ -38,18 +38,18 @@ public class NotifierSettingsImpl implements NotifierSettingsUpdater {
 
 
 	@Override
-	public boolean shouldNotifierImplementListenersInterfaces() {
+	public boolean shouldNotifierImplementListenerInterfaces() {
 		return implementListeners;
 	}
 
 	@Override
-	public @NonNull NotifierSettingsUpdater implementListenersInterfaces() {
+	public @NonNull NotifierSettingsUpdater implementListenerInterfaces() {
 		implementListeners = true;
 		return this;
 	}
 	
 	@Override
-	public @NonNull NotifierSettingsUpdater ignoreListenersInterfaces() {
+	public @NonNull NotifierSettingsUpdater ignoreListenerInterfaces() {
 		implementListeners = false;
 		return this;
 	}

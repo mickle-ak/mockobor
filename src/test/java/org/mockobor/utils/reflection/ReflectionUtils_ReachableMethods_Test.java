@@ -19,7 +19,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
 
 
-@SuppressWarnings( "unused, RedundantMethodOverride")
+@SuppressWarnings( "unused, RedundantMethodOverride, EmptyMethod")
 class ReflectionUtils_ReachableMethods_Test {
 
 	private interface Interface {

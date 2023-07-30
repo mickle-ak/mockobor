@@ -32,11 +32,11 @@ public interface ListenerDefinitionDetector {
 
 	/**
 	 * To find methods used for registration of listeners and creates corresponding listeners definition.<p>
-	 * If some listeners was detected, then {@link ListenersDefinition#hasListenerDetected()} should return true;<p>
-	 * If listeners was not detected, then {@link ListenersDefinition#hasListenerDetected()} should return false;
+	 * If some listeners was detected, then {@link ListenerDefinition#hasListenerDetected()} should return true;<p>
+	 * If listeners was not detected, then {@link ListenerDefinition#hasListenerDetected()} should return false;
 	 *
 	 * @param methods readonly list of methods to examine (defined in mocked observable)
 	 * @return definition of detected listeners.
 	 */
-	@NonNull ListenersDefinition detect( @NonNull Collection<Method> methods );
+	@NonNull ListenerDefinition detect(@NonNull Collection<Method> methods );
 }

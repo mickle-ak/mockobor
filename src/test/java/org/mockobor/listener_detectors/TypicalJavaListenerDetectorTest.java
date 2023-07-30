@@ -22,11 +22,11 @@ class TypicalJavaListenerDetectorTest {
 		MockedObservable testObservable = mock( MockedObservable.class );
 		Collection<Method> allMethods = ReflectionUtils.getReachableMethods( testObservable );
 
-		ListenersDefinition listenersDefinition = new TypicalJavaListenerDetector().detect( allMethods );
+		ListenerDefinition listenerDefinition = new TypicalJavaListenerDetector().detect( allMethods );
 
-		assertThat( listenersDefinition.hasListenerDetected() ).isTrue();
+		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
 
-		assertThat( listenersDefinition.getRegistrations() )
+		assertThat( listenerDefinition.getRegistrations() )
 				.as( "expected registration methods" )
 				.extracting( RegistrationDelegate::getSource )
 				.extracting( Method::getName )
@@ -36,11 +36,11 @@ class TypicalJavaListenerDetectorTest {
 				                            "removeMyListener", "removeMyListener", "removeMyAnotherListener",
 				                            "addTwoListeners", "removeTwoListeners" );
 
-		assertThat( listenersDefinition.getDetectedListeners() )
+		assertThat( listenerDefinition.getDetectedListeners() )
 				.as( "detected listener" )
 				.containsExactlyInAnyOrder( PropertyChangeListener.class, MyListener.class, MyAnotherListener.class );
 
-		assertThat( listenersDefinition.getAdditionalInterfaces() ).isEmpty();
-		assertThat( listenersDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
+		assertThat( listenerDefinition.getAdditionalInterfaces() ).isEmpty();
+		assertThat( listenerDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
 	}
 }

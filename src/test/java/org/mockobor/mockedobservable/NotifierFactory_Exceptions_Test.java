@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
+@SuppressWarnings("EmptyMethod, unused")
 class NotifierFactory_Exceptions_Test {
 
 	public interface WithoutAddListener {}

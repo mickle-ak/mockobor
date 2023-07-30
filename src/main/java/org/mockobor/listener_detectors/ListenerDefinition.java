@@ -27,7 +27,7 @@ import java.util.*;
  * <li>or direct listener interfaces (provided from {@link TypicalJavaListenerDetector})</li>
  * </ul>
  */
-public interface ListenersDefinition {
+public interface ListenerDefinition {
 
 	/** @return true if at least one listener was detected; false otherwise. */
 	boolean hasListenerDetected();
@@ -93,7 +93,7 @@ public interface ListenersDefinition {
 
 
 	/** Describes detected listener(s). */
-	class ListenersDefinitionImpl implements ListenersDefinition {
+	class ListenerDefinitionImpl implements ListenerDefinition {
 
 		private final List<RegistrationDelegate> registrations = new ArrayList<>();
 

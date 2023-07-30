@@ -5,6 +5,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Disabled;
 
 
+@SuppressWarnings({"EmptyMethod", "unused"})
 class EasymockListenerRegistrationHandlerTest extends ListenerRegistrationHandler_TestBase {
 
 	@Override
