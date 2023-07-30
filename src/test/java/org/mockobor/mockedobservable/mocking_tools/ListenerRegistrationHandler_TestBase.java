@@ -140,7 +140,8 @@ abstract class ListenerRegistrationHandler_TestBase {
 		assertThat( usedListenerContainers ).containsExactly( listeners );
 	}
 
-	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	// suppress "Refactor the code of the lambda to have only one invocation, possibly throwing a runtime exception"
+	@SuppressWarnings( "java:S5778" )
 	@Test
 	void registerInMock_notMock() {
 		assertThatThrownBy( () -> handler.registerInMock( new ListenersManager( new Object() ), createDelegate( "returnType" ) ) )

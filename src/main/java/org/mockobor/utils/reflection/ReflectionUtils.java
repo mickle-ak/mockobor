@@ -27,11 +27,11 @@ public final class ReflectionUtils {
 	// ==================================================================================
 
 	/**
-	 * To get all methods which can be reached from external object.
+	 * To get all methods that can be reached from an external object.
 	 * <p>
 	 * It returns all methods declared in the class/interface of the specified object and all its superclasses/implemented interfaces.
 	 * <p>
-	 * Exclude private and Object's methods.
+	 * Exclude private and Object methods.
 	 *
 	 * @param object object to search for methods
 	 * @return a mutable list of methods. Changes in this list have no effect on the specified class.
@@ -42,7 +42,7 @@ public final class ReflectionUtils {
 
 
 	/**
-	 * To get all methods which can be reached from external object.
+	 * To get all methods that can be reached from an external object.
 	 * <p>
 	 * It returns all methods declared in the specified class/interface and all its superclasses/implemented interfaces.
 	 * Exclude private methods.
@@ -100,10 +100,10 @@ public final class ReflectionUtils {
 	 * <p>
 	 * It does not use {@code MockUtil.isMock} because of Mockito can be not in classpath.
 	 * Therefore, it is not 100% correct, but is OK for our purpose
-	 * (for example, if inline mockito mock-macker used, it always returns false).
+	 * (for example, if inline mockito mock-maker used, it always returns false).
 	 *
 	 * @param clazz class to test
-	 * @return true if specified class CAN be a class created by Mockito
+	 * @return true if the specified class CAN be a class created by Mockito
 	 */
 	public static boolean isMockitoMock( @NonNull Class<?> clazz ) {
 		return clazz.getName().contains( "$MockitoMock$" ) || clazz.getName().startsWith( "org.mockito" );
@@ -116,7 +116,7 @@ public final class ReflectionUtils {
 	 * It is not 100% correct, but is OK for our purpose...
 	 *
 	 * @param clazz class to test
-	 * @return true if specified class CAN be a class created by EasyMock
+	 * @return true if the specified class CAN be a class created by EasyMock
 	 */
 	public static boolean isEasymockMock( @NonNull Class<?> clazz ) {
 		return clazz.getSimpleName().contains( "$EnhancerByCGLIB$" )
@@ -135,7 +135,7 @@ public final class ReflectionUtils {
 	 * @param method     {@link Method} to check
 	 * @param name       expected method name
 	 * @param paramTypes expected parameter types
-	 * @return true if the method has same name and parameters types
+	 * @return true if the method has the same name and parameters types
 	 */
 	public static boolean methodMatch( @NonNull Method method, @NonNull String name, @NonNull Class<?>... paramTypes ) {
 		return name.equals( method.getName() ) && Arrays.equals( method.getParameterTypes(), paramTypes );
@@ -147,9 +147,9 @@ public final class ReflectionUtils {
 	 * <p>
 	 * Methods are similar if both have same method signature (the name, return type and parameter types) - see {@link #isSimilar}.
 	 * <p>
-	 * It makes sense for example to use this method in invocation handler by creation of dynamic proxy,
+	 * It makes sense, for example, to use this method in invocation handler by creation of dynamic proxy,
 	 * to find and invoke implementation of compatible method declared in another interface
-	 * (if both interface implemented in proxy class).
+	 * (if both interfaces are implemented in proxy class).
 	 *
 	 * @param declaredMethods list of declared methods to search in
 	 * @param invokedMethods  invoked method to find similar declared one
@@ -162,12 +162,12 @@ public final class ReflectionUtils {
 	}
 
 	/**
-	 * To test if the methodA and methodB are "similar" - both have same method signature:
-	 * the equal names, return types and parameter types.
+	 * To test if the methodA and methodB are "similar" - both have the same method signature:
+	 * the equal names, return types, and parameter types.
 	 *
 	 * @param methodA first {@link Method} to check
 	 * @param methodB second {@link Method} to check
-	 * @return true if the methodA and methodB have same name, return type and parameter types
+	 * @return true if the methodA and methodB have the same name, return type and parameter types
 	 */
 	public static boolean isSimilar( @NonNull Method methodA, @NonNull Method methodB ) {
 		return Objects.equals( methodA.getName(), methodB.getName() )
@@ -181,10 +181,10 @@ public final class ReflectionUtils {
 	// ==================================================================================
 
 	/**
-	 * To invoke default method of an interface in o dynamic proxy.
+	 * To invoke the default method of an interface in dynamic proxy.
 	 * <p>
 	 * It makes sense to use this method in invocation handler by creation of dynamic proxy,
-	 * to invoke default implementation of methods declared in interfaces implemented in proxy class.
+	 * to invoke the default implementation of methods declared in interfaces implemented in proxy class.
 	 *
 	 * @param proxy  dynamic proxy which implemented the interface with the default method
 	 * @param method default method to invoke
@@ -199,7 +199,7 @@ public final class ReflectionUtils {
 		       : invokeDefaultJava8( proxy, method, args );
 	}
 
-	/** to invoke default method if run with java 8. */
+	/** to invoke the default method if run with java 8. */
 	private static @Nullable Object invokeDefaultJava8( Object proxy, Method method, Object... args ) throws Throwable {
 		Class<?> clazz = method.getDeclaringClass();
 		Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class );
@@ -211,7 +211,7 @@ public final class ReflectionUtils {
 		                  .invokeWithArguments( args );
 	}
 
-	/** to invoke default method if run with java 9+. */
+	/** to invoke the default method if run with java 9+. */
 	private static @Nullable Object invokeDefaultJava9plus( Object proxy, Method method, Object... args ) throws Throwable {
 		MethodType methodType = MethodType.methodType( method.getReturnType(), method.getParameterTypes() );
 		return MethodHandles.lookup()
@@ -229,7 +229,7 @@ public final class ReflectionUtils {
 	 * To check if the currently running java has version 9 or above.
 	 * It is clearly faster as {@link #javaSpecificationVersion()}.
 	 *
-	 * @return true if current java version is 9 or higher; false for java 8 or less
+	 * @return true if the current java version is 9 or higher; false for java 8 or less
 	 */
 	private static boolean isJava9plus() {
 		String javaSpecificationVersion = System.getProperty( "java.specification.version", "1.8" );

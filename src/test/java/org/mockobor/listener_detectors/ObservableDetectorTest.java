@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 
-@SuppressWarnings( "unused" )
+@SuppressWarnings({"unused", "deprecation"})
 class ObservableDetectorTest {
 
 	@Test
@@ -40,7 +40,7 @@ class ObservableDetectorTest {
 			.as( "expected interfaces" )
 			.containsExactly( ObservableNotifier.class );
 
-		// no additional notifications expected because all methods of {@link ObservableNotifier} have default implementation 
+		// no additional notifications expected because all methods of {@link ObservableNotifier} have the default implementation
 		assertThat( listenersDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
 	}
 }

@@ -9,11 +9,12 @@ import org.eclipse.jdt.annotation.NonNull;
 public interface NotifierSettingsUpdater extends NotifierSettings {
 
 	/**
-	 * To strict check if list of listeners selected to send notification contains any listener (see {@link ListenersNotifier#notifierFor}).
+	 * To strict check if the list of listeners selected to send notification contains any listener
+	 * (see {@link ListenersNotifier#notifierFor}).
 	 * <p>
 	 * It applies only to {@link ListenersNotifier}s created after change this setting.
 	 * <p>
-	 * It is a default behaviour.
+	 * It is a default behavior.
 	 *
 	 * @return itself for fluent calls
 	 * @see #getStrictCheckListenerList()
@@ -22,7 +23,8 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	@NonNull NotifierSettingsUpdater strickListenerListCheck();
 
 	/**
-	 * To lenient check if list of listeners selected to send notification contains any listener (see {@link ListenersNotifier#notifierFor}).
+	 * To lenient check if the list of listeners selected to send notification contains any listener
+	 * (see {@link ListenersNotifier#notifierFor}).
 	 * <p>
 	 * It applies only to {@link ListenersNotifier}s created after change this setting.
 	 *
@@ -38,7 +40,7 @@ public interface NotifierSettingsUpdater extends NotifierSettings {
 	 * <p>
 	 * It applies only to {@link ListenersNotifier}s created after change this setting.
 	 * <p>
-	 * It is a default behaviour.
+	 * It is a default behavior.
 	 *
 	 * @return itself for fluent calls
 	 * @see #shouldNotifierImplementListenersInterfaces()

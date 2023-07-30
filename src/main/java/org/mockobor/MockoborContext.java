@@ -65,7 +65,7 @@ public class MockoborContext {
 	 * Usually you don't need to use this.
 	 * Only if you want to register custom implementation of {@link ListenerRegistrationHandler} for your mocking tool.
 	 * <p></p>
-	 * Important: Registered handler are kept statically, so it will stick between your unit tests.
+	 * Important: Registered handlers are kept statically, so it will stick between your unit tests.
 	 * Make sure you reset it if needed (see {@link #reset()}).
 	 *
 	 * @param registrationHandler implementation of {@link ListenerRegistrationHandler} for your mocking tool.

@@ -140,7 +140,7 @@ scmVersion {
         // update version in change log
         pre("fileUpdate", mapOf(
                 "file" to "CHANGELOG.md",
-                "pattern" to KotlinClosure2({ v: Any, _: Any -> """- \*\*In the next Version\*\*""" }),
+                "pattern" to KotlinClosure2({ _: Any, _: Any -> """- \*\*In the next Version\*\*""" }),
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })))
         pre("commit")
     })

@@ -7,11 +7,11 @@ import org.mockito.plugins.PluginSwitch;
 /**
  * To check if Mockito's inline mock maker is enabled.
  * <p>
- * Mockito's inline mock maker (against standard mock maker) allows to mock of final classes/methods and static classes.
- * But is incubating as yet.
+ * Mockito's inline mock maker (against standard mock maker) allows mocking of final classes/methods and static classes.
  * <p>
- * Per default (in this tests) inline mock maker is already configured.
- * To configure Mockito (in this tests) to use standard mock maker instead of inline set system property "mockito-mock-maker" to "standard".
+ * Per default (in these tests) inline mock maker is already configured.
+ * To configure Mockito (in these tests) to use standard mock maker instead of inline
+ * set system property "mockito-mock-maker" to "standard".
  */
 public class MockMakerSwitch implements PluginSwitch {
 

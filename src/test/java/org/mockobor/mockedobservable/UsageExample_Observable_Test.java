@@ -13,9 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 
+@SuppressWarnings("deprecation")
 class UsageExample_Observable_Test {
 
-	/** The class under test, which should observes a mocked {@link Observable}. */
+	/** The class under test, which should observe a mocked {@link Observable}. */
 	public static class ObserverUnderTest implements Observer, AutoCloseable {
 
 		private final Observable observable;
@@ -56,7 +57,7 @@ class UsageExample_Observable_Test {
 		// Create mock for Observable.
 		Observable mockedObservable = mock( Observable.class );
 
-		// Create notifier for mocked observable. For "Observer" as mock it returns special interface "ObservableNotifier".
+		// Create notifier for mocked observable. For "Observer" as mock, it returns special interface "ObservableNotifier".
 		notifier = (ObservableNotifier) Mockobor.createNotifierFor( mockedObservable );
 
 		// Create SUT-object, which registers itself as observer for the mocked Observable and close to deregister
@@ -71,7 +72,7 @@ class UsageExample_Observable_Test {
 		notifier.notifyObservers();
 		notifier.notifyObservers( "update parameter" );
 
-		// Check that observer has receive the notifications from mocked observable
+		// Check that observer has received the notifications from mocked observable
 		assertThat( observer.getUpdateArguments() ).containsExactly( null, "update parameter" );
 	}
 

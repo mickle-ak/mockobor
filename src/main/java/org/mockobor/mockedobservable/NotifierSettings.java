@@ -8,7 +8,8 @@ import org.mockobor.Mockobor;
  */
 public interface NotifierSettings {
 	/**
-	 * Flag: strict (true) or lenient (false) checking if list of listeners selected to send notification contains any listener.
+	 * Flag: strict (true) or lenient (false) checking if the list of listeners selected to send notification
+	 * contains any listener.
 	 * <ul>
 	 * <li>true - exception if no listener found in {@link ListenersNotifier#notifierFor}</li>
 	 * <li>false - do nothing if no listener found in {@link ListenersNotifier#notifierFor}</li>

@@ -42,6 +42,7 @@ class UsageExample_NotifierSettings_Test {
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable );
 
 		// notifier does not implement listener interfaces
+		//noinspection deprecation
 		assertThat( notifier ).isNotInstanceOf( MockedObservable.MyListener.class )
 		                      .isNotInstanceOf( MockedObservable.MyAnotherListener.class )
 		                      .isNotInstanceOf( PropertyChangeListener.class )
@@ -53,7 +54,7 @@ class UsageExample_NotifierSettings_Test {
 
 	@Test
 	void doNotImplementListenerInterfaces_using_local_settings() {
-		// set global flag to implement listener interfaces (it is default, for better readability only)
+		// set the global flag to implement listener interfaces (it is the default, for better readability only)
 		MockoborContext.updateNotifierSettings().implementListenersInterfaces();
 
 		// create notifier with local setting, it overrides global settings
@@ -61,6 +62,7 @@ class UsageExample_NotifierSettings_Test {
 		                                                         Mockobor.notifierSettings().ignoreListenersInterfaces() );
 
 		// notifier does not implement listener interfaces
+		//noinspection deprecation
 		assertThat( notifier ).isNotInstanceOf( MockedObservable.MyListener.class )
 		                      .isNotInstanceOf( MockedObservable.MyAnotherListener.class )
 		                      .isNotInstanceOf( PropertyChangeListener.class )
@@ -80,6 +82,7 @@ class UsageExample_NotifierSettings_Test {
 		                                                         Mockobor.notifierSettings().implementListenersInterfaces() );
 
 		// notifier implements listener interfaces
+		//noinspection deprecation
 		assertThat( notifier ).isInstanceOf( MockedObservable.MyListener.class )
 		                      .isInstanceOf( MockedObservable.MyAnotherListener.class )
 		                      .isInstanceOf( PropertyChangeListener.class )
@@ -96,7 +99,7 @@ class UsageExample_NotifierSettings_Test {
 
 	@Test
 	void lenientCheckListenersList_using_MockoborContext() {
-		// set global flag to lenient check of listeners list by notify
+		// set the global flag to lenient check of the listener list by notify
 		MockoborContext.updateNotifierSettings().lenientListenerListCheck();
 
 		// create notifier with global settings
@@ -111,7 +114,7 @@ class UsageExample_NotifierSettings_Test {
 
 	@Test
 	void lenientCheckListenersList_using_local_settings() {
-		// set global flag to strict check of listeners list by notify (it is default, for better readability only)
+		// set the global flag to strict check of ths listener list by notify (it is the default, for better readability only)
 		MockoborContext.updateNotifierSettings().strickListenerListCheck();
 
 		// create notifier with local setting, it overrides global settings
@@ -127,7 +130,7 @@ class UsageExample_NotifierSettings_Test {
 
 	@Test
 	void strictCheckListenersList_using_local_settings() {
-		// set global flag to lenient check of listeners list by notify
+		// set the global flag to lenient check of the listener list by notify
 		MockoborContext.updateNotifierSettings().lenientListenerListCheck();
 
 		// create notifier with local setting, it overrides global settings
@@ -153,6 +156,7 @@ class UsageExample_NotifierSettings_Test {
 		MockoborContext.updateNotifierSettings().lenientListenerListCheck().ignoreListenersInterfaces();
 
 		// create first notifier with local settings
+		@SuppressWarnings("unused")
 		ListenersNotifier localSettingsNotifier = Mockobor.createNotifierFor( mockedObservable,
 		                                                                      Mockobor.notifierSettings()
 		                                                                              .strickListenerListCheck()
@@ -165,6 +169,7 @@ class UsageExample_NotifierSettings_Test {
 		assertThatNoException().isThrownBy( () -> globalSettingsNotifier.notifierFor( MockedObservable.MyListener.class, selector( "unknown" ) ) );
 
 		// notifier does not implement listener interfaces
+		//noinspection deprecation
 		assertThat( globalSettingsNotifier ).isNotInstanceOf( MockedObservable.MyListener.class )
 		                                    .isNotInstanceOf( MockedObservable.MyAnotherListener.class )
 		                                    .isNotInstanceOf( PropertyChangeListener.class )

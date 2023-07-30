@@ -33,7 +33,7 @@ import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
  * Factory for notifier objects.
  * <p></p>
  * This method {@link #create} does follows:<ul>
- * <li>searchs for registration (add/remove listener) methods for all (known) observer/listeners,</li>
+ * <li>search for registration (add/remove listener) methods for all (known) observer/listeners,</li>
  * <li>detect used mocking tool,</li>
  * <li>redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and</li>
  * <li>creates dynamic proxy as notifier object.</li>
@@ -52,7 +52,7 @@ public class NotifierFactory {
 
 
 	/**
-	 * To create notifier object for the specified mocked observable.
+	 * To create a notifier object for the specified mocked observable.
 	 *
 	 * @param mockedObservable mock of observable object
 	 * @param settings         settings used to create a new listener notifier
@@ -97,7 +97,7 @@ public class NotifierFactory {
 	// ============================== detect listeners ==================================
 	// ==================================================================================
 
-	/** To find all possible listener registration in the specified mocked observable. */
+	/** To find all possible listener registrations in the specified mocked observable. */
 	private @NonNull List<ListenersDefinition> detectListenersDefinitions( @NonNull Object mockedObservable ) {
 		List<ListenersDefinition> listenersDefinitions = new ArrayList<>();
 		Collection<Method> methods = getReachableMethods( mockedObservable );
@@ -106,7 +106,7 @@ public class NotifierFactory {
 			ListenersDefinition definition = detector.detect( unmodifiableCollection( methods ) );
 			if( definition.hasListenerDetected() ) {
 				listenersDefinitions.add( definition );
-				// remove processed registration  methods
+				// remove processed registration methods
 				definition.getRegistrations().forEach( delegation -> methods.remove( delegation.getSource() ) );
 			}
 		} );
@@ -173,7 +173,7 @@ public class NotifierFactory {
 		Set<Class<?>> additionalInterfaces = collectAdditionalInterfaces( listenersDefinitions );
 		Set<Class<?>> detectedListenerToImplement = collectDetectedListenerToImplement( listenersDefinitions, settings );
 		Set<Class<?>> interfacesToImplement = new LinkedHashSet<>( additionalInterfaces );
-		interfacesToImplement.add( ListenersNotifier.class ); // ListenersNotifier must be always implemented
+		interfacesToImplement.add( ListenersNotifier.class ); // ListenersNotifier must always be implemented
 		interfacesToImplement.addAll( detectedListenerToImplement );
 
 		// create invocation handler for proxy
@@ -207,7 +207,7 @@ public class NotifierFactory {
 					return delegate.invoke( listenersNotifier, method, args );
 				}
 
-				// 2. try as default method of additional interface
+				// 2. tries as default method of additional interface
 				if( method.isDefault() && additionalInterfaces.contains( declaringClass ) ) {
 					return ReflectionUtils.invokeDefaultMethod( proxy, method, args );
 				}
@@ -229,7 +229,7 @@ public class NotifierFactory {
 					return method.invoke( listenerProxy, args );
 				}
 
-				// can not find invocation handle for the method
+				// can not find an invocation handler for the method
 				throw new MethodNotFoundException( method, args );
 			}
 			catch( InvocationTargetException e ) {

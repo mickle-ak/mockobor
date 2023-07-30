@@ -1,4 +1,4 @@
-name: test mockting tool registration dependent of librarires in classpath
+name: test mocking tool registration dependent of libraries in classpath
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: publis mockobor to maven local
+      - name: publish mockobor to maven local
         env:
           signingKey64: ${{secrets.SIGNING_KEY_64}}
           signingPassword64: ${{secrets.SIGNING_PASSWORD_64}}

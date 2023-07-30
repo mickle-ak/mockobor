@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 
 /**
- * Thrown when listeners to send notifications not found (if strict listeners list check set to true).
+ * Thrown when listeners to send notifications not found (if strict listeners list check sets to true).
  */
 public class ListenersNotFoundException extends MockoborException {
 

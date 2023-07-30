@@ -8,37 +8,39 @@ import org.mockobor.utils.reflection.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
 import java.util.Observer;
 
 
 /**
- * To detect if the mocked object can be used as {@link Observable}.
+ * To detect if the mocked object can be used as {@code Observable}.
  * <p><br>
  * It means that the mocked object has follow registration methods:<ul>
- * <li><code>addObserver({@link Observer})</code></li>
- * <li><code>deleteObserver({@link Observer})*</code></li>
+ * <li><code>addObserver({@code Observer})</code></li>
+ * <li><code>deleteObserver({@code Observer})*</code></li>
  * </ul>
  * (deregistration is optional)
  * <p></p>
  * In this case <ul>
  * <li>a notifier object returned from {@link Mockobor#createNotifierFor} implements
- * {@link ObservableNotifier} and {@link Observer}</li>
+ * {@link ObservableNotifier} and {@code Observer}</li>
  * <li>the found registration methods will be redirected to the notifier object</li>
  * </ul>
  */
 public class ObservableDetector extends AbstractDetector implements ListenerDefinitionDetector {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
 		return parameterType.equals( Observer.class );
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected boolean isAddMethods( @NonNull Method method ) {
 		return ReflectionUtils.methodMatch( method, "addObserver", Observer.class );
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected boolean isRemoveMethods( @NonNull Method method ) {
 		return ReflectionUtils.methodMatch( method, "deleteObserver", Observer.class );

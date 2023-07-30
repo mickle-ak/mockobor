@@ -13,7 +13,7 @@ import java.util.Collection;
  * <p></p>
  * Implementation of this interface should be stateless, because one instance will be used for all detections.
  * <p></p>
- * Typically to implement this interface you only need to extend {@link AbstractDetector} and override required:<ul>
+ * Typically, to implement this interface, you only need to extend {@link AbstractDetector} and override required:<ul>
  * <li>{@code isListenerClass(Class, Method)}</li>
  * <li>{@code isAddMethods(Method)}</li>
  * <li>{@code isRemoveMethods(Method)}</li>

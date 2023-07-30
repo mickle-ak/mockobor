@@ -43,7 +43,7 @@ class UsageExample_allListenersAreUnregistered_Test {
 		ListenersNotifier notifier3 = Mockobor.createNotifierFor( mockedObservable3 );
 
 		TestedObserver testedObserver12 = new TestedObserver( mockedObservable1, mockedObservable2 );
-		TestedObserver testedObserver3 = new TestedObserver( mockedObservable3 ); // register, but no destroy
+		TestedObserver testedObserver3 = new TestedObserver( mockedObservable3 ); // register, but no destroying
 		testedObserver12.destroy();
 
 		assertThat( notifier1.allListenersAreUnregistered() ).isTrue();
@@ -51,7 +51,7 @@ class UsageExample_allListenersAreUnregistered_Test {
 		assertThat( notifier3.allListenersAreUnregistered() ).isFalse();
 
 		assertThatThrownBy( () -> Mockobor.assertThatAllListenersAreUnregistered( notifier1, notifier2, notifier3 ) )
-				.hasMessageContaining( "mockedObservable3" ) // mocked object with not unregistered listeners
+				.hasMessageContaining( "mockedObservable3" ) // the mocked object with not unregistered listeners
 				.hasMessageContainingAll( "MyListener", "MyAnotherListener", "PropertyChangeListener", "Observer" )// not unregistered listeners classes
 				.hasMessageContainingAll( "prop", "presel", "postsel" ); // not unregistered selectors
 	}

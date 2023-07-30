@@ -28,7 +28,9 @@ class UsageExample_CustomDetector_Test {
 		void update( Object param );
 	}
 
-	/** Class of observable object. It is mocked in this test, because we don't need to have a class, interface is enough. */
+	/** Class of the observable object.
+	 * It is mocked in this test because we don't need to have a class, interface is enough.
+	 */
 	public interface MyObservable {
 		void addMyObservable( MyObserver observable );
 	}
@@ -101,7 +103,7 @@ class UsageExample_CustomDetector_Test {
 					// overridden implementation of numberOfListenerRegistrations()
 					new NotificationMethodDelegate(
 							ListenersNotifier.class.getMethod( "numberOfListenerRegistrations" ),
-							( listenersNotifier, method, arguments ) -> -100 ), // something other, that can not be returned from other implementations
+							( listenersNotifier, method, arguments ) -> -100 ), // something else, that can not be returned from other implementations
 					// required implementation of notifyMyObserver()
 					new NotificationMethodDelegate(
 							AdditionalInterface.class.getMethod( "notifyMyObserver" ),
@@ -120,7 +122,7 @@ class UsageExample_CustomDetector_Test {
 	}
 
 
-	/** The class under test, which should observes a mocked {@link MyObservable}. */
+	/** The class under test, which should observe a mocked {@link MyObservable}. */
 	public static class TestedObject implements MyObserver {
 
 		@Getter

@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 
 /**
- * It represents selector (a set of values) used to register or found listener.
+ * It represents selectors (a set of values) used to register or found listener.
  * <p><br>
  * For example - the String-parameter (property name) in the methods
  * {@code PropertyChangeSupport.addPropertyChangeListener(String, PropertyChangeListener)} or
  * {@code PropertyChangeSupport.firePropertyChange(String, Object, Object)} is a selector.
  * <p><br>
- * If you need more values as selector , you can pass more values into {@link #selector(Object...)} factory method.
+ * If you need more values as selector, you can pass more values into {@link #selector(Object...)} factory method.
  * Example:
  * <pre class="code"><code class="java">
  *

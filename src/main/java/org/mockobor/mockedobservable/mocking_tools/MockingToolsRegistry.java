@@ -21,7 +21,8 @@ public interface MockingToolsRegistry {
 	/**
 	 * To get {@code ListenerRegistrationHandler} for the specified mocked object.
 	 * <p>
-	 * It detects mocking tool used to mock the specified mocked object and returns corresponding listener registration handler.
+	 * It detects mocking tool used to mock the specified mocked object and
+	 * returns the corresponding listener registration handler.
 	 * <p>
 	 * To detect used mocking tool it finds all mocking tools available in classpath
 	 * (which "detect class" can be loaded with the current class loaded)

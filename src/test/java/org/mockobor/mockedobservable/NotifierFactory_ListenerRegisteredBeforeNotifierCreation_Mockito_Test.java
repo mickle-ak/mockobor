@@ -86,7 +86,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 		// should send notification to both test objects
 		notifier.notifierFor( MyListener.class ).onChange( "new-value" );
 
-		// check that both listener receive notification
+		// check that both listeners receive notification
 		assertAll(
 				() -> assertThat( createdBeforeNotifier.getInvocations() ).as( "in before creation" ).containsExactly( "new-value" ),
 				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" )
@@ -102,7 +102,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 		// should send notification to both test objects
 		notifier.notifierFor( MyListener.class ).onChange( "new-value" );
 
-		// check that both listener receive notification
+		// check that both listeners receive notification
 		assertAll(
 				() -> assertThat( createdBeforeNotifier.getInvocations() ).as( "in before creation" ).containsExactly( "new-value" ),
 				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" )
@@ -130,7 +130,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 		// should send notification to both test objects
 		notifier.notifierFor( MyListener.class, selector( "s1", "s2", "s3" ) ).onChange( "new-value" );
 
-		// check that both listener receive notification
+		// check that both listeners receive notification
 		assertAll(
 				() -> assertThat( createdBeforeNotifier.getInvocations() ).as( "in before creation" ).containsExactly( "new-value" ),
 				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" )

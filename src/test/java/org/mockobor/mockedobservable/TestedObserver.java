@@ -48,6 +48,7 @@ public class TestedObserver {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static class ObserverIml implements Observer {
 
 		@Getter

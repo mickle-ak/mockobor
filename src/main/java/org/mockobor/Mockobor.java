@@ -13,19 +13,17 @@ import org.mockobor.mockedobservable.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Observable;
-import java.util.Observer;
 
 
 /**
  * Main Mockobor class.
  *
- * It es a static facade for Mockobor functionality.
+ * It is a static facade for Mockobor functionality.
  * <p><br>
  * <H1><b>Send events from mocked observable object to test object.</b></H1>
  * <p><br>
- * You can use {@link Mockobor#createNotifierFor} to simulate sending of notification events from mocked observable object
- * to a test object, that register listeners by the mocked observable object.
+ * You can use {@link Mockobor#createNotifierFor} to simulate sending of notification events
+ * from a mocked observable object to a test object, that register listeners by the mocked observable object.
  * <p><br>
  * Example for Java-style listeners:
  * <pre class="code"><code class="java">
@@ -78,7 +76,7 @@ import java.util.Observer;
  * See {@link ListenersNotifier#notifierFor(Class)}, {@link ListenersNotifier#notifierFor(Object, Class)} or
  * {@link ListenersNotifier#notifierFor(Class, ListenerSelector...)} for more details.
  * <p><br>
- * For {@link PropertyChangeSupport} and {@link Observable} Mockobor has a special support -
+ * For {@link PropertyChangeSupport} and {@code Observable} Mockobor has a special support -
  * {@link PropertyChangeNotifier}, {@link ObservableNotifier}.
  * <p><br>
  * Example of usage of {@link PropertyChangeNotifier} for mocked {@link PropertyChangeSupport}:
@@ -95,7 +93,7 @@ import java.util.Observer;
  * notifier.firePropertyChange( "myProperty", oldValue, newValue );
  * </code></pre>
  * <p>
- * Example of usage of {@link ObservableNotifier} for mocked {@link Observable}:
+ * Example of usage of {@link ObservableNotifier} for mocked {@code Observable}:
  * <pre class="code"><code class="java">
  *
  * // create notifier for mocked Observable
@@ -176,14 +174,14 @@ public final class Mockobor {
 	 * To create notifier for the specified mocked observable.
 	 * <p></p>
 	 * This method does follow:<ul>
-	 * <li>searchs for registration (add/remove listener) methods for all (known) observer/listeners,</li>
+	 * <li>search for registration (add/remove listener) methods for all (known) observer/listeners,</li>
 	 * <li>detect used mocking tool,</li>
 	 * <li>redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and</li>
 	 * <li>creates dynamic proxy as notifier object.</li>
 	 * </ul>
 	 * <p></p>
 	 * According to the specified mocked observable the returned notifier implements follow interfaces (in any combinations): <ul>
-	 * <li>{@link ObservableNotifier} + {@link Observer} if methods for {@code Observer} registration found:<ul>
+	 * <li>{@link ObservableNotifier} + {@code Observer} if methods for {@code Observer} registration found:<ul>
 	 * <li>{@code addObserver(Observer)}</li>
 	 * <li>{@code deleteObserver(Observer)}</li></ul>
 	 * </li>
@@ -199,7 +197,7 @@ public final class Mockobor {
 	 * (see {@link MockoborContext#registerListenerDefinitionDetector(ListenerDefinitionDetector)})
 	 * </li></ul>
 	 * <p></p>
-	 * It uses globally settings statically stored in {@link MockoborContext} (use {@link MockoborContext#updateNotifierSettings()} to
+	 * It uses global settings statically stored in {@link MockoborContext} (use {@link MockoborContext#updateNotifierSettings()} to
 	 * change global settings).
 	 * <p>
 	 * Invocation of these methods is equal to call {@code Mockobor.createNotifierFor(mockedObservable, Mockobor.notifierSettings())}.
@@ -223,7 +221,7 @@ public final class Mockobor {
 	 * To create notifier for the specified mocked observable with the specified settings.
 	 * <p></p>
 	 * This method does follow:<ul>
-	 * <li>searchs for registration (add/remove listener) methods for all (known) observer/listeners,</li>
+	 * <li>search for registration (add/remove listener) methods for all (known) observer/listeners,</li>
 	 * <li>detect used mocking tool,</li>
 	 * <li>redirect add/remove-listeners methods from mocked object to itself (using detected mocking tool) and</li>
 	 * <li>creates dynamic proxy as notifier object.</li>

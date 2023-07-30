@@ -31,16 +31,16 @@ import java.util.Observer;
  *
  * </code></pre>
  */
-@SuppressWarnings( "unused" )
+@SuppressWarnings({"unused", "deprecation"})
 public interface ObservableNotifier extends ListenersNotifier {
 
 	/**
 	 * To simulate call of {@link Observer#update} from {@link Observable#notifyObservers()}.
 	 * <p>
 	 * It ignores {@code Observable.changed} flag and calls {@code Observer.update(observable, null)} one time
-	 * for each calls of {@code notifyObservers}.
+	 * for each call of {@code notifyObservers}.
 	 * <p>
-	 * If mocked observable object is an instance of {@link Observable}, then it uses correct observable object
+	 * If the mocked observable object is an instance of {@link Observable}, then it uses the correct observable object
 	 * as first parameter of {@link Observer#update(Observable, Object)}; otherwise it is null.
 	 * <p>
 	 * This method is equivalent to: {@code notifyObservers(null)}
@@ -59,9 +59,9 @@ public interface ObservableNotifier extends ListenersNotifier {
 	 * To simulate call of {@link Observer#update} from {@link Observable#notifyObservers(Object)}.
 	 * <p>
 	 * It ignores {@code Observable.changed} flag and calls {@code Observer.update(observable, updateParameter)}
-	 * one time for each calls of {@code notifyObservers(updateParameter)}.
+	 * one time for each call of {@code notifyObservers(updateParameter)}.
 	 * <p>
-	 * If mocked observable object is an instance of {@link Observable}, then it uses correct observable object
+	 * If the mocked observable object is an instance of {@link Observable}, then it uses the correct observable object
 	 * as first parameter of {@link Observer#update(Observable, Object)}; otherwise it is null.
 	 *
 	 * @param updateParameter any object used as parameter by call of {@link Observer#update(Observable, Object)}.

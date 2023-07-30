@@ -77,7 +77,8 @@ class MockingToolsRegistryImplTest {
 				.isInstanceOf( AnotherListenerRegistrationHandler.class );
 	}
 
-	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	// suppress "Refactor the code of the lambda to have only one invocation, possibly throwing a runtime exception"
+	@SuppressWarnings( "java:S5778" )
 	@Test
 	void registerUnknownMockingTool() {
 		// mocking tool not in classpath
@@ -87,7 +88,8 @@ class MockingToolsRegistryImplTest {
 				.isInstanceOf( MockingToolNotDetectedException.class );
 	}
 
-	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	// suppress "Refactor the code of the lambda to have only one invocation, possibly throwing a runtime exception"
+	@SuppressWarnings( "java:S5778" )
 	@Test
 	void register_invalid_handle_not_implemented_ListenerRegistrationHandler() {
 		// Object as mocking tool :-), but always in classpath
@@ -95,7 +97,8 @@ class MockingToolsRegistryImplTest {
 				.isInstanceOf( MockoborIllegalArgumentException.class );
 	}
 
-	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	// suppress "Refactor the code of the lambda to have only one invocation, possibly throwing a runtime exception"
+	@SuppressWarnings( "java:S5778" )
 	@Test
 	void register_invalid_handle_unknownHandlerClass() {
 		// Object as mocking tool :-), but always in classpath

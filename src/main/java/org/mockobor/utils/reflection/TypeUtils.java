@@ -31,11 +31,11 @@ public final class TypeUtils {
 
 
 	/**
-	 * To get default value for the specified class.
+	 * To get the default value for the specified class.
 	 * <p>
 	 * It works correct for primitive types.
 	 * <p>
-	 * For string it returns empty string.
+	 * For string, it returns empty string.
 	 * <p>
 	 * For collections - empty modifiable collection.
 	 *
@@ -58,10 +58,10 @@ public final class TypeUtils {
 			return (T) DEFAULT_AS_SUPPLIER.get( clazz ).get();
 		}
 
-		// arrays -> return empty array
+		// arrays -> return an empty array
 		if( clazz.isArray() ) return (T) Array.newInstance( clazz.getComponentType(), 0 );
 
-		// another collection types - try to do the best possible :-)
+		// another collection type - try to do the best possible :-)
 		if( Set.class.isAssignableFrom( clazz ) ) return (T) new HashSet<>();
 		if( Map.class.isAssignableFrom( clazz ) ) return (T) new HashMap<>();
 		if( Iterable.class.isAssignableFrom( clazz ) ) return (T) new ArrayList<>();

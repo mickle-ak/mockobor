@@ -1,4 +1,4 @@
-name: publish to MavenCentrale (over sontype) on release tags (started with "v")
+name: publish to MavenCentral (over sontype) on release tags (started with "v")
 
 on:
   push:

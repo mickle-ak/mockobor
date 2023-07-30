@@ -81,8 +81,8 @@ class UsageExample_BeanPropertyChange_Test {
 		// Create mock for ObservableBean.
 		ObservableBean mockedObservable = mock( ObservableBean.class );
 
-		// Create notifier for mocked observable bean. For bean with PropertyChangeSupport as mock it returns special interface 
-		// "PropertyChangeNotifier".
+		// Create notifier for mocked observable bean. For bean with PropertyChangeSupport as mock,
+		// it returns the special interface "PropertyChangeNotifier".
 		notifier = (PropertyChangeNotifier) Mockobor.createNotifierFor( mockedObservable );
 
 		// Create SUT-object, which observes the mocked ObservableBean
@@ -99,7 +99,7 @@ class UsageExample_BeanPropertyChange_Test {
 		notifier.firePropertyChange( PROPERTY_NAME, 1, 2 );
 
 
-		// Check that observer has receive the notifications from mocked observable
+		// Check that observer has received the notifications from mocked observable
 		assertThat( observer.getPropertyChangeEvents() )
 			.extracting( PropertyChangeEvent::getPropertyName, PropertyChangeEvent::getOldValue, PropertyChangeEvent::getNewValue )
 			.containsExactly(

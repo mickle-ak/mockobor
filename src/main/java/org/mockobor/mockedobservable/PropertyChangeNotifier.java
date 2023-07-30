@@ -136,7 +136,8 @@ public interface PropertyChangeNotifier extends ListenersNotifier {
 	/**
 	 * To simulate call of {@link PropertyChangeSupport#fireIndexedPropertyChange(String, int, Object, Object)} by mocked bean.
 	 * <p>
-	 * Reports a bound indexed property update to listeners that have been registered to track updates of all properties or a property with the specified name.
+	 * Reports a bound-indexed property update to listeners
+	 * that have been registered to track updates of all properties or a property with the specified name.
 	 * <p>
 	 * No event is fired if old and new values are equal and non-null.
 	 * <p>
@@ -160,8 +161,8 @@ public interface PropertyChangeNotifier extends ListenersNotifier {
 	/**
 	 * To simulate call of {@link PropertyChangeSupport#fireIndexedPropertyChange(String, int, int, int)} by mocked bean.
 	 * <p>
-	 * Reports an integer bound indexed property update to listeners that have been registered to track updates of all properties or a property with the
-	 * specified name.
+	 * Reports an integer-bound indexed property update to listeners
+	 * that have been registered to track updates of all properties or a property with the specified name.
 	 * <p>
 	 * No event is fired if old and new values are equal.
 	 * <p>

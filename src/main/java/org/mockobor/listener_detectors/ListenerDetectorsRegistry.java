@@ -4,8 +4,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
-import java.util.Observable;
-import java.util.Observer;
 
 
 /**
@@ -14,7 +12,7 @@ import java.util.Observer;
  * Out of the box (per default) follow detectors are registered (in processing order):<ol>
  * <li>{@link PropertyChangeDetector} for beans that support bound properties (see {@link PropertyChangeSupport}).</li>
  * <li>{@link TypicalJavaListenerDetector} for typical Java listener.</li>
- * <li>{@link ObservableDetector} for {@link Observer}/{@link Observable}.</li>
+ * <li>{@link ObservableDetector} for {@code Observer}/{@code Observable}.</li>
  * </ol>
  * <p><br>
  * Usually you don't need to use this.
@@ -24,7 +22,7 @@ public interface ListenerDetectorsRegistry {
 
 
 	/**
-	 * To return list of all registered detectors in correct order (LIFO).
+	 * To return a list of all registered detectors in correct order (LIFO).
 	 *
 	 * @return immutable list of all registered detectors in correct order
 	 */
@@ -34,7 +32,8 @@ public interface ListenerDetectorsRegistry {
 	/**
 	 * To add custom listener definition detector.
 	 * <p><br>
-	 * A new registered detector have priority over previously registered detectors (inclusive detectors registered per default).
+	 * A new registered detector has priority over previously registered detectors
+	 * (inclusive detectors registered per default).
 	 * <p><br>
 	 * Usually you don't need to call it. Only if you want to register custom listener definition detectors.
 	 *

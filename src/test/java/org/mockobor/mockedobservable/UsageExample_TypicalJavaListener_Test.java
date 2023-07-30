@@ -16,19 +16,19 @@ import static org.mockobor.listener_detectors.ListenerSelector.selector;
 @SuppressWarnings( "unused" )
 class UsageExample_TypicalJavaListener_Test {
 
-	/** The listener to listen changes on something. */
+	/** The listener to listen to changes on something. */
 	public interface MyListener {
 		void somethingChanged1( Object somethingNewValue );
 		void somethingChanged2( Object somethingNewValue );
 	}
 
-	/** The listener to listen changes on something other. */
+	/** The listener to listen to changes on something else. */
 	public interface MyAnotherListener {
-		void somethingOtherChanged( Object somthingOtherValue );
+		void somethingOtherChanged( Object somethingOtherValue );
 	}
 
 
-	/** The class (that support notification on change something and something other) to mock. */
+	/** The class (that support notification on change something and something else) to mock. */
 	public interface ObservableObject {
 
 		void addMyListener( MyListener listener );
@@ -100,7 +100,8 @@ class UsageExample_TypicalJavaListener_Test {
 		// Create mock for ObservableObject.
 		ObservableObject mockedObservable = mock( ObservableObject.class );
 
-		// Create notifier for mocked observable object. For classes with typical Java listener it returns listener interfaces itself.
+		// Create notifier for the mocked observable object.
+		// For classes with typical Java listener, it returns listener interfaces itself.
 		notifier = Mockobor.createNotifierFor( mockedObservable );
 
 		// Create SUT-object, which observes the mocked ObservableObject
@@ -127,7 +128,7 @@ class UsageExample_TypicalJavaListener_Test {
 		// Simulate simultaneous calling of change notifications listeners registered with different selectors
 		notifier.notifierFor( MyListener.class, selector(), selector( "selValue" ) ).somethingChanged1( "v5 s(), s(selValue)" );
 
-		// Check that observer has receive the notifications from mocked observable
+		// Check that observer has received the notifications from mocked observable
 		assertThat( observer.getAllChangesTogether() )
 				.containsExactly( "v1", "v2", "v3",
 				                  "v4", "s() v4",

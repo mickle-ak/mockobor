@@ -68,6 +68,7 @@ abstract class NotifierFactory_TestBase {
 		assertThat( notifier.getListeners( MyListener.class, selector( "presel", "postsel" ) ) )
 				.containsExactly( testedObserver.getMyListener() );
 
+		//noinspection deprecation
 		assertThat( notifier ).isInstanceOf( ListenersNotifier.class )
 		                      .isInstanceOf( ObservableNotifier.class )
 		                      .isInstanceOf( PropertyChangeNotifier.class )
@@ -108,6 +109,7 @@ abstract class NotifierFactory_TestBase {
 		assertThat( testedObserver.getMyAnotherListener().getInvocations() ).isEmpty();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void notifyObservable() {
 		( (ObservableNotifier) notifier ).notifyObservers();
@@ -133,7 +135,6 @@ abstract class NotifierFactory_TestBase {
 		assertThat( observableNotifier.countObservers() ).isEqualTo( 1 );
 	}
 
-	@SuppressWarnings( "unchecked" )
 	@Test
 	void notifyPropertyChangeSupport() {
 		( (PropertyChangeNotifier) notifier ).firePropertyChange( "prop", "o1", "n1" );

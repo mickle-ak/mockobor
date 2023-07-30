@@ -40,7 +40,8 @@ class PropertyChangeDetectorTest {
 			.as( "expected interfaces" )
 			.containsExactly( PropertyChangeNotifier.class );
 
-		// no additional notifications expected because all methods of {@link PropertyChangeNotifier} have default implementation 
+		// no additional notifications expected
+		// because all methods of {@link PropertyChangeNotifier} have the default implementation
 		assertThat( listenersDefinition.getCustomNotificationMethodDelegates() ).isEmpty();
 	}
 }

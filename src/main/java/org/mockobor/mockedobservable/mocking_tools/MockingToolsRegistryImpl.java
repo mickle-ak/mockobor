@@ -6,6 +6,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.mockobor.exceptions.MockingToolNotDetectedException;
 import org.mockobor.exceptions.MockoborIllegalArgumentException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 
 
 	/**
-	 * To add support for one of default mocking tool.
+	 * To add support for one of the default mocking tools.
 	 * <p></p>
 	 * It uses class names to avoid premature loading of implementation classes
 	 * and thrown of {@code ClassNotFoundException} if supported mocking tool not in classpath.
@@ -56,7 +57,7 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 	 * @param mockingToolDetectClassName   name of class used to detect if the mocking tool in classpath (the class can be loaded)
 	 * @param registrationHandlerClassName name of class implemented {@link ListenerRegistrationHandler} for the mocking tool.
 	 *                                     It must have a no argument constructor.
-	 * @return true if the specified mocking tool was found in classpath and corresponding handler is registered
+	 * @return true if the specified mocking tool was found in classpath and the corresponding handler is registered
 	 * @throws MockoborIllegalArgumentException if mocking tool found, but listener registration handler can not be created
 	 */
 	boolean addDefaultMockingTool( @NonNull String mockingToolDetectClassName, @NonNull String registrationHandlerClassName )
@@ -66,20 +67,20 @@ public class MockingToolsRegistryImpl implements MockingToolsRegistry {
 			Class.forName( mockingToolDetectClassName, false, Thread.currentThread().getContextClassLoader() );
 		}
 		catch( ClassNotFoundException e ) {
-			return false; // mocking tool not available in classpath
+			return false; // mocking tool is not available in classpath
 		}
 
 		try {
 			// create and add registration handler
-			Object registrationHandle = Class.forName( registrationHandlerClassName ).newInstance();
-			if( !( registrationHandle instanceof ListenerRegistrationHandler ) ) {
+			Object registrationHandler = Class.forName( registrationHandlerClassName ).newInstance();
+			if( !( registrationHandler instanceof ListenerRegistrationHandler ) ) {
 				throw new MockoborIllegalArgumentException( "Registration handle (%s) must implement ListenerRegistrationHandler",
-				                                            registrationHandlerClassName );
+						registrationHandlerClassName );
 			}
-			availableHandlers.add( (ListenerRegistrationHandler) registrationHandle );
+			availableHandlers.add( (ListenerRegistrationHandler) registrationHandler );
 			return true;
 		}
-		catch( InstantiationException | IllegalAccessException | ClassNotFoundException e ) {
+		catch(InstantiationException | IllegalAccessException | ClassNotFoundException e ) {
 			throw new MockoborIllegalArgumentException( "Can not create registration handle (%s)", registrationHandlerClassName );
 		}
 	}

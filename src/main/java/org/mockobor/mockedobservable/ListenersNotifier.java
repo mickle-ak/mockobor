@@ -10,7 +10,6 @@ import org.mockobor.listener_detectors.ListenerSelector;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
-import java.util.Observable;
 
 import static org.mockobor.listener_detectors.ListenerSelector.selector;
 
@@ -31,7 +30,7 @@ public interface ListenersNotifier {
 
 
 	/**
-	 * To check if at least one listener was registered and all registered listeners was unregistered.
+	 * To check if at least one listener was registered and all registered listeners were unregistered.
 	 * <p><br>
 	 * Example (using Mockito, AssertJ, PropertyChangeSupport):
 	 * <pre class="code"><code class="java">
@@ -50,9 +49,10 @@ public interface ListenersNotifier {
 	 * assertThat( notifier.allListenersAreUnregistered() ).as( "all listeners are unregistered" ).isTrue();
 	 *
 	 * </code></pre>
-	 * For other listeners it works exactly like.
+	 * For other listeners, it works exactly like.
 	 *
-	 * @return true if some listeners was registered and all of them are deregistered; false if no listeners was registered or some of them stay registered.
+	 * @return true if some listeners were registered and all of them are deregistered;
+	 *         false if no listeners were registered or some of them stay registered.
 	 */
 	default boolean allListenersAreUnregistered() {
 		return numberOfListenerRegistrations() > 0 && numberOfRegisteredListeners() == 0;
@@ -63,10 +63,11 @@ public interface ListenersNotifier {
 	 * To get notifier proxy which implements the specified listener interface and
 	 * can be used to call listener's methods for all listeners registered without selectors.
 	 * <p><br>
-	 * If listeners with suitably selector not found (was not added), then (per default) it throws {@code ListenersNotFoundException}.<br>
-	 * This behaviour can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
+	 * If listeners with suitable selector not found (was not added),
+	 * then (per default) it throws {@code ListenersNotFoundException}.<br>
+	 * This behavior can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
 	 * <p><br>
-	 * If listener's notification method returns some value, then result of last called notification methods will be returned (invocation order is undefined).
+	 * If listener's notification method returns some value, then the result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * It is equal to call {@code notifierFor( listenerClass, selector() )}.
 	 * <p>
@@ -74,8 +75,8 @@ public interface ListenersNotifier {
 	 *
 	 * @param listenerClass class of required listener
 	 * @param <L>           class of required listener
-	 * @return a object which implements the specified listener interface to call its methods for notification
-	 * @throws ListenersNotFoundException if no listeners with suitably selector registered by the mocked observable and
+	 * @return an object which implements the specified listener interface to call its methods for notification
+	 * @throws ListenersNotFoundException if no listeners with suitable selector registered by the mocked observable and
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 * @see #notifierFor(Class, ListenerSelector...)
 	 */
@@ -88,10 +89,11 @@ public interface ListenersNotifier {
 	 * To get notifier proxy which implements the specified listener interface and
 	 * can be used to call listener's methods for all listeners registered with the specified selector value.
 	 * <p><br>
-	 * If listeners with suitably selector not found (was not added), then (per default) it throws {@code ListenersNotFoundException}.<br>
-	 * This behaviour can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
+	 * If listeners with suitable selector not found (was not added),
+	 * then (per default) it throws {@code ListenersNotFoundException}.<br>
+	 * This behavior can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
 	 * <p><br>
-	 * If listener's notification method returns some value, then result of last called notification methods will be returned (invocation order is undefined).
+	 * If listener's notification method returns some value, then the result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * It is equal to call {@code notifierFor( listenerClass, selector(listenerSelectorValue) )}.
 	 * <p>
@@ -100,8 +102,8 @@ public interface ListenersNotifier {
 	 * @param listenerClass         class of required listener
 	 * @param listenerSelectorValue selector used to registration of listeners
 	 * @param <L>                   class of required listener
-	 * @return a object which implements the specified listener interface to call its methods for notification
-	 * @throws ListenersNotFoundException if no listeners with suitably selector registered by the mocked observable and
+	 * @return an object which implements the specified listener interface to call its methods for notification
+	 * @throws ListenersNotFoundException if no listeners with suitable selector registered by the mocked observable and
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 * @see #notifierFor(Class, ListenerSelector...)
 	 */
@@ -114,10 +116,10 @@ public interface ListenersNotifier {
 	 * To get notifier proxy which implements the specified listener interface and <br>
 	 * can be used to call listener's methods for all listeners registered with at least one of the specified selectors.
 	 * <p><br>
-	 * If listeners with suitably selector not found (was not added), then (per default) it throws {@code ListenersNotFoundException}.<br>
-	 * This behaviour can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
+	 * If listeners with suitable selector not found (was not added), then (per default) it throws {@code ListenersNotFoundException}.<br>
+	 * This behavior can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
 	 * <p><br>
-	 * If listener's notification method returns some value, then result of last called notification methods will be returned (invocation order is undefined).
+	 * If listener's notification method returns some value, then the result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * Usually you don't need to use this method, because <ul>
 	 * <li>{@code createNotifierFor} returns object, that already implemented all found listeners interfaces and</li>
@@ -126,14 +128,14 @@ public interface ListenersNotifier {
 	 * So you can send notifications to registered listeners directly by cast this object (returned from {@code createNotifierFor}) <br>
 	 * to required listener interface and call one of its methods (for examples see {@link Mockobor}).
 	 * <p>
-	 * For some common cases ({@link Observable}, {@link PropertyChangeListener})
+	 * For some common cases ({@code Observable}, {@link PropertyChangeListener})
 	 * Mockobor has special support: {@link ObservableNotifier}, {@link PropertyChangeNotifier}.
 	 * <p><br>
-	 * But, if you listeners have methods with same signature or you need selectors (see {@link ListenerSelector})
+	 * But, if you listeners have methods with same signature, or you need selectors (see {@link ListenerSelector})
 	 * to register/find your listeners, you can use {@code notifierFor}-methods to notify only required listener(s).
 	 * <p>
 	 * For Example, for {@link PropertyChangeListener} you need (sometimes) to define String parameter - property name.
-	 * A call of {@link PropertyChangeSupport#firePropertyChange(String, Object, Object)} can be simulates so:
+	 * A call of {@link PropertyChangeSupport#firePropertyChange(String, Object, Object)} can be simulated so:
 	 * <pre class="code"><code class="java">
 	 *
 	 * // Test object
@@ -167,8 +169,8 @@ public interface ListenersNotifier {
 	 * @param listenerClass class of required listener
 	 * @param selectors     selectors used by registration of listeners
 	 * @param <L>           class of required listener
-	 * @return a object which implements the specified listener interface to call its methods for notification
-	 * @throws ListenersNotFoundException if no listeners with suitably selector registered by the mocked observable and
+	 * @return an object which implements the specified listener interface to call its methods for notification
+	 * @throws ListenersNotFoundException if no listeners with suitable selector registered by the mocked observable and
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 */
 	@NonNull <L> L notifierFor( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors ) 
@@ -176,7 +178,8 @@ public interface ListenersNotifier {
 
 
 	/**
-	 * Set flag: strict (true) or lenient (false) checking if list of listeners selected to send notification contains any listener.<ul>
+	 * Set flag: strict (true) or lenient (false) checking if the list of listeners selected to send notification
+	 * contains any listener.<ul>
 	 * <li>true - exception if no listener found in {@link #notifierFor}</li>
 	 * <li>false - do nothing if no listener found in {@link #notifierFor}</li>
 	 * </ul>
@@ -202,7 +205,7 @@ public interface ListenersNotifier {
 
 
 	/**
-	 * Get list of all currently registered listeners.
+	 * Get a list of all currently registered listeners.
 	 *
 	 * @return unmodifiable list of all currently registered listeners, or empty list if nothing found
 	 */
@@ -210,31 +213,32 @@ public interface ListenersNotifier {
 
 
 	/**
-	 * Get list of currently registered listeners of required type (with any selectors).
+	 * Get a list of currently registered listeners with the required type (with any selectors).
 	 *
 	 * @param listenerClass class of required listener
 	 * @param <L>           class of required listener
-	 * @return unmodifiable list of listeners of required type, or empty list if nothing found
+	 * @return unmodifiable list of listeners with the required type, or empty list if nothing found
 	 */
 	@NonNull <L> Collection<L> getListeners( @NonNull Class<L> listenerClass );
 
 	/**
-	 * Get list of listeners of required type, registered with one of the specified selectors.
+	 * Get a list of listeners with the required type, registered with one of the specified selectors.
 	 *
 	 * @param listenerClass class of required listener
 	 * @param selectors     selectors used by registration of listeners
 	 * @param <L>           class of required listener
-	 * @return unmodifiable list of listeners of required type, registered with one of the specified selectors, or empty list if nothing found
+	 * @return unmodifiable list of listeners with the required type,
+	 *         registered with one of the specified selectors, or empty list if nothing found
 	 */
 	@NonNull <L> Collection<L> getListeners( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors );
 
 
 	/**
-	 * Get list of full selectors for all currently registered listeners.
+	 * Get a list of full selectors for all currently registered listeners.
 	 *
 	 * @return unmodifiable list of full selectors
 	 */
-	@NonNull Collection<ListenerKey<?>> getListenersWithSelector(); // NOSONAR: types of each listeners are 1. different and 2. unknown here
+	@NonNull Collection<ListenerKey<?>> getListenersWithSelector(); // NOSONAR: a type of each listener is 1. different and 2. unknown here
 
 
 	/**

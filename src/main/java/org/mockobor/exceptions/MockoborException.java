@@ -29,7 +29,7 @@ public class MockoborException extends RuntimeException {
 	/**
 	 * Constructs a new mockobor exception with the specified detail message.
 	 * <p>
-	 * It uses {@link String#format} to format message.
+	 * It uses {@link String#format} to formatting messages.
 	 *
 	 * @param message the detail message.
 	 * @param args    Arguments referenced by the format specifiers in the format string.
@@ -44,7 +44,7 @@ public class MockoborException extends RuntimeException {
 	 * Constructs a new runtime exception with the specified detail message and cause.
 	 *
 	 * @param message the detail message.
-	 * @param cause   he cause
+	 * @param cause   the cause
 	 * @see RuntimeException#RuntimeException(String, Throwable)
 	 */
 	public MockoborException( String message, Throwable cause ) {
@@ -53,9 +53,9 @@ public class MockoborException extends RuntimeException {
 
 
 	/**
-	 * Constructs a new runtime exception with the specified cause,
+	 * Constructs a new runtime exception with the specified cause.
 	 *
-	 * @param cause he cause
+	 * @param cause the cause
 	 * @see RuntimeException#RuntimeException(Throwable)
 	 */
 	public MockoborException( Throwable cause ) {
@@ -68,7 +68,7 @@ public class MockoborException extends RuntimeException {
 	 * suppression enabled or disabled, and writable stack trace enabled or disabled.
 	 *
 	 * @param message            the detail message.
-	 * @param cause              he cause
+	 * @param cause              the cause
 	 * @param enableSuppression  whether or not suppression is enabled or disabled
 	 * @param writableStackTrace whether or not the stack trace should be writable
 	 * @see RuntimeException#RuntimeException(String, Throwable, boolean, boolean)

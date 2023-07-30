@@ -68,7 +68,8 @@ class MockitoListenerRegistrationHandler_PreviousInvocations_Test {
 	}
 
 
-	@SuppressWarnings( "java:S5778" ) // suppress "Refactor the code of the lambda to have only one invocation possibly throwing a runtime exception"
+	// suppress "Refactor the code of the lambda to have only one invocation, possibly throwing a runtime exception"
+	@SuppressWarnings( "java:S5778" )
 	@Test
 	void getPreviouslyRegistrations_notMock() {
 		assertThatThrownBy( () -> handler.getPreviouslyRegistrations( new Object() ) )

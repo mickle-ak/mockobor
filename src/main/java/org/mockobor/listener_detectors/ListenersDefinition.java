@@ -17,13 +17,13 @@ import java.util.*;
  * Describes detected listener(s).
  * <p>
  * It is a result of listener detection in {@link ListenerDefinitionDetector#detect} and used for
- * stabbing of registration methods of mocked observable and creation of proxy returned from {@code createNotifierFor}.
+ * stabbing of registration methods in mocked observable and creation of proxy returned from {@code createNotifierFor}.
  * <p>
  * Notification delegates ({@link #getCustomNotificationMethodDelegates()}) and additional interfaces ({@link #getAdditionalInterfaces()})
  * are needed only if the implementation of {@link ListenerDefinitionDetector} provides specific support for detected listeners.
  * For example, the notifier object implements:<ul>
  * <li>{@link PropertyChangeNotifier} for {@link PropertyChangeListener} (provided from {@link PropertyChangeDetector}),</li>
- * <li>{@link ObservableNotifier} for {@link Observer} (provided from {@link ObservableDetector})</li>
+ * <li>{@link ObservableNotifier} for {@code Observer} (provided from {@link ObservableDetector})</li>
  * <li>or direct listener interfaces (provided from {@link TypicalJavaListenerDetector})</li>
  * </ul>
  */
@@ -34,7 +34,7 @@ public interface ListenersDefinition {
 
 
 	/**
-	 * To get list of detected listeners (as interfaces).
+	 * To get a list of detected listeners (as interfaces).
 	 * <p>
 	 * For example: {@code PropertyChangeListener} or {@code Observer} or {@code MyListener} etc.
 	 * <p>
@@ -48,7 +48,7 @@ public interface ListenersDefinition {
 
 
 	/**
-	 * To get list of destinations for registration calls (like add/remove-Listener).
+	 * To get a list of destinations for registration calls (like add/remove-Listener).
 	 * <p>
 	 * They used to redirect add/remove-listener methods of mocked observable to an instance of {@link ListenerContainer}.
 	 * <p>
@@ -60,9 +60,9 @@ public interface ListenersDefinition {
 
 
 	/**
-	 * To get list of delegations to custom implementation of notification methods.
+	 * To get a list of delegations to custom implementation of notification methods.
 	 * <p>
-	 * Usually it is an implementation of non-default methods of additional interfaces.
+	 * Usually it is an implementation of non-default methods in additional interfaces.
 	 * <p></p>
 	 * Notification delegates defined here take precedence over all other implementations of source method.
 	 * <p><br>
@@ -74,10 +74,11 @@ public interface ListenersDefinition {
 
 
 	/**
-	 * To get list of additional interfaces, which should be implemented by notifier object returned from {@code createNotifierFor}
+	 * To get a list of additional interfaces, which should be implemented by notifier object
+	 * returned from {@code createNotifierFor}
 	 * (like {@link PropertyChangeNotifier} or {@link ObservableNotifier} or listener interfaces itself).
 	 * <p></p>
-	 * Default method implemented in additional interfaces take precedence over other implementations of same method
+	 * Default method implemented in additional interfaces takes precedence over other implementations of same method
 	 * (exclude defined in {@link #getCustomNotificationMethodDelegates()}).
 	 * <p>
 	 * Implementation for non-default methods of additional interfaces must be provided in {@link #getCustomNotificationMethodDelegates()}.

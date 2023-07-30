@@ -54,11 +54,11 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 
 
 	/**
-	 * To get list of delegations to custom implementation of notification methods.
+	 * To get a list of delegations to custom implementation of notification methods.
 	 * <p></p>
 	 * Notification delegates defined here take precedence over all other implementations of source method.
 	 * <p></p>
-	 * It returns empty list per default.
+	 * It returns an empty list per default.
 	 *
 	 * @return list of desirable notification delegates or empty list if no notification delegates needed
 	 * @see ListenersDefinition#getCustomNotificationMethodDelegates()
@@ -69,14 +69,15 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 
 
 	/**
-	 * To return additional interfaces which should be implemented by notifier object returned from {@code createNotifierFor}.
+	 * To return additional interfaces which should be implemented by notifier object,
+	 * returned from {@code createNotifierFor}.
 	 * <p></p>
-	 * Default method implemented in additional interfaces take precedence over other implementations of same method
+	 * Default method implemented in additional interfaces takes precedence over other implementations of same method
 	 * (exclude defined in {@link #getCustomNotificationMethodDelegates()}).
 	 * <p>
 	 * Implementation for non-default methods of additional interfaces must be provided in {@link #getCustomNotificationMethodDelegates()}.
 	 * <p></p>
-	 * It returns empty list per default.
+	 * It returns an empty list per default.
 	 *
 	 * @return list of desirable additional interfaces or empty list if no additional interface needed
 	 * @see ListenersDefinition#getAdditionalInterfaces()
@@ -209,12 +210,12 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		/** Type of listener found in registration method. */
 		@NonNull private final List<Class<?>> listenerClasses;
 
-		/** Indexes of other parameter (except listener) in registration method's arguments used to create selector. */
+		/** Indexes of other parameters (except listener) in registration method's arguments used to create selector. */
 		@NonNull private final List<Integer> selectorIndexes;
 
 
 		/**
-		 * To create listener selector which describe actual invocation of registration method.
+		 * To create listener selector which describes actual invocation of registration method.
 		 *
 		 * @param invokedMethod invoked method to compare with definition method
 		 * @param arguments     actual parameters used by real call of registration method
@@ -235,7 +236,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 					selectorIndexesCopy.removeIf( idx -> idx >= arguments.length );
 				}
 				else if( arguments.length > invokedMethod.getParameterCount() ) {
-					// more that one vararg => add indexes of extra parameters
+					// more than one vararg => add indexes of extra parameters
 					IntStream.range( invokedMethod.getParameterCount(), arguments.length ).forEach( selectorIndexesCopy::add );
 				}
 			}
@@ -260,7 +261,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 					                                       arguments.length, Arrays.asList( arguments ) );
 				}
 			}
-			else if( arguments.length < declaredNumberOfArguments - 1 ) { // less then with empty varargs
+			else if( arguments.length < declaredNumberOfArguments - 1 ) { // less than with empty varargs
 				throw new MockoborImplementationError( "create selector for unexpected number of parameters (vararg method: %s, expected>=%d, was: %d:%s)",
 				                                       invokedMethod.getName(), declaredNumberOfArguments - 1,
 				                                       arguments.length, Arrays.asList( arguments ) );

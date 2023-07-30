@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Observer;
 
 
-/** Test-interface to simulate mocked object with ability to register listeners/observers. */
+/** Test-interface to simulate a mocked object with the ability to register listeners/observers. */
 @SuppressWarnings( "unused" )
 public interface MockedObservable {
 
@@ -58,7 +58,9 @@ public interface MockedObservable {
 	// ================================== Observer ======================================
 	// ==================================================================================
 
-	void addObserver( Observer o );
+	@SuppressWarnings("deprecation")
+	void addObserver(Observer o );
 
-	void deleteObserver( Observer o );
+	@SuppressWarnings("deprecation")
+	void deleteObserver(Observer o );
 }

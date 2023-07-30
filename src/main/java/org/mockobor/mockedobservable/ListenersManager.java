@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * To manage listeners registration and find and send notifications to required listener.
+ * To manage listener registration and find and send notifications to require listener.
  * <p>
  * It used in "runtime" in background to store registered listeners and send notifications to these listeners.
  */
@@ -27,7 +27,7 @@ public class ListenersManager implements ListenerContainer, ListenersNotifier {
 	/**
 	 * Observable mock used to create this notifier
 	 * (mockedObservable passed to the {@code createNotifierFor( mockedObservable )}).
-	 * Ordinarily it used as source by event generation.
+	 * Ordinarily it used as a source for event generation.
 	 */
 	@NonNull
 	private final Object observable;
