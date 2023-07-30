@@ -4,6 +4,8 @@
 		- automatically create release on version tag
 		- automatically update version in Changelog
 		- bump dependencies versions
+		- update documentation
+		- code cleaning
 
 - **1.0.2** (21.09.2021)
 	- Changed
