@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
-    testImplementation("org.easymock:easymock:+")
+    val easymockVersion = "4.3"
+
+    testImplementation("org.easymock:easymock:$easymockVersion")
 }

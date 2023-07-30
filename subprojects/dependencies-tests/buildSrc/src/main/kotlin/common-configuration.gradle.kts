@@ -25,8 +25,8 @@ dependencies {
     testImplementation("io.github.mickle-ak.mockobor:mockobor:$mockoborVersion")
 
 
-    val junit5Version = "5.7.1"
-    val assertjVersion = "3.19.0"
+    val junit5Version = "5.10.0"
+    val assertjVersion = "3.24.2"
 
     testImplementation(platform("org.junit:junit-bom:$junit5Version"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junit5Version")

@@ -1,6 +1,4 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import pl.allegro.tech.build.axion.release.domain.ChecksConfig
-import pl.allegro.tech.build.axion.release.domain.hooks.HooksConfig
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -16,13 +14,17 @@ plugins {
     `java-library`
     jacoco
 
+    // versioning
+    id("pl.allegro.tech.build.axion-release") version "1.14.4"
+
     // publishing
     `maven-publish`
     signing
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 
-    // versioning
-    id("pl.allegro.tech.build.axion-release") version "1.13.3"
+    // IDE
+    idea
+    eclipse
 }
 
 
@@ -44,27 +46,30 @@ java {
 
 dependencies {
 
-    val junit5_version = "5.8.1"
-    val assertj_version = "3.21.0"
-    val mockito_version = "3.12.4"
-    val easymock_version = "4.3"
-    val lombok_version = "1.18.20"
+    val mockitoVersion = "4.11.0"
+    val easymockVersion = "4.3"
 
-    implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.600")
+    val eclipseannotationVersion = "2.2.700"
 
-    compileOnly("org.mockito:mockito-core:$mockito_version")
-    compileOnly("org.easymock:easymock:$easymock_version")
-    compileOnly("org.projectlombok:lombok:$lombok_version")
-    annotationProcessor("org.projectlombok:lombok:$lombok_version")
+    val lombokVersion = "1.18.28"
+    val junit5Version = "5.10.0"
+    val assertjVersion = "3.24.2"
 
-    testImplementation(platform("org.junit:junit-bom:$junit5_version"))
-    testImplementation("org.junit.jupiter:junit-jupiter:$junit5_version")
-    testImplementation("org.assertj:assertj-core:$assertj_version")
-    testImplementation("org.mockito:mockito-core:$mockito_version")
-    testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
-    testImplementation("org.easymock:easymock:$easymock_version")
-    testCompileOnly("org.projectlombok:lombok:$lombok_version")
-    testAnnotationProcessor("org.projectlombok:lombok:$lombok_version")
+    implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:$eclipseannotationVersion")
+
+    compileOnly("org.mockito:mockito-core:$mockitoVersion")
+    compileOnly("org.easymock:easymock:$easymockVersion")
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
+    testImplementation(platform("org.junit:junit-bom:$junit5Version"))
+    testImplementation("org.junit.jupiter:junit-jupiter:$junit5Version")
+    testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
+    testImplementation("org.easymock:easymock:$easymockVersion")
+    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
 }
 
 // configure test starter
@@ -108,8 +113,8 @@ tasks.javadoc {
 // configure jacoco report task
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
-    reports.xml.isEnabled = true
-    reports.html.isEnabled = true
+    reports.xml.required = true
+    reports.html.required = true
     doLast {
         println("full jacoco report: " + reports.html.entryPoint.absolutePath)
     }
@@ -126,7 +131,7 @@ tasks.jacocoTestReport {
 // ./gradlew createRelease
 
 scmVersion {
-    hooks(closureOf<HooksConfig> {
+    hooks({
         // update version in dependency examples
         pre("fileUpdate", mapOf(
                 "file" to "README.md",
@@ -139,7 +144,7 @@ scmVersion {
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })))
         pre("commit")
     })
-    checks(closureOf<ChecksConfig> {
+    checks({
         uncommittedChanges = false
         aheadOfRemote = false
     })
@@ -236,3 +241,22 @@ tasks.create("testEnvironment") {
     }
 }
 */
+
+
+// =================================================================================
+// ====================================  IDE  ======================================
+// =================================================================================
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
+}
+
+eclipse {
+    classpath {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
+}
