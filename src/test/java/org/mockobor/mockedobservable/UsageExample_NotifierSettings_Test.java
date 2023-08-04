@@ -33,6 +33,7 @@ class UsageExample_NotifierSettings_Test {
 	// ======================== implement listener interfaces ===========================
 	// ==================================================================================
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void doNotImplementListenerInterfaces_using_MockoborContext() {
 		// set global flag to ignore listener interfaces
@@ -42,7 +43,6 @@ class UsageExample_NotifierSettings_Test {
 		ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable );
 
 		// notifier does not implement listener interfaces
-		//noinspection deprecation
 		assertThat( notifier ).isNotInstanceOf( MockedObservable.MyListener.class )
 		                      .isNotInstanceOf( MockedObservable.MyAnotherListener.class )
 		                      .isNotInstanceOf( PropertyChangeListener.class )
@@ -52,6 +52,7 @@ class UsageExample_NotifierSettings_Test {
 		assertThatNotifierIsCorrectAndLinkedToTestedObject( notifier );
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void doNotImplementListenerInterfaces_using_local_settings() {
 		// set the global flag to implement listener interfaces (it is the default, for better readability only)
@@ -62,7 +63,6 @@ class UsageExample_NotifierSettings_Test {
 		                                                         Mockobor.notifierSettings().ignoreListenerInterfaces() );
 
 		// notifier does not implement listener interfaces
-		//noinspection deprecation
 		assertThat( notifier ).isNotInstanceOf( MockedObservable.MyListener.class )
 		                      .isNotInstanceOf( MockedObservable.MyAnotherListener.class )
 		                      .isNotInstanceOf( PropertyChangeListener.class )
@@ -72,6 +72,7 @@ class UsageExample_NotifierSettings_Test {
 		assertThatNotifierIsCorrectAndLinkedToTestedObject( notifier );
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void implementInterfaces_using_local_settings() {
 		// set global flag to ignore listener interfaces
@@ -82,7 +83,6 @@ class UsageExample_NotifierSettings_Test {
 		                                                         Mockobor.notifierSettings().implementListenerInterfaces() );
 
 		// notifier implements listener interfaces
-		//noinspection deprecation
 		assertThat( notifier ).isInstanceOf( MockedObservable.MyListener.class )
 		                      .isInstanceOf( MockedObservable.MyAnotherListener.class )
 		                      .isInstanceOf( PropertyChangeListener.class )
@@ -150,6 +150,7 @@ class UsageExample_NotifierSettings_Test {
 	// ==================================================================================
 	// =================================== common =======================================
 	// ==================================================================================
+	@SuppressWarnings("deprecation")
 	@Test
 	void local_settings_does_not_change_global_settings() {
 		// set global settings
@@ -169,7 +170,6 @@ class UsageExample_NotifierSettings_Test {
 		assertThatNoException().isThrownBy( () -> globalSettingsNotifier.notifierFor( MockedObservable.MyListener.class, selector( "unknown" ) ) );
 
 		// notifier does not implement listener interfaces
-		//noinspection deprecation
 		assertThat( globalSettingsNotifier ).isNotInstanceOf( MockedObservable.MyListener.class )
 		                                    .isNotInstanceOf( MockedObservable.MyAnotherListener.class )
 		                                    .isNotInstanceOf( PropertyChangeListener.class )

@@ -40,7 +40,7 @@ abstract class NotifierFactory_TestBase {
 	}
 
 
-	@SuppressWarnings( "ResultOfMethodCallIgnored" )
+	@SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
 	@Test
 	void all_methods_of_ListenersNotifier_throw_no_exception() {
 
@@ -68,7 +68,6 @@ abstract class NotifierFactory_TestBase {
 		assertThat( notifier.getListeners( MyListener.class, selector( "presel", "postsel" ) ) )
 				.containsExactly( testedObserver.getMyListener() );
 
-		//noinspection deprecation
 		assertThat( notifier ).isInstanceOf( ListenersNotifier.class )
 		                      .isInstanceOf( ObservableNotifier.class )
 		                      .isInstanceOf( PropertyChangeNotifier.class )
