@@ -119,9 +119,10 @@ public final class ReflectionUtils {
 	 * @return true if the specified class CAN be a class created by EasyMock
 	 */
 	public static boolean isEasymockMock( @NonNull Class<?> clazz ) {
-		return clazz.getSimpleName().contains( "$EnhancerByCGLIB$" )
-		       || clazz.getName().startsWith( "org.easymock" )
-		       || Proxy.class.isAssignableFrom( clazz );
+		return clazz.getSimpleName().contains( "$EasyMock$" )
+				|| clazz.getSimpleName().contains( "$EnhancerByCGLIB$" )
+				|| clazz.getName().startsWith( "org.easymock" )
+				|| Proxy.class.isAssignableFrom( clazz );
 	}
 
 
