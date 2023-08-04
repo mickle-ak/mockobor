@@ -11,6 +11,7 @@ import org.mockobor.utils.reflection.TypeUtils;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 abstract class ListenerRegistrationHandler_TestBase {
 
-	private final TestMethods                 mock                   = createMock();
-	private final ListenerRegistrationHandler handler                = createListenerRegistrationHandler();
-	private final ListenerContainer           listeners              = new ListenersManager( mock );
-	private final List<ListenerContainer>     usedListenerContainers = new ArrayList<>();
-	private final List<Object>                invocationArguments    = new ArrayList<>();
+	protected final TestMethods                 mock                   = createMock();
+	protected final ListenerRegistrationHandler handler                = createListenerRegistrationHandler();
+	protected final ListenerContainer           listeners              = new ListenersManager( mock );
+	protected final List<ListenerContainer>     usedListenerContainers = new ArrayList<>();
+	protected final List<Object>                invocationArguments    = new ArrayList<>();
 
 
 	protected abstract TestMethods createMock();
@@ -62,9 +63,13 @@ abstract class ListenerRegistrationHandler_TestBase {
 		handler.registerInMock( listeners, createDelegate( "objectArguments" ) );
 		endOfStubbingMode( mock );
 
+		mock.objectArguments( "r1", null, 0 );
 		mock.objectArguments( "p1", "p2", 123 );
-		assertThat( invocationArguments ).containsExactly( "p1", "p2", 123 );
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+
+		assertThat( invocationArguments ).containsExactly(
+				Arrays.asList( "r1", null, 0 ),
+				Arrays.asList( "p1", "p2", 123 ) );
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	@Test
@@ -74,8 +79,12 @@ abstract class ListenerRegistrationHandler_TestBase {
 		endOfStubbingMode( mock );
 
 		mock.stringArgument( "some value" );
-		assertThat( invocationArguments ).containsExactly( "some value" );
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+		mock.stringArgument( null );
+
+		assertThat( invocationArguments ).containsExactly(
+				List.of( "some value" ),
+				Collections.singletonList( null ) );
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	@Test
@@ -84,10 +93,15 @@ abstract class ListenerRegistrationHandler_TestBase {
 		handler.registerInMock( listeners, createDelegate( "int2int" ) );
 		endOfStubbingMode( mock );
 
-		int r = mock.int2int( 4567 );
-		assertThat( invocationArguments ).containsExactly( 4567 );
-		assertThat( r ).isZero();
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+		int r1 = mock.int2int( 4567 );
+		int r2 = mock.int2int( 9876 );
+
+		assertThat( invocationArguments ).containsExactly(
+				List.of( 4567 ),
+				List.of( 9876 ) );
+		assertThat( r1 ).isZero();
+		assertThat( r2 ).isZero();
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	@Test
@@ -96,10 +110,13 @@ abstract class ListenerRegistrationHandler_TestBase {
 		handler.registerInMock( listeners, createDelegate( "returnType" ) );
 		endOfStubbingMode( mock );
 
-		String result = mock.returnType();
-		assertThat( invocationArguments ).isEmpty();
-		assertThat( result ).isEmpty();
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+		String r1 = mock.returnType();
+		String r2 = mock.returnType();
+
+		assertThat( invocationArguments ).containsExactly( List.of(), List.of() );
+		assertThat( r1 ).isEmpty();
+		assertThat( r2 ).isEmpty();
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	@Test
@@ -108,31 +125,55 @@ abstract class ListenerRegistrationHandler_TestBase {
 		handler.registerInMock( listeners, createDelegate( "primitiveArguments" ) );
 		endOfStubbingMode( mock );
 
-		mock.primitiveArguments( 1, 2L, (char) 3, (short) 5, (byte) 6, 7f, 8d, true, "string" );
-		assertThat( invocationArguments ).containsExactly( 1, 2L, (char) 3, (short) 5, (byte) 6, 7f, 8d, true, "string" );
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+		mock.primitiveArguments( 1, 2L, (char) 3, (short) 5, (byte) 6, 7f, 8d, true, null );
+		mock.primitiveArguments( 10, 20L, (char) 30, (short) 50, (byte) 60, 70f, 80d, false, "string" );
+
+		assertThat( invocationArguments ).containsExactly(
+				Arrays.asList( 1, 2L, (char) 3, (short) 5, (byte) 6, 7f, 8d, true, null ),
+				Arrays.asList( 10, 20L, (char) 30, (short) 50, (byte) 60, 70f, 80d, false, "string" ) );
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	@Test
-	void registerInMock_varargsObject() {
+	void registerInMock_arrayObject() {
 
-		handler.registerInMock( listeners, createDelegate( "varargObject" ) );
+		handler.registerInMock( listeners, createDelegate( "arrayObject" ) );
 		endOfStubbingMode( mock );
 
-		mock.varargObject( "p1", 2f, "v1", 3L, 3, 'c' );
-		assertThat( invocationArguments ).containsExactly( "p1", 2f, "v1", 3L, 3, 'c' );
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+		mock.arrayObject( "p1", new Object[]{ 2f, null, 3L, 3, 'c' } );
+		mock.arrayObject( "p2", new Object[]{ 22f, "v1", 33L, 44, 'd' } );
+		mock.arrayObject( "p3", new Object[0] );
+		mock.arrayObject( null, null );
+
+		assertThat( invocationArguments )
+				.usingRecursiveFieldByFieldElementComparator()
+				.containsExactly(
+						Arrays.asList( "p1", new Object[]{ 2f, null, 3L, 3, 'c' } ),
+						Arrays.asList( "p2", new Object[]{ 22f, "v1", 33L, 44, 'd' } ),
+						Arrays.asList( "p3", new Object[0] ),
+						Arrays.asList( null, null ) );
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	@Test
-	void registerInMock_varargsInt() {
+	void registerInMock_arrayLong() {
 
-		handler.registerInMock( listeners, createDelegate( "varargInt" ) );
+		handler.registerInMock( listeners, createDelegate( "arrayLong" ) );
 		endOfStubbingMode( mock );
 
-		mock.varargInt( "p1", 3, 5, 8, 13, 21 );
-		assertThat( invocationArguments ).containsExactly( "p1", 3, 5, 8, 13, 21 );
-		assertThat( usedListenerContainers ).containsExactly( listeners );
+		mock.arrayLong( null, new long[]{ 1 } );
+		mock.arrayLong( "p2", new long[]{ 3, 5, 8, 13, 21 } );
+		mock.arrayLong( "p3", new long[0] );
+		mock.arrayLong( null, null );
+
+		assertThat( invocationArguments )
+				.usingRecursiveFieldByFieldElementComparator()
+				.containsExactly(
+						Arrays.asList( null, new long[]{ 1 } ),
+						Arrays.asList( "p2", new long[]{ 3, 5, 8, 13, 21 } ),
+						Arrays.asList( "p3", new long[0] ),
+						Arrays.asList( null, null ) );
+		assertThat( usedListenerContainers ).containsOnly( listeners );
 	}
 
 	// suppress "Refactor the code of the lambda to have only one invocation, possibly throwing a runtime exception"
@@ -149,13 +190,13 @@ abstract class ListenerRegistrationHandler_TestBase {
 	// ================================= help methods ===================================
 	// ==================================================================================
 
-	private RegistrationDelegate createDelegate( String methodName ) {
+	protected RegistrationDelegate createDelegate( String methodName ) {
 		return new RegistrationDelegate( findMethod( methodName ), this::destinationMethod );
 	}
 
 	private Object destinationMethod( ListenerContainer listeners, Method sourceMethods, Object... arguments ) {
 		usedListenerContainers.add( listeners );
-		invocationArguments.addAll( Arrays.asList( arguments ) );
+		invocationArguments.add( Arrays.asList( arguments ) );
 		return TypeUtils.getDefaultReturnValue( sourceMethods.getReturnType() );
 	}
 

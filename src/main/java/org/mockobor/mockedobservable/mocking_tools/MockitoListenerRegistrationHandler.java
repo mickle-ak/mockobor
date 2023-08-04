@@ -57,12 +57,16 @@ public class MockitoListenerRegistrationHandler implements ListenerRegistrationH
 		return invocation -> destination.invoke( listeners, invocation.getMethod(), invocation.getArguments() );
 	}
 
-	/** To create argument matchers for stabbing invocation using {@link Mockito#any()} for all arguments. */
-	private @NonNull Object[] createArgumentMatchers( @NonNull Method sourceMethod ) {
+	/** To create (and invoke) argument matchers for stabbing invocation using {@link Mockito#any()}-matchers for all arguments. */
+	private static @NonNull Object[] createArgumentMatchers( @NonNull Method sourceMethod ) {
 		Class<?>[] parameterTypes = sourceMethod.getParameterTypes();
 		Object[] result = new Object[parameterTypes.length];
 		for( int i = 0; i < result.length; i++ ) {
-			result[i] = ANY_FOR_PRIMITIVE_TYPES.getOrDefault( parameterTypes[i], ArgumentMatchers::any ).get();
+			if( i == result.length - 1 && sourceMethod.isVarArgs() ) {
+				result[i] = ArgumentMatchers.any( parameterTypes[i] ); // mockito's new behavior for varargs
+			} else {
+				result[i] = ANY_FOR_PRIMITIVE_TYPES.getOrDefault( parameterTypes[i], ArgumentMatchers::any ).get();
+			}
 		}
 		return result;
 	}

@@ -41,17 +41,19 @@ your tests.
 
 ## Dependencies
 
-To use Mockobor in unit tests:
+Mockobor propagates follow dependencies:
+- eclipse non-null annotations ([org.eclipse.jdt.annotation](https://search.maven.org/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation))
 
-- start test with _java 8+_
+
+To use last [Mockobor][maven-central-mockobor] in unit tests:
+
+- start test with _java 11+_
 - use at least one of the follow mocking tools in your tests:
-    - _[Mockito](https://github.com/mockito/mockito) 2.20.1+_
+    - _[Mockito](https://github.com/mockito/mockito) 5.0.0+_
     - _[EasyMock](https://github.com/easymock/easymock) 3.4+_
 
-Mockobor propagates follow dependencies:
-
-- eclipse non-null
-  annotations ([org.eclipse.jdt.annotation](https://search.maven.org/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation))
+if you use _java 8_ or _Mockito 2.20.1 - 4.11.0_, you can keep on
+using [Mockobor 1.0.5](https://central.sonatype.com/artifact/io.github.mickle-ak.mockobor/mockobor/1.0.5)
 
 ## Usage
 
@@ -615,4 +617,4 @@ testImplementation("io.github.mickle-ak.mockobor:mockobor:1.0.5")
 
 [MockoborContext.registerListenerRegistrationHandler]: https://javadoc.io/doc/io.github.mickle-ak.mockobor/mockobor/latest/org/mockobor/MockoborContext.html#registerListenerRegistrationHandler-org.mockobor.mockedobservable.mocking_tools.ListenerRegistrationHandler-
 
-[maven-central-mockobor]: https://central.sonatype.com/search?smo=true&q=mockobor
+[maven-central-mockobor]: https://central.sonatype.com/namespace/io.github.mickle-ak.mockobor

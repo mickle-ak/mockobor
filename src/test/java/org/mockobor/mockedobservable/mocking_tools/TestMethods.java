@@ -15,4 +15,8 @@ interface TestMethods {
 	void varargObject( String p1, Object... params );
 
 	void varargInt( String p1, int... params );
+
+	void arrayObject( String p1, Object[] params );
+
+	void arrayLong( String p1, long[] params );
 }

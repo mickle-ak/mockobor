@@ -46,7 +46,7 @@ java {
 
 dependencies {
 
-    val mockitoVersion = "4.11.0"
+    val mockitoVersion = "5.4.0"
     val easymockVersion = "5.1.0"
 
     val eclipseannotationVersion = "2.2.700"

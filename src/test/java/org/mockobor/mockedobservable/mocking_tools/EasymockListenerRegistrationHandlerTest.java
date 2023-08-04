@@ -3,6 +3,7 @@ package org.mockobor.mockedobservable.mocking_tools;
 import org.easymock.EasyMock;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 
 @SuppressWarnings({"EmptyMethod", "unused"})
@@ -29,15 +30,15 @@ class EasymockListenerRegistrationHandlerTest extends ListenerRegistrationHandle
 	}
 
 
-	@Disabled( "EasyMock can not correct match vararg methods " )
-	@Override
-	void registerInMock_varargsObject() {
-		super.registerInMock_varargsObject();
-	}
+	// ==================================================================================
+	// ========================= EasyMock specific tests ================================
+	// ==================================================================================
 
-	@Disabled( "EasyMock can not correct match vararg methods " )
-	@Override
-	void registerInMock_varargsInt() {
-		super.registerInMock_varargsInt();
-	}
+	@Test
+	@Disabled( "EasyMock can not correctly match vararg methods" )
+	void registerInMock_varargsObject() {} // NOSONAR: disabled => no assertions
+
+	@Test
+	@Disabled( "EasyMock can not correctly match vararg methods" )
+	void registerInMock_varargsInt() {} // NOSONAR: disabled => no assertions
 }
