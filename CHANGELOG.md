@@ -1,4 +1,6 @@
 - **In the next Version**
+
+- **1.0.3** (04.08.2023)
 	- Changed
 		- add defaults values for further types
 		- automatically create release on version tag
