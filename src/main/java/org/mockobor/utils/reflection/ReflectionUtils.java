@@ -7,7 +7,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
@@ -15,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @NoArgsConstructor( access = AccessLevel.PRIVATE )
@@ -120,9 +117,9 @@ public final class ReflectionUtils {
 	 */
 	public static boolean isEasymockMock( @NonNull Class<?> clazz ) {
 		return clazz.getSimpleName().contains( "$EasyMock$" )
-				|| clazz.getSimpleName().contains( "$EnhancerByCGLIB$" )
-				|| clazz.getName().startsWith( "org.easymock" )
-				|| Proxy.class.isAssignableFrom( clazz );
+		       || clazz.getSimpleName().contains( "$EnhancerByCGLIB$" )
+		       || clazz.getName().startsWith( "org.easymock" )
+		       || Proxy.class.isAssignableFrom( clazz );
 	}
 
 
@@ -195,59 +192,10 @@ public final class ReflectionUtils {
 	 */
 	public static @Nullable Object invokeDefaultMethod( Object proxy, Method method, Object... args ) throws Throwable {
 		assert method.isDefault() : "only default methods expected (method: " + method + ")"; // NOSONAR
-		return isJava9plus()
-		       ? invokeDefaultJava9plus( proxy, method, args )
-		       : invokeDefaultJava8( proxy, method, args );
-	}
-
-	/** to invoke the default method if run with java 8. */
-	private static @Nullable Object invokeDefaultJava8( Object proxy, Method method, Object... args ) throws Throwable {
-		Class<?> clazz = method.getDeclaringClass();
-		Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class );
-		constructor.setAccessible( true ); // NOSONAR
-		return constructor.newInstance( clazz )
-		                  .in( clazz )
-		                  .unreflectSpecial( method, clazz )
-		                  .bindTo( proxy )
-		                  .invokeWithArguments( args );
-	}
-
-	/** to invoke the default method if run with java 9+. */
-	private static @Nullable Object invokeDefaultJava9plus( Object proxy, Method method, Object... args ) throws Throwable {
 		MethodType methodType = MethodType.methodType( method.getReturnType(), method.getParameterTypes() );
 		return MethodHandles.lookup()
 		                    .findSpecial( method.getDeclaringClass(), method.getName(), methodType, method.getDeclaringClass() )
 		                    .bindTo( proxy )
 		                    .invokeWithArguments( args );
-	}
-
-
-	// ==================================================================================
-	// ================================ java version ====================================
-	// ==================================================================================
-
-	/**
-	 * To check if the currently running java has version 9 or above.
-	 * It is clearly faster as {@link #javaSpecificationVersion()}.
-	 *
-	 * @return true if the current java version is 9 or higher; false for java 8 or less
-	 */
-	private static boolean isJava9plus() {
-		String javaSpecificationVersion = System.getProperty( "java.specification.version", "1.8" );
-		return !javaSpecificationVersion.startsWith( "1." );
-	}
-
-
-	/** @return java version as int (1 for 1.1, ..., 5 for 1.5, ..., 8 for 1.8, 9 for 9 etc.) */
-	public static int javaSpecificationVersion() {
-		String javaSpecificationVersion = System.getProperty( "java.specification.version", "1.8" );
-		return parseJavaSpecificationVersion( javaSpecificationVersion );
-	}
-
-	private static final Pattern JAVA_VERSION_REGEX = Pattern.compile( "^(1\\.)?(\\d+).*" );
-
-	static int parseJavaSpecificationVersion( @NonNull String javaSpecificationVersion ) {
-		Matcher versionMatcher = JAVA_VERSION_REGEX.matcher( javaSpecificationVersion );
-		return versionMatcher.matches() ? Integer.parseInt( versionMatcher.group( 2 ) ) : 8;
 	}
 }

@@ -1,7 +1,6 @@
 package org.mockobor.utils.reflection;
 
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockobor.utils.reflection.ReflectionUtils.getReachableMethods;
 
 
-@SuppressWarnings( "unused, RedundantMethodOverride, EmptyMethod")
+@SuppressWarnings( "unused, RedundantMethodOverride, EmptyMethod" )
 class ReflectionUtils_ReachableMethods_Test {
 
 	private interface Interface {
@@ -83,18 +82,16 @@ class ReflectionUtils_ReachableMethods_Test {
 	@ParameterizedTest( name = "getReachableMethods_Derived - {0}" )
 	@MethodSource( "mockingTools" )
 	void getReachableMethods_Derived( String name, Function<Class<?>, Object> mocker ) {
-		Assumptions.assumeFalse( name.equals( "EasyMock" ) && ReflectionUtils.javaSpecificationVersion() >= 17, "EasyMock and Java 17+" );
-
 		Collection<Method> methods = getReachableMethods( mocker.apply( Derived.class ) );
-
-		assertThat( methods ).extracting( Method::getName ).containsExactlyInAnyOrder( EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS );
+		assertThat( methods )
+				.extracting( Method::getName )
+				.containsExactlyInAnyOrder( EXPECTED_LIST_OF_METHOD_NAMES_IN_DERIVED_CLASS );
 	}
 
 	@ParameterizedTest( name = "getReachableMethods_DerivedInterface - {0}" )
 	@MethodSource( "mockingTools" )
 	void getReachableMethods_DerivedInterface( String name, Function<Class<?>, Object> mocker ) {
 		Collection<Method> methods = getReachableMethods( mocker.apply( DerivedInterface.class ) );
-
 		assertThat( methods )
 				.extracting( Method::getName )
 				.containsExactlyInAnyOrder( "publicDerivedMethod",
@@ -118,7 +115,6 @@ class ReflectionUtils_ReachableMethods_Test {
 	static Stream<Arguments> mockingTools() {
 		return Stream.of(
 				arguments( "Mockito", (Function<Class<?>, Object>) Mockito::mock ),
-				arguments( "EasyMock", (Function<Class<?>, Object>) EasyMock::mock )
-		);
+				arguments( "EasyMock", (Function<Class<?>, Object>) EasyMock::mock ) );
 	}
 }
