@@ -1,5 +1,9 @@
 - **In the next Version**
 
+- **1.0.5** (04.08.2023)
+    - Changed
+        - use latest EasyMock version (5.1.0)
+
 - **1.0.4** (04.08.2023)
     - Correct publishing to Maven Central 
 
