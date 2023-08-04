@@ -1,4 +1,6 @@
 - **In the next Version**
+
+- **1.0.4** (04.08.2023)
     - Correct publishing to Maven Central 
 
 - **1.0.3** (04.08.2023)
