@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings( "unused" )
 @ExtendWith( MockitoExtension.class )
 class UsageExample_MockitoAnnotation_Test {
 
@@ -28,7 +28,9 @@ class UsageExample_MockitoAnnotation_Test {
 	}
 
 	private static class AnnotationsTestObject implements MyListener {
-		@Getter private final List<Object> invocations = new ArrayList<>();
+		@Getter
+		private final List<Object> invocations = new ArrayList<>();
+
 		@Override
 		public void onChange( Object value ) {
 			invocations.add( value );

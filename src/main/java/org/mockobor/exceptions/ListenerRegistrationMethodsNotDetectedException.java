@@ -18,6 +18,6 @@ public class ListenerRegistrationMethodsNotDetectedException extends MockoborExc
 		       mockedObservable,
 		       mockedObservable != null ? mockedObservable.getClass().getSimpleName() : "null",
 		       detectors.stream().map( Object::getClass ).map( Class::getSimpleName ).collect( Collectors.joining( ", " ) )
-		);
+		     );
 	}
 }

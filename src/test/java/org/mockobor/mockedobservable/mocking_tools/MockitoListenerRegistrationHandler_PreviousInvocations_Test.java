@@ -41,8 +41,7 @@ class MockitoListenerRegistrationHandler_PreviousInvocations_Test {
 						tuple( "stringArgument", Collections.singletonList( "sa1" ) ),
 						tuple( "returnType", Collections.emptyList() ),
 						tuple( "varargObject", Arrays.asList( "values:", "1", 2d, ListenerSelector.selector( 1, 2, "3" ) ) ),
-						tuple( "varargInt", Arrays.asList( "values:", 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ) )
-				);
+						tuple( "varargInt", Arrays.asList( "values:", 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ) ) );
 	}
 
 	@Test
@@ -62,8 +61,7 @@ class MockitoListenerRegistrationHandler_PreviousInvocations_Test {
 						tuple( "int2int", Collections.singletonList( 100 ) ),
 						tuple( "int2int", Collections.singletonList( 10 ) ),
 						tuple( "int2int", Collections.singletonList( 200 ) ),
-						tuple( "int2int", Collections.singletonList( -5 ) )
-				);
+						tuple( "int2int", Collections.singletonList( -5 ) ) );
 		assertThat( Arrays.asList( rc1, rc2, rc3, rc4 ) ).containsExactly( 0, -1, -200, 5 );
 	}
 

@@ -24,13 +24,18 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 
 	public interface MockedObservable {
 		void addListener( MyListener listener );
+
 		void removeListener( MyListener listener );
+
 		void addVarargListener( MyListener listener, Object... selector );
+
 		void removeVarargListener( MyListener listener, Object... selector );
 	}
 
 	private abstract static class BaseTestObject implements MyListener {
-		@Getter private final List<Object> invocations = new ArrayList<>();
+		@Getter
+		private final List<Object> invocations = new ArrayList<>();
+
 		@Override
 		public void onChange( Object value ) {
 			invocations.add( value );
@@ -89,8 +94,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 		// check that both listeners receive notification
 		assertAll(
 				() -> assertThat( createdBeforeNotifier.getInvocations() ).as( "in before creation" ).containsExactly( "new-value" ),
-				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" )
-		);
+				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" ) );
 	}
 
 	@Test
@@ -105,8 +109,7 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 		// check that both listeners receive notification
 		assertAll(
 				() -> assertThat( createdBeforeNotifier.getInvocations() ).as( "in before creation" ).containsExactly( "new-value" ),
-				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" )
-		);
+				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" ) );
 	}
 
 	@SuppressWarnings( "unused" )
@@ -133,7 +136,6 @@ class NotifierFactory_ListenerRegisteredBeforeNotifierCreation_Mockito_Test {
 		// check that both listeners receive notification
 		assertAll(
 				() -> assertThat( createdBeforeNotifier.getInvocations() ).as( "in before creation" ).containsExactly( "new-value" ),
-				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" )
-		);
+				() -> assertThat( createdAfterNotifier.getInvocations() ).as( "in after creation" ).containsExactly( "new-value" ) );
 	}
 }

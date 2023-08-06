@@ -54,11 +54,11 @@ tasks.test {
         override fun afterSuite(suite: TestDescriptor, result: TestResult) {
             if (suite.parent == null) { // will match the outermost suite
                 println(
-                    "Test result: ${result.resultType} " +
-                            "(${result.testCount} tests, " +
-                            "${result.successfulTestCount} successes, " +
-                            "${result.failedTestCount} failures, " +
-                            "${result.skippedTestCount} skipped)"
+                        "Test result: ${result.resultType} " +
+                                "(${result.testCount} tests, " +
+                                "${result.successfulTestCount} successes, " +
+                                "${result.failedTestCount} failures, " +
+                                "${result.skippedTestCount} skipped)"
                 )
             }
         }

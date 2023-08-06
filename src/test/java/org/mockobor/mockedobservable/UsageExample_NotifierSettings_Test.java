@@ -33,7 +33,7 @@ class UsageExample_NotifierSettings_Test {
 	// ======================== implement listener interfaces ===========================
 	// ==================================================================================
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Test
 	void doNotImplementListenerInterfaces_using_MockoborContext() {
 		// set global flag to ignore listener interfaces
@@ -52,7 +52,7 @@ class UsageExample_NotifierSettings_Test {
 		assertThatNotifierIsCorrectAndLinkedToTestedObject( notifier );
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Test
 	void doNotImplementListenerInterfaces_using_local_settings() {
 		// set the global flag to implement listener interfaces (it is the default, for better readability only)
@@ -72,7 +72,7 @@ class UsageExample_NotifierSettings_Test {
 		assertThatNotifierIsCorrectAndLinkedToTestedObject( notifier );
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Test
 	void implementInterfaces_using_local_settings() {
 		// set global flag to ignore listener interfaces
@@ -150,14 +150,14 @@ class UsageExample_NotifierSettings_Test {
 	// ==================================================================================
 	// =================================== common =======================================
 	// ==================================================================================
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Test
 	void local_settings_does_not_change_global_settings() {
 		// set global settings
 		MockoborContext.updateNotifierSettings().lenientListenerListCheck().ignoreListenerInterfaces();
 
 		// create first notifier with local settings
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		ListenersNotifier localSettingsNotifier = Mockobor.createNotifierFor( mockedObservable,
 		                                                                      Mockobor.notifierSettings()
 		                                                                              .strictListenerListCheck()

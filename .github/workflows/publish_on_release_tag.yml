@@ -1,4 +1,4 @@
-name: publish to MavenCentral (over sontype) on release tags (started with "v")
+name: publish to MavenCentral (over sonatype) on release tags (started with "v")
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           release_name: ${{ env.RELEASE_VERSION }}
           body: ${{ env.RELEASE_NOTE }}
 
-      - name: Publish to MavenCentral (over sontype)
+      - name: Publish to MavenCentral (over sonatype)
         env:
           signingKey64: ${{secrets.SIGNING_KEY_64}}
           signingPassword64: ${{secrets.SIGNING_PASSWORD_64}}

@@ -192,8 +192,7 @@ class AbstractDetectorTest {
 				arguments( "twoListeners", new Integer[]{ 1, 3 }, new Integer[]{ 0, 2, 4 } ),
 				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } ),
 				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } ),
-				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } )
-		);
+				arguments( "addVarargListener", new Integer[]{ 0 }, new Integer[]{ 1 } ) );
 	}
 
 	@Test
@@ -225,8 +224,7 @@ class AbstractDetectorTest {
 				arguments( "twoListeners", new Object[]{ 1, mock( MyListener.class ), 2, mock( MyAnotherListener.class ), 3 }, selector( 1, 2, 3 ) ),
 				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ) }, selector() ),
 				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1 }, selector( 1 ) ),
-				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1, 2 }, selector( 1, 2 ) )
-		);
+				arguments( "addVarargListener", new Object[]{ mock( MyListener.class ), 1, 2 }, selector( 1, 2 ) ) );
 	}
 
 	@SuppressWarnings( "ConstantConditions" )

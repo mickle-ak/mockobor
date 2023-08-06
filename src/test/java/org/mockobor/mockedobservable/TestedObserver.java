@@ -11,7 +11,7 @@ import java.util.*;
 
 
 /** Test-object to simulate SUT-object, which registers itself in constructor by provided {@link MockedObservable}. */
-@SuppressWarnings("unused")
+@SuppressWarnings( "unused" )
 @Getter
 public class TestedObserver {
 
@@ -49,7 +49,7 @@ public class TestedObserver {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	public static class ObserverIml implements Observer {
 
 		@Getter

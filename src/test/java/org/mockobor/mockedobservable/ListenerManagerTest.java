@@ -50,7 +50,7 @@ class ListenerManagerTest {
 			assertThat( listenerManager.allListenersAreUnregistered() ).isFalse();
 
 			assertThat( listenerManager.getAllListeners() )
-				.containsExactlyInAnyOrder( listener_no_selector, listener_v_selector, listener_v1_v2_selector, anotherListener_v_selector );
+					.containsExactlyInAnyOrder( listener_no_selector, listener_v_selector, listener_v1_v2_selector, anotherListener_v_selector );
 
 			assertThat( listenerManager.getListeners( MyListener.class ) )
 					.containsExactlyInAnyOrder( listener_no_selector, listener_v_selector, listener_v1_v2_selector );
@@ -69,8 +69,7 @@ class ListenerManagerTest {
 							tuple( MyListener.class, selector() ),
 							tuple( MyListener.class, selector( "v" ) ),
 							tuple( MyListener.class, selector( "v1", "v2" ) ),
-							tuple( MyAnotherListener.class, selector( "v" ) )
-					);
+							tuple( MyAnotherListener.class, selector( "v" ) ) );
 		}
 
 		@Test
@@ -79,8 +78,8 @@ class ListenerManagerTest {
 
 			assertThat( listenerManager.numberOfRegisteredListeners() ).isEqualTo( 5 );
 			assertThat( listenerManager.getListeners( MyListener.class, selector( "v" ) ) )
-				.as( "the listener is in the list 2 times" )
-				.containsExactly( listener_v_selector, listener_v_selector );
+					.as( "the listener is in the list 2 times" )
+					.containsExactly( listener_v_selector, listener_v_selector );
 		}
 
 		@Test
@@ -137,12 +136,11 @@ class ListenerManagerTest {
 			listenerManager.notifierFor( MyListener.class, selector() ).somethingChanged2( "MyListener.somethingChanged2 empty selector" );
 
 			assertThat( listener_no_selector.getInvocations() )
-				.extracting( InvocationDef::getClazz, InvocationDef::getMethod, InvocationDef::getParam )
-				.containsExactly(
-					tuple( MyListener.class, "somethingChanged1", "MyListener.somethingChanged1 no selector" ),
-					tuple( MyListener.class, "somethingChanged1", "MyListener.somethingChanged1 empty selector" ),
-					tuple( MyListener.class, "somethingChanged2", "MyListener.somethingChanged2 empty selector" )
-				);
+					.extracting( InvocationDef::getClazz, InvocationDef::getMethod, InvocationDef::getParam )
+					.containsExactly(
+							tuple( MyListener.class, "somethingChanged1", "MyListener.somethingChanged1 no selector" ),
+							tuple( MyListener.class, "somethingChanged1", "MyListener.somethingChanged1 empty selector" ),
+							tuple( MyListener.class, "somethingChanged2", "MyListener.somethingChanged2 empty selector" ) );
 		}
 
 		@Test
@@ -154,12 +152,11 @@ class ListenerManagerTest {
 			listenerManager.notifierFor( MyListener.class, selector( "x" ) ).somethingChanged1( "MyListener.somethingChanged2 x selector" );
 
 			assertThat( listener_v_selector.getInvocations() )
-				.extracting( InvocationDef::getClazz, InvocationDef::getMethod, InvocationDef::getParam )
-				.containsExactly(
-					tuple( MyListener.class, "somethingChanged2", "MyListener.somethingChanged2 v selector" ),
-					tuple( MyListener.class, "somethingChanged2", "MyListener.somethingChanged2 x selector" ),
-					tuple( MyListener.class, "somethingChanged1", "MyListener.somethingChanged2 x selector" )
-				);
+					.extracting( InvocationDef::getClazz, InvocationDef::getMethod, InvocationDef::getParam )
+					.containsExactly(
+							tuple( MyListener.class, "somethingChanged2", "MyListener.somethingChanged2 v selector" ),
+							tuple( MyListener.class, "somethingChanged2", "MyListener.somethingChanged2 x selector" ),
+							tuple( MyListener.class, "somethingChanged1", "MyListener.somethingChanged2 x selector" ) );
 		}
 
 		@Test

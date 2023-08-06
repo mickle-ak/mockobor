@@ -63,7 +63,9 @@ class UsageExample_BeanPropertyChange_Test {
 			propertyChangeEvents.add( evt );
 		}
 
-		public List<PropertyChangeEvent> getPropertyChangeEvents() { return propertyChangeEvents; }
+		public List<PropertyChangeEvent> getPropertyChangeEvents() {
+			return propertyChangeEvents;
+		}
 	}
 
 
@@ -101,14 +103,13 @@ class UsageExample_BeanPropertyChange_Test {
 
 		// Check that observer has received the notifications from mocked observable
 		assertThat( observer.getPropertyChangeEvents() )
-			.extracting( PropertyChangeEvent::getPropertyName, PropertyChangeEvent::getOldValue, PropertyChangeEvent::getNewValue )
-			.containsExactly(
-				tuple( PROPERTY_NAME, "oldValue1", "newValue1" ), // common listener
-				tuple( PROPERTY_NAME, "oldValue1", "newValue1" ), // named listener
-				tuple( ANOTHER_PROPERTY_NAME, "oldValue2", "newValue2" ), // only common listener
-				tuple( PROPERTY_NAME, 1, 2 ), // common listener
-				tuple( PROPERTY_NAME, 1, 2 ) // named listener
-			);
+				.extracting( PropertyChangeEvent::getPropertyName, PropertyChangeEvent::getOldValue, PropertyChangeEvent::getNewValue )
+				.containsExactly(
+						tuple( PROPERTY_NAME, "oldValue1", "newValue1" ), // common listener
+						tuple( PROPERTY_NAME, "oldValue1", "newValue1" ), // named listener
+						tuple( ANOTHER_PROPERTY_NAME, "oldValue2", "newValue2" ), // only common listener
+						tuple( PROPERTY_NAME, 1, 2 ), // common listener
+						tuple( PROPERTY_NAME, 1, 2 ) ); // named listener
 	}
 
 

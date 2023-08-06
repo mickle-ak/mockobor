@@ -28,19 +28,19 @@ import java.util.Observer;
  */
 public class ObservableDetector extends AbstractDetector implements ListenerDefinitionDetector {
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Override
 	protected boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method ) {
 		return parameterType.equals( Observer.class );
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Override
 	protected boolean isAddMethods( @NonNull Method method ) {
 		return ReflectionUtils.methodMatch( method, "addObserver", Observer.class );
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Override
 	protected boolean isRemoveMethods( @NonNull Method method ) {
 		return ReflectionUtils.methodMatch( method, "deleteObserver", Observer.class );

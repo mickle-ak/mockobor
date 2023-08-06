@@ -100,9 +100,9 @@ public class MockoborContext {
 
 	/**
 	 * To remove/reset all:<ul>
-	 *     <li>custom listener definition detectors (added with {@link #registerListenerDefinitionDetector})</li>
-	 *     <li>custom support for your mocking tool (added with {@link #registerListenerRegistrationHandler})</li>
-	 *     <li>custom global settings (set with {@link #updateNotifierSettings()})</li>
+	 * <li>custom listener definition detectors (added with {@link #registerListenerDefinitionDetector})</li>
+	 * <li>custom support for your mocking tool (added with {@link #registerListenerRegistrationHandler})</li>
+	 * <li>custom global settings (set with {@link #updateNotifierSettings()})</li>
 	 * </ul>
 	 * <p><br>
 	 * Usually you don't need to call it.

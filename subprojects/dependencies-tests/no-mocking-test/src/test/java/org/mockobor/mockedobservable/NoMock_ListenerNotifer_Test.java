@@ -11,10 +11,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class NoMock_ListenerNotifer_Test {
 
-    @Test
-    void createNotifierFor_failed() {
-        PropertyChangeSupport observable = new PropertyChangeSupport(new Object());
-        assertThatThrownBy(() -> Mockobor.createNotifierFor(observable))
-                .isInstanceOf(MockingToolNotDetectedException.class);
-    }
+	@Test
+	void createNotifierFor_failed() {
+		PropertyChangeSupport observable = new PropertyChangeSupport( new Object() );
+		assertThatThrownBy( () -> Mockobor.createNotifierFor( observable ) )
+				.isInstanceOf( MockingToolNotDetectedException.class );
+	}
 }

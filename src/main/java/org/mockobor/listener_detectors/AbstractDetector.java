@@ -92,7 +92,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	// ==================================================================================
 
 	@Override
-	public @NonNull ListenerDefinition detect(@NonNull Collection<Method> methods ) {
+	public @NonNull ListenerDefinition detect( @NonNull Collection<Method> methods ) {
 		ListenerDefinitionImpl listenerDefinition = detectRegistrations( methods );
 		if( listenerDefinition.hasListenerDetected() ) {
 			listenerDefinition.addAdditionalInterfaces( getAdditionalInterfaces() );
@@ -113,7 +113,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 * @return listenersDefinition with detected listeners
 	 * @see ListenerDefinition#hasListenerDetected()
 	 */
-	protected @NonNull ListenerDefinitionImpl detectRegistrations(@NonNull Collection<Method> methods ) {
+	protected @NonNull ListenerDefinitionImpl detectRegistrations( @NonNull Collection<Method> methods ) {
 		ListenerDefinitionImpl listenerDefinition = new ListenerDefinitionImpl();
 		for( Method method : methods ) {
 			ListenerRegistrationParameters registrationParameters = getListenerRegistrationParameter( method );
@@ -122,8 +122,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 					RegistrationInvocation addDelegate = createAddDelegate( registrationParameters );
 					listenerDefinition.addRegistration( new RegistrationDelegate( method, addDelegate ) );
 					listenerDefinition.addDetectedListeners( registrationParameters.getListenerClasses() );
-				}
-				else if( isRemoveMethods( method ) ) {
+				} else if( isRemoveMethods( method ) ) {
 					RegistrationInvocation removeDelegate = createRemoveDelegate( registrationParameters );
 					listenerDefinition.addRegistration( new RegistrationDelegate( method, removeDelegate ) );
 				}
@@ -178,8 +177,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 			if( parameterTypes[i].isInterface() && isListenerClass( parameterTypes[i], method ) ) {
 				listenerIndexes.add( i );
 				listenerClasses.add( parameterTypes[i] );
-			}
-			else {
+			} else {
 				selectorIndexes.add( i );
 			}
 		}
@@ -208,10 +206,12 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 		private final List<Integer> listenerIndexes;
 
 		/** Type of listener found in registration method. */
-		@NonNull private final List<Class<?>> listenerClasses;
+		@NonNull
+		private final List<Class<?>> listenerClasses;
 
 		/** Indexes of other parameters (except listener) in registration method's arguments used to create selector. */
-		@NonNull private final List<Integer> selectorIndexes;
+		@NonNull
+		private final List<Integer> selectorIndexes;
 
 
 		/**
@@ -234,8 +234,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 				if( arguments.length < invokedMethod.getParameterCount() ) {
 					// vararg omitted => remove vararg elements from selector indexes
 					selectorIndexesCopy.removeIf( idx -> idx >= arguments.length );
-				}
-				else if( arguments.length > invokedMethod.getParameterCount() ) {
+				} else if( arguments.length > invokedMethod.getParameterCount() ) {
 					// more than one vararg => add indexes of extra parameters
 					IntStream.range( invokedMethod.getParameterCount(), arguments.length ).forEach( selectorIndexesCopy::add );
 				}
@@ -260,8 +259,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 					                                       invokedMethod.getName(), declaredNumberOfArguments,
 					                                       arguments.length, Arrays.asList( arguments ) );
 				}
-			}
-			else if( arguments.length < declaredNumberOfArguments - 1 ) { // less than with empty varargs
+			} else if( arguments.length < declaredNumberOfArguments - 1 ) { // less than with empty varargs
 				throw new MockoborImplementationError( "create selector for unexpected number of parameters (vararg method: %s, expected>=%d, was: %d:%s)",
 				                                       invokedMethod.getName(), declaredNumberOfArguments - 1,
 				                                       arguments.length, Arrays.asList( arguments ) );

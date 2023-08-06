@@ -23,43 +23,58 @@ class ReflectionUtils_ReachableMethods_Test {
 
 	private interface Interface {
 		void publicDerivedMethod();
+
 		default void defaultInterfaceMethod() {}
 	}
 
 	private static class Base {
 		private void privateBaseMethods() {}
+
 		protected void protectedBaseMethods() {}
+
 		public void publicBaseMethod() {}
+
 		protected void protectedOverriddenMethod() {}
+
 		void packageBaseMethod() {}
+
 		protected static void protectedStaticBaseMethod() {}
 	}
 
 	private static class Derived extends Base implements Interface {
 		private void privateDerivedMethods() {}
+
 		protected void protectedDerivedMethods() {}
+
 		@Override
 		public void publicDerivedMethod() {}
+
 		public void publicDerivedMethod( String param ) {}
+
 		@Override
 		protected void protectedOverriddenMethod() {}
+
 		void packageDerivedMethod() {}
+
 		public static void publicStaticDerivedMethod() {}
 	}
 
 	private final static class FinalDerived extends Derived implements Interface {
 		@Override
 		protected void protectedOverriddenMethod() {}
+
 		public void finalMethod() {}
 	}
 
 	private interface Interface2 {
 		void interfaceMethod();
+
 		void publicDerivedMethod();
 	}
 
 	private interface DerivedInterface extends Interface, Interface2 {
 		void derivedInterfaceMethod();
+
 		@Override
 		void publicDerivedMethod();
 	}

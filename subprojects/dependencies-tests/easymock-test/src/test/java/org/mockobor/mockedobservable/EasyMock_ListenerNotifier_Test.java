@@ -15,33 +15,33 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class EasyMock_ListenerNotifier_Test {
 
-    private static class ClassUnderTest {
+	private static class ClassUnderTest {
 
-        private final List<PropertyChangeEvent> invocations = new ArrayList<>();
+		private final List<PropertyChangeEvent> invocations = new ArrayList<>();
 
-        public ClassUnderTest(PropertyChangeSupport observable) {
-            observable.addPropertyChangeListener(invocations::add);
-        }
+		public ClassUnderTest( PropertyChangeSupport observable ) {
+			observable.addPropertyChangeListener( invocations::add );
+		}
 
-        public List<PropertyChangeEvent> getInvocations() {
-            return invocations;
-        }
-    }
+		public List<PropertyChangeEvent> getInvocations() {
+			return invocations;
+		}
+	}
 
 
-    @Test
-    void createNotifierFor() {
-        PropertyChangeSupport mockedObservable = EasyMock.mock( PropertyChangeSupport.class );
-        PropertyChangeNotifier notifierFor = (PropertyChangeNotifier) Mockobor.createNotifierFor( mockedObservable );
-        EasyMock.replay( mockedObservable );
+	@Test
+	void createNotifierFor() {
+		PropertyChangeSupport mockedObservable = EasyMock.mock( PropertyChangeSupport.class );
+		PropertyChangeNotifier notifierFor = (PropertyChangeNotifier) Mockobor.createNotifierFor( mockedObservable );
+		EasyMock.replay( mockedObservable );
 
-        ClassUnderTest classUnderTest = new ClassUnderTest( mockedObservable );
+		ClassUnderTest classUnderTest = new ClassUnderTest( mockedObservable );
 
-        notifierFor.firePropertyChange( "prop", "o1", "n1" );
+		notifierFor.firePropertyChange( "prop", "o1", "n1" );
 
-        assertThat( classUnderTest.getInvocations() )
-                .hasSize( 1 )
-                .extracting( PropertyChangeEvent::getPropertyName, PropertyChangeEvent::getOldValue, PropertyChangeEvent::getNewValue )
-                .containsExactly( tuple( "prop", "o1", "n1" ) );
-    }
+		assertThat( classUnderTest.getInvocations() )
+				.hasSize( 1 )
+				.extracting( PropertyChangeEvent::getPropertyName, PropertyChangeEvent::getOldValue, PropertyChangeEvent::getNewValue )
+				.containsExactly( tuple( "prop", "o1", "n1" ) );
+	}
 }

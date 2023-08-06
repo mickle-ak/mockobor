@@ -242,7 +242,7 @@ public interface PropertyChangeNotifier extends ListenersNotifier {
 	 *
 	 * @param propertyName The name of the property being listened to
 	 * @return all of the <code>PropertyChangeListeners</code> associated with the named property.
-	 * 	If no such listeners have been added, or if <code>propertyName</code> is null, an empty array is returned.
+	 * 		If no such listeners have been added, or if <code>propertyName</code> is null, an empty array is returned.
 	 * @see PropertyChangeSupport#getPropertyChangeListeners(String)
 	 */
 	@NonNull

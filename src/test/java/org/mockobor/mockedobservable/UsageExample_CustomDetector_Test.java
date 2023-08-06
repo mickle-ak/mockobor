@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings( "unused" )
 class UsageExample_CustomDetector_Test {
 
 	/** Custom listener interface used by observer to receive notifications from {@link MyObservable}. */
@@ -29,9 +29,7 @@ class UsageExample_CustomDetector_Test {
 		void update( Object param );
 	}
 
-	/** Class of the observable object.
-	 * It is mocked in this test because we don't need to have a class, interface is enough.
-	 */
+	/** Class of the observable object (it is mocked in this test because we don't need to have a class, interface is enough). */
 	public interface MyObservable {
 		void addMyObservable( MyObserver observable );
 	}
@@ -111,9 +109,7 @@ class UsageExample_CustomDetector_Test {
 							( listenersNotifier, method, arguments ) -> {
 								listenersNotifier.notifierFor( MyObserver.class ).update( null );
 								return null;
-							}
-					)
-			);
+							} ) );
 		}
 
 		@Override

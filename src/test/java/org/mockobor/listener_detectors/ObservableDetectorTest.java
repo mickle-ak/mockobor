@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings( { "unused", "deprecation" } )
 class ObservableDetectorTest {
 
 	@Test
@@ -27,18 +27,18 @@ class ObservableDetectorTest {
 		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
 
 		assertThat( listenerDefinition.getRegistrations() )
-			.as( "expected registration methods" )
-			.extracting( RegistrationDelegate::getSource )
-			.extracting( Method::getName )
-			.containsExactlyInAnyOrder( "addObserver", "deleteObserver" );
+				.as( "expected registration methods" )
+				.extracting( RegistrationDelegate::getSource )
+				.extracting( Method::getName )
+				.containsExactlyInAnyOrder( "addObserver", "deleteObserver" );
 
 		assertThat( listenerDefinition.getDetectedListeners() )
-			.as( "detected listener" )
-			.containsExactly( Observer.class );
+				.as( "detected listener" )
+				.containsExactly( Observer.class );
 
 		assertThat( listenerDefinition.getAdditionalInterfaces() )
-			.as( "expected interfaces" )
-			.containsExactly( ObservableNotifier.class );
+				.as( "expected interfaces" )
+				.containsExactly( ObservableNotifier.class );
 
 		// no additional notifications expected because all methods of {@link ObservableNotifier} have the default implementation
 		assertThat( listenerDefinition.getCustomNotificationMethodDelegates() ).isEmpty();

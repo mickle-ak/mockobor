@@ -68,7 +68,7 @@ public interface ListenerDefinition {
 	 * <p><br>
 	 * Suitable to create proxy returned from {@code createNotifierFor}.
 	 *
-	 * @return immutable list of notification delegates or empty list if notification delegates don't required.
+	 * @return immutable list of notification delegates or empty list if notification delegates don't require.
 	 */
 	@NonNull Map<Method, NotificationMethodInvocation> getCustomNotificationMethodDelegates();
 

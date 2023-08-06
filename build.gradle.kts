@@ -6,7 +6,8 @@ import java.util.*
 
 group = "io.github.mickle-ak.mockobor"
 version = scmVersion.version
-description = "Mocked Observable Observation - library to simplify some aspects of unit testing with java."
+description = "Mocked Observable Observation - java library to simulate sending of events " +
+        "from a mocked collaborator to a tested object."
 
 
 plugins {
@@ -49,13 +50,13 @@ dependencies {
     val mockitoVersion = "5.4.0"
     val easymockVersion = "5.1.0"
 
-    val eclipseannotationVersion = "2.2.700"
+    val eclipseAnnotationVersion = "2.2.700"
 
     val lombokVersion = "1.18.28"
     val junit5Version = "5.10.0"
     val assertjVersion = "3.24.2"
 
-    implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:$eclipseannotationVersion")
+    implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:$eclipseAnnotationVersion")
 
     compileOnly("org.mockito:mockito-core:$mockitoVersion")
     compileOnly("org.easymock:easymock:$easymockVersion")
@@ -133,18 +134,18 @@ tasks.jacocoTestReport {
 scmVersion {
     hooks {
         pre( // update version in dependency examples
-            "fileUpdate", mapOf(
+                "fileUpdate", mapOf(
                 "file" to "README.md",
                 "pattern" to KotlinClosure2({ v: Any, _: Any -> """(<version>|mockobor:)$v(</version>|"\))""" }),
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> """$1$v$2""" })
-            )
+        )
         )
         pre( // update version in change log
-            "fileUpdate", mapOf(
+                "fileUpdate", mapOf(
                 "file" to "CHANGELOG.md",
                 "pattern" to KotlinClosure2({ _: Any, _: Any -> """- \*\*In the next Version\*\*""" }),
                 "replacement" to KotlinClosure2({ v: Any, _: Any -> "- **In the next Version**\n\n- **$v** (${currentDate()})" })
-            )
+        )
         )
         pre("commit")
     }
@@ -180,10 +181,10 @@ tasks.create("getLastChangesFromChangelog") {
 nexusPublishing {
     this.repositories {
         sonatype {  //only for users registered in Sonatype after 24 Feb 2021
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-            username.set(findProperty("sonatypeUsername")?.toString())
-            password.set(base64Decode("sonatypePassword64"))
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            username = findProperty("sonatypeUsername")?.toString()
+            password = base64Decode("sonatypePassword64")
         }
     }
 }
@@ -194,29 +195,29 @@ publishing {
             from(components["java"])
             pom {
 
-                name.set("Mockobor")
-                description.set(project.description)
-                url.set("https://github.com/mickle-ak/mockobor")
+                name = "Mockobor"
+                description = project.description
+                url = "https://github.com/mickle-ak/mockobor"
 
                 licenses {
                     license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
 
                 developers {
                     developer {
-                        id.set("mickle-ak")
-                        name.set("Mikhail Kiselev")
-                        email.set("mickle.ak@gmail.com")
+                        id = "mickle-ak"
+                        name = "Mikhail Kiselev"
+                        email = "mickle.ak@gmail.com"
                     }
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/mickle-ak/mockobor.git")
-                    developerConnection.set("scm:git:ssh://github.com:mickle-ak/mockobor.git")
-                    url.set("https://github.com/mickle-ak/mockobor")
+                    connection = "scm:git:git://github.com/mickle-ak/mockobor.git"
+                    developerConnection = "scm:git:ssh://github.com:mickle-ak/mockobor.git"
+                    url = "https://github.com/mickle-ak/mockobor"
                 }
             }
         }

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 
-@SuppressWarnings({"EmptyMethod", "unused"})
+@SuppressWarnings( { "EmptyMethod", "unused" } )
 class EasymockListenerRegistrationHandlerTest extends ListenerRegistrationHandler_TestBase {
 
 	@Override

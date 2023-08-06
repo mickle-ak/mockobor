@@ -18,14 +18,16 @@ class Mockobor_createNotifierFor_VarargSelector_Test {
 
 	public interface VarargObservable {
 		void addListener( MyListener listener, String... multiSelector );
+
 		void removeListener( MyListener listener, String... multiSelector );
 	}
 
+	@Getter
 	public static class VarargObserver {
-		@Getter private final MyListenerImpl   listener0 = new MyListenerImpl();
-		@Getter private final MyListenerImpl   listener1 = new MyListenerImpl();
-		@Getter private final MyListenerImpl   listener2 = new MyListenerImpl();
-		private final         VarargObservable observable;
+		private final MyListenerImpl   listener0 = new MyListenerImpl();
+		private final MyListenerImpl   listener1 = new MyListenerImpl();
+		private final MyListenerImpl   listener2 = new MyListenerImpl();
+		private final VarargObservable observable;
 
 		public VarargObserver( VarargObservable observable ) {
 			this.observable = observable;

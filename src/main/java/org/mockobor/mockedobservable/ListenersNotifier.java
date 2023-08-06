@@ -52,7 +52,7 @@ public interface ListenersNotifier {
 	 * For other listeners, it works exactly like.
 	 *
 	 * @return true if some listeners were registered and all of them are deregistered;
-	 *         false if no listeners were registered or some of them stay registered.
+	 * 		false if no listeners were registered or some of them stay registered.
 	 */
 	default boolean allListenersAreUnregistered() {
 		return numberOfListenerRegistrations() > 0 && numberOfRegisteredListeners() == 0;
@@ -67,7 +67,8 @@ public interface ListenersNotifier {
 	 * then (per default) it throws {@code ListenersNotFoundException}.<br>
 	 * This behavior can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
 	 * <p><br>
-	 * If listener's notification method returns some value, then the result of last called notification methods will be returned (invocation order is undefined).
+	 * If listener's notification method returns some value,
+	 * then the result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * It is equal to call {@code notifierFor( listenerClass, selector() )}.
 	 * <p>
@@ -93,7 +94,8 @@ public interface ListenersNotifier {
 	 * then (per default) it throws {@code ListenersNotFoundException}.<br>
 	 * This behavior can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
 	 * <p><br>
-	 * If listener's notification method returns some value, then the result of last called notification methods will be returned (invocation order is undefined).
+	 * If listener's notification method returns some value,
+	 * then the result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * It is equal to call {@code notifierFor( listenerClass, selector(listenerSelectorValue) )}.
 	 * <p>
@@ -119,7 +121,8 @@ public interface ListenersNotifier {
 	 * If listeners with suitable selector not found (was not added), then (per default) it throws {@code ListenersNotFoundException}.<br>
 	 * This behavior can be changed by set strictCheckListenerList-flag ({@link #setStrictCheckListenerList}).
 	 * <p><br>
-	 * If listener's notification method returns some value, then the result of last called notification methods will be returned (invocation order is undefined).
+	 * If listener's notification method returns some value,
+	 * then the result of last called notification methods will be returned (invocation order is undefined).
 	 * <p><br>
 	 * Usually you don't need to use this method, because <ul>
 	 * <li>{@code createNotifierFor} returns object, that already implemented all found listeners interfaces and</li>
@@ -173,7 +176,7 @@ public interface ListenersNotifier {
 	 * @throws ListenersNotFoundException if no listeners with suitable selector registered by the mocked observable and
 	 *                                    strictCheckListenerList-flag set to true (default)
 	 */
-	@NonNull <L> L notifierFor( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors ) 
+	@NonNull <L> L notifierFor( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors )
 			throws ListenersNotFoundException;
 
 
@@ -228,7 +231,7 @@ public interface ListenersNotifier {
 	 * @param selectors     selectors used by registration of listeners
 	 * @param <L>           class of required listener
 	 * @return unmodifiable list of listeners with the required type,
-	 *         registered with one of the specified selectors, or empty list if nothing found
+	 * 		registered with one of the specified selectors, or empty list if nothing found
 	 */
 	@NonNull <L> Collection<L> getListeners( @NonNull Class<L> listenerClass, @NonNull ListenerSelector... selectors );
 

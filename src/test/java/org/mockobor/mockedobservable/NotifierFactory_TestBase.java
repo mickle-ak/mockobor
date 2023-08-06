@@ -33,14 +33,14 @@ abstract class NotifierFactory_TestBase {
 	@BeforeEach
 	void setUp() {
 		notifier = new NotifierFactory( new ListenerDetectorsRegistryImpl(), new MockingToolsRegistryImpl() )
-				           .create( mockedObservable, NotifierSettingsImpl.createDefaultSettings() );
+				.create( mockedObservable, NotifierSettingsImpl.createDefaultSettings() );
 		endOfStubbingMode( mockedObservable );
 
 		testedObserver = new TestedObserver( mockedObservable );
 	}
 
 
-	@SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
+	@SuppressWarnings( { "ResultOfMethodCallIgnored", "deprecation" } )
 	@Test
 	void all_methods_of_ListenersNotifier_throw_no_exception() {
 
@@ -108,7 +108,7 @@ abstract class NotifierFactory_TestBase {
 		assertThat( testedObserver.getMyAnotherListener().getInvocations() ).isEmpty();
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings( "deprecation" )
 	@Test
 	void notifyObservable() {
 		( (ObservableNotifier) notifier ).notifyObservers();
@@ -155,8 +155,7 @@ abstract class NotifierFactory_TestBase {
 						tuple( mockedObservable, null, "o2", "n2" ), // only common
 						tuple( mockedObservable, "p3", "o3", "n3" ), // direct to listener
 						tuple( mockedObservable, "p4", "o4", "n4" ), // direct to listener
-						tuple( mockedObservable, "p5", "o5", "n5" ) // direct to listener
-				);
+						tuple( mockedObservable, "p5", "o5", "n5" ) ); // direct to listener
 	}
 
 	@Test
@@ -192,15 +191,13 @@ abstract class NotifierFactory_TestBase {
 						tuple( "somethingChanged1", "v1" ), // from added with addTwoListeners(MyListener, MyAnotherListener)
 						tuple( "somethingChanged2", "v2" ), // from added with addMyListener(MyListener)
 						tuple( "somethingChanged2", "v2" ), // from added with addTwoListeners(MyListener, MyAnotherListener)
-						tuple( "somethingChanged1", "v3" ) // from added with selector addMyListener( String, MyListener, String )
-				);
+						tuple( "somethingChanged1", "v3" ) ); // from added with selector addMyListener( String, MyListener, String )
 
 		assertThat( testedObserver.getMyAnotherListener().getInvocations() )
 				.extracting( InvocationDef::getMethod, InvocationDef::getParam )
 				.containsExactly(
 						tuple( "somethingOtherChanged", "v4" ), // from added with addMyAnotherListener( myAnotherListener )
-						tuple( "somethingOtherChanged", "v4" ) // from added with addTwoListeners(MyListener, MyAnotherListener)
-				);
+						tuple( "somethingOtherChanged", "v4" ) ); // from added with addTwoListeners(MyListener, MyAnotherListener)
 	}
 
 	@Test

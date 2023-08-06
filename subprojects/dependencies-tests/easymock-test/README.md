@@ -1,1 +1,1 @@
-Test, that mockobor correct works if only easymock in classpath.
+Test that mockobor correct works if only easymock in classpath.

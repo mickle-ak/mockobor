@@ -47,7 +47,7 @@ public class NotifierSettingsImpl implements NotifierSettingsUpdater {
 		implementListeners = true;
 		return this;
 	}
-	
+
 	@Override
 	public @NonNull NotifierSettingsUpdater ignoreListenerInterfaces() {
 		implementListeners = false;

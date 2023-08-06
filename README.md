@@ -6,14 +6,14 @@
 
 # Mockobor
 
-Mocked Observable Observation - library to simplify some aspects of unit testing with java.
+**Moc**ked **Ob**servable **Ob**servation - java library to simulate sending of events (via java listeners) from a
+mocked collaborator to a tested object.
 
 If you write a lot of unit tests for a big java enterprise application, you can see that some problems come again and
 again - you often need to:
 
 - simulate sending of events (via java listeners) from mocked collaborators to tested objects,
 - check complete deregistration of listeners registered by mocked collaborator,
-- collect and verify events sent from test object (not implemented jet)
 
 And all of this should be done without changing of production code.
 
@@ -26,7 +26,6 @@ your tests.
         - [listener selectors](#listener-selectors)
         - [registration order](#registration-order)
         - [listener notifier settings](#listener-notifier-settings)
-    - [collect and verify events from test objects (not implemented yet)](#collect-and-verify-events-from-test-objects)
 - [Examples](#examples)
     - [simulate sending of events from mocked collaborator to the tested object](#simulate-sending-of-events-from-mocked-collaborator-to-the-tested-object)
     - [check complete deregistration of listeners](#check-complete-deregistration-of-listeners)
@@ -42,8 +41,8 @@ your tests.
 ## Dependencies
 
 Mockobor propagates follow dependencies:
-- eclipse non-null annotations ([org.eclipse.jdt.annotation](https://search.maven.org/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation))
 
+- eclipse non-null annotations ([org.eclipse.jdt.annotation](https://search.maven.org/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation))
 
 To use last [Mockobor][maven-central-mockobor] in unit tests:
 
@@ -53,7 +52,8 @@ To use last [Mockobor][maven-central-mockobor] in unit tests:
     - _[EasyMock](https://github.com/easymock/easymock) 3.4+_
 
 if you use _java 8_ or _Mockito 2.20.1 - 4.11.0_, you can keep on
-using [Mockobor 1.0.5](https://central.sonatype.com/artifact/io.github.mickle-ak.mockobor/mockobor/1.0.5)
+using [Mockobor 1.0.5](https://github.com/mickle-ak/mockobor/releases/tag/v1.0.5)
+([Maven Central](https://central.sonatype.com/artifact/io.github.mickle-ak.mockobor/mockobor/1.0.5))
 
 ## Usage
 
@@ -101,29 +101,44 @@ here `propertyName` is a qualifier). In such cases, Mockobor uses `selector`. It
 registration methods and allows to add selectors by sending of notifications:
 
 ```java
-        ...
-        // in production code - object under test registers its listener
-        observable.addMyListener("q1","q2",listner1);  // ("q1", "q2") is selector here
-        observable.addMyListener("q3",listener2); // "q3" is selector here
-        observable.addMyListener(listener3); // here is selector empty
-        ...
-        ...
-        // somewhere in tests send notification to listeners in object under test
+// in production code - object under test registers its listener
+public class ClassUnderTest {
+  ...
 
-        // send to listener registered with selector ("q1" "q2):
-        notifier.notiferFor(listner1.class,selector("q1","q2")).listener_method();
+  void someInitMethod() {
+    ...
+    observable.addMyListener( "q1", "q2", listner1 );  // ("q1", "q2") is selector here
+    observable.addMyListener( "q3", listener2 ); // "q3" is selector here
+    observable.addMyListener( listener3 ); // here is selector empty
+    ...
+  }
+ ...
+}
 
-        // send to listener registered with selector "q3":
-        notifier.notiferFor("q3",listner2.class ).listener_method();
-        notifier.notifierFor(listener2.class,selector("q3")).listener_method(); // the same as above
+// somewhere in tests send notification to listeners in object under test
+class SomeTest {
+  ...
 
-        // send to listener registered with empty selector: 
-        notifier.notiferFor(listner3.class ).listener_method();
-        notifier.notifierFor(listener3.class,selector()).listener_method();  // the same as above
+  @Test
+  void someTestMethod() {
+    ...
+    // send to listener registered with selector ("q1" "q2):
+    notifier.notiferFor( listner1.class, selector( "q1", "q2" ) ).listener_method();
 
-        // send to listeners registered with one of the specified selectors (in this case - to all three listeners):
-        notifier.notiferFor(listner1.class,selector("q1","q2"),selector("q3"),selector()).listener_method();
-        ...
+    // send to listener registered with selector "q3":
+    notifier.notiferFor( "q3", listner2.class ).listener_method();
+    notifier.notifierFor( listener2.class, selector( "q3" ) ).listener_method(); // the same as above
+
+    // send to listener registered with empty selector: 
+    notifier.notiferFor( listner3.class ).listener_method();
+    notifier.notifierFor( listener3.class, selector() ).listener_method();  // the same as above
+
+    // send to listeners registered with one of the specified selectors (in this case - to all three listeners):
+    notifier.notiferFor( listner1.class, selector( "q1", "q2" ), selector( "q3" ), selector() ).listener_method();
+    ...
+  }
+  ...
+}
 ```
 
 For more detail see [Examples / typical java style listeners](#typical-java-style-listeners)
@@ -134,25 +149,30 @@ In normal practice, you create listener notifier object BEFORE tested object reg
 observable. It works well, and it works with all mocking tools:
 
 ```java
-private final SomeObservable mockedObservable=EasyMock.mock(SomeObservable.class );
-private final ListenersNotifier notifier=Mockobor.createNotifierFor(mockedObservable);
-private final TestedObserver testObject=new TestedObserver(mockedObservable);
+class SomeTest {
+  private final SomeObservable    mockedObservable = EasyMock.mock( SomeObservable.class );
+  private final ListenersNotifier notifier         = Mockobor.createNotifierFor( mockedObservable );
+  private final TestedObserver    testObject       = new TestedObserver( mockedObservable );
+  ...
+}
 ```
 
 At the same time, **if you use Mockito**, you can create a listener notifier object whenever you like:
 
 ```java
-private final SomeObservable mockedObservable=Mockito.mock(SomeObservable.class );
-private final TestedObserver testObject=new TestedObserver(mockedObservable);
+class SomeTest {
+  private final SomeObservable mockedObservable = Mockito.mock( SomeObservable.class );
+  private final TestedObserver testObject       = new TestedObserver( mockedObservable );
 
-@Test
-void test_notifications(){
-        ...
-        notifie=ockobor.createNotifierFor(mockedObservable);
-        ...
-        notifier.notifierFor(XxxListener.class ).onChange(...);
-        ...
-        }
+  @Test
+  void test_notifications() {
+    ...
+    notifie = ockobor.createNotifierFor( mockedObservable );
+    ...
+    notifier.notifierFor( XxxListener.class ).onChange(...);
+    ...
+  }
+}
 ```
 
 It allows usage of Mockito annotations together with Mockobor.
@@ -192,10 +212,6 @@ or for one creation only:
 
 For more detail see [Examples / NotifierSettings](#notifiersettings)
 
-### collect and verify events from test objects
-
-not implemented jet, probably later
-
 ## Examples
 
 ### simulate sending of events from mocked collaborator to the tested object
@@ -209,28 +225,28 @@ Given you have follow classes in your java application.
 /** Object that you want to test. */
 public class TestedObserver {
 
-    private final SomeObservable someObservable;
-    private final Observer observer = new ObserverIml();
-    private final PropertyChangeListener propertyChangeListener = new PropertyChangeListenerImpl();
-    private final MyListener myListener = new MyListenerImpl();
-    private final MyAnotherListener myAnotherListener = new MyAnotherListenerImpl();
+  private final SomeObservable         someObservable;
+  private final Observer               observer               = new ObserverIml();
+  private final PropertyChangeListener propertyChangeListener = new PropertyChangeListenerImpl();
+  private final MyListener             myListener             = new MyListenerImpl();
+  private final MyAnotherListener      myAnotherListener      = new MyAnotherListenerImpl();
 
-    /** It registers some listeners by the specified (in tests - mocked) observable object. */
-    public TestedObserver(SomeObservable someObservable) {
-        this.someObservable = someObservable;
-        someObservable.addObserver(observer);
-        someObservable.addPropertyChangeListener("prop", propertyChangeListener);
-        someObservable.addTwoListeners(myListener, myAnotherListener);
-        someObservable.addMyListener("sel", myListener);
-    }
+  /** It registers some listeners by the specified (in tests - mocked) observable object. */
+  public TestedObserver( SomeObservable someObservable ) {
+    this.someObservable = someObservable;
+    someObservable.addObserver( observer );
+    someObservable.addPropertyChangeListener( "prop", propertyChangeListener );
+    someObservable.addTwoListeners( myListener, myAnotherListener );
+    someObservable.addMyListener( "sel", myListener );
+  }
 
-    /** And removes all listeners on destroy. */
-    public void destroy() {
-        someObservable.deleteObserver(observer);
-        someObservable.removePropertyChangeListener("prop", propertyChangeListener);
-        someObservable.removeTwoListeners(myListener, myAnotherListener);
-        someObservable.removeMyListener("sel", myListener);
-    }
+  /** And removes all listeners on destroy. */
+  public void destroy() {
+    someObservable.deleteObserver( observer );
+    someObservable.removePropertyChangeListener( "prop", propertyChangeListener );
+    someObservable.removeTwoListeners( myListener, myAnotherListener );
+    someObservable.removeMyListener( "sel", myListener );
+  }
 }
 ```
 
@@ -244,24 +260,24 @@ of observable object will be invoked somewhere._
 /** Some observable object with ability to register listeners/observers. */
 public interface SomeObservable {
 
-    // typical java listeners
-    void addTwoListeners(MyListener myListener, MyAnotherListener myAnotherListener);
+  // typical java listeners
+  void addTwoListeners( MyListener myListener, MyAnotherListener myAnotherListener );
 
-    void removeTwoListeners(MyListener myListener, MyAnotherListener myAnotherListener);
+  void removeTwoListeners( MyListener myListener, MyAnotherListener myAnotherListener );
 
-    void addMyListener(String selector, MyListener myAnotherListener);
+  void addMyListener( String selector, MyListener myAnotherListener );
 
-    void removeMyListener(String selector, MyListener myAnotherListener);
+  void removeMyListener( String selector, MyListener myAnotherListener );
 
-    // property change support
-    void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+  // property change support
+  void addPropertyChangeListener( String propertyName, PropertyChangeListener listener );
 
-    void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+  void removePropertyChangeListener( String propertyName, PropertyChangeListener listener );
 
-    // Observable
-    void addObserver(Observer o);
+  // Observable
+  void addObserver( Observer o );
 
-    void deleteObserver(Observer o);
+  void deleteObserver( Observer o );
 }
 ```
 
@@ -269,13 +285,13 @@ public interface SomeObservable {
 
 ```java
 public interface MyListener {
-    void somethingChanged1(Object somethingNewValue);
+  void somethingChanged1( Object somethingNewValue );
 
-    int somethingChanged2(Object somethingNewValue);
+  int somethingChanged2( Object somethingNewValue );
 }
 
 public interface MyAnotherListener {
-    void somethingOtherChanged(Object somethingOtherValue);
+  void somethingOtherChanged( Object somethingOtherValue );
 }
 ```
 
@@ -284,14 +300,14 @@ In tests, we mock the collaborator (`SomeObservable`) using one of supported moc
 
 ```java
 class TestedObserver_Test {
-    // create mock of SomeObservable 
-    private final SomeObservable mockedObservable = Mockito.mock(SomeObservable.class);
+  // create mock of SomeObservable 
+  private final SomeObservable mockedObservable = Mockito.mock( SomeObservable.class );
 
-    // create notifier for SomeObservable
-    private final ListenersNotifier notifier = Mockobor.createNotifierFor(mockedObservable);
+  // create notifier for SomeObservable
+  private final ListenersNotifier notifier = Mockobor.createNotifierFor( mockedObservable );
 
-    // Object under tested. It registers listeners by the specified SomeObservable object.
-    private final TestedObserver testObject = new TestedObserver(mockedObservable);
+  // Object under tested. It registers listeners by the specified SomeObservable object.
+  private final TestedObserver testObject = new TestedObserver( mockedObservable );
   
   ...
 }
@@ -308,34 +324,34 @@ Now (to simulate processes in `SomeObservable`) we will send events to listener 
 
 ```java
 class TestedObserver_Test {
-    private final SomeObservable mockedObservable = Mockito.mock(SomeObservable.class);
-    private final ListenersNotifier notifier = Mockobor.createNotifierFor(mockedObservable);
-    private final TestedObserver testObject = new TestedObserver(mockedObservable);
+  private final SomeObservable    mockedObservable = Mockito.mock( SomeObservable.class );
+  private final ListenersNotifier notifier         = Mockobor.createNotifierFor( mockedObservable );
+  private final TestedObserver    testObject       = new TestedObserver( mockedObservable );
 
-    @Test
-    void testSendEventToJavaStyleListeners() {
-        // send events to testObject using listener interfaces (first way):
-        ((MyListener) notifier).somethingChanged1(newValue);
-        int answer1 = ((MyListener) notifier).somethingChanged2(newValue2);
-        ((MyAnotherListener) notifier).somethingOtherChanged(newValue3);
+  @Test
+  void testSendEventToJavaStyleListeners() {
+    // send events to testObject using listener interfaces (first way):
+    ( (MyListener) notifier ).somethingChanged1( newValue );
+    int answer1 = ( (MyListener) notifier ).somethingChanged2( newValue2 );
+    ( (MyAnotherListener) notifier ).somethingOtherChanged( newValue3 );
 
-        // send events to testObject using ListenersNotifier (another way, it is exactly the same as above):
-        notifier.notifierFor(MyListener.class).somethingChanged1(newValue);
-        int answer2 = notifier.notifierFor(MyListener.class).somethingChanged2(newValue2);
-        notifier.notifierFor(MyAnotherListener.class).somethingOtherChanged(newValue3);
+    // send events to testObject using ListenersNotifier (another way, it is exactly the same as above):
+    notifier.notifierFor( MyListener.class ).somethingChanged1( newValue );
+    int answer2 = notifier.notifierFor( MyListener.class ).somethingChanged2( newValue2 );
+    notifier.notifierFor( MyAnotherListener.class ).somethingOtherChanged( newValue3 );
 
-        // if you have listeners registered with certain non-empty qualifier 
-        // (see TestedObserver's constructor: someObservable.addMyListener( "sel", myListener )),
-        // then you can send events to such listeners:
-        notifier.notifierFor("sel", MyListener.class).somethingChanged1(newValue);
-        notifier.notifierFor(MyListener.class, selector("sel")).somethingChanged1(newValue); // exactly as above
+    // if you have listeners registered with certain non-empty qualifier 
+    // (see TestedObserver's constructor: someObservable.addMyListener( "sel", myListener )),
+    // then you can send events to such listeners:
+    notifier.notifierFor( "sel", MyListener.class ).somethingChanged1( newValue );
+    notifier.notifierFor( MyListener.class, selector( "sel" ) ).somethingChanged1( newValue ); // exactly as above
 
-        // to notify (send the same event to) listeners (with the same class) 
-        // registered with at least one of the specified selectors
-        // (here - without selector OR with "sel" as selector):
-        notifier.notifierFor(MyListener.class, selector(), selector("sel"))
-                .somethingChanged1(newValue);
-    }
+    // to notify (send the same event to) listeners (with the same class) 
+    // registered with at least one of the specified selectors
+    // (here - without selector OR with "sel" as selector):
+    notifier.notifierFor( MyListener.class, selector(), selector( "sel" ) )
+            .somethingChanged1( newValue );
+  }
 }
 ```
 
@@ -350,32 +366,32 @@ If your collaborator (observable object) has methods like
 
 ```java
 class TestedObserver_Test {
-    private final SomeObservable mockedObservable = Mockito.mock(SomeObservable.class);
-    private final ListenersNotifier notifier = Mockobor.createNotifierFor(mockedObservable);
-    private final TestedObserver testObject = new TestedObserver(mockedObservable);
+  private final SomeObservable    mockedObservable = Mockito.mock( SomeObservable.class );
+  private final ListenersNotifier notifier         = Mockobor.createNotifierFor( mockedObservable );
+  private final TestedObserver    testObject       = new TestedObserver( mockedObservable );
 
-    @Test
-    void testSendEventToPropertyChangeListeners() {
-        // using PropertyChangeNotifier
-        PropertyChangeNotifier propertyChangeNotifier = (PropertyChangeNotifier) notifier;
-        propertyChangeNotifier.firePropertyChange(null, "o2", "n2");
-        propertyChangeNotifier.firePropertyChange("prop", "o1", "n1");
+  @Test
+  void testSendEventToPropertyChangeListeners() {
+    // using PropertyChangeNotifier
+    PropertyChangeNotifier propertyChangeNotifier = (PropertyChangeNotifier) notifier;
+    propertyChangeNotifier.firePropertyChange( null, "o2", "n2" );
+    propertyChangeNotifier.firePropertyChange( "prop", "o1", "n1" );
 
-        // using ListenersNotifier
-        notifier.notifierFor(PropertyChangeListener.class)
-                .propertyChange(new PropertyChangeEvent(mockedObservable, "p4", "o4", "n4"));
+    // using ListenersNotifier
+    notifier.notifierFor( PropertyChangeListener.class )
+            .propertyChange( new PropertyChangeEvent( mockedObservable, "p4", "o4", "n4" ) );
 
-        // using ListenersNotifier with selectors
-        // exactly the same as 
-        // - propertyChangeNotifier.firePropertyChange( null, 'o5', 'n5')
-        // - propertyChangeNotifier.firePropertyChange( 'prop', 'o5', 'n5')
-        notifier.notifierFor(PropertyChangeListener.class, selector(), selector("prop"))
-                .propertyChange(new PropertyChangeEvent(mockedObservable, "prop", "o5", "n5"));
+    // using ListenersNotifier with selectors
+    // exactly the same as 
+    // - propertyChangeNotifier.firePropertyChange( null, 'o5', 'n5')
+    // - propertyChangeNotifier.firePropertyChange( 'prop', 'o5', 'n5')
+    notifier.notifierFor( PropertyChangeListener.class, selector(), selector( "prop" ) )
+            .propertyChange( new PropertyChangeEvent( mockedObservable, "prop", "o5", "n5" ) );
 
-        // direct using listener interface (PropertyChangeListener) 
-        ((PropertyChangeListener) notifier)
-                .propertyChange(new PropertyChangeEvent(mockedObservable, "prop", "o3", "n3"));
-    }
+    // direct using listener interface (PropertyChangeListener) 
+    ( (PropertyChangeListener) notifier )
+            .propertyChange( new PropertyChangeEvent( mockedObservable, "prop", "o3", "n3" ) );
+  }
 }
 ```
 
@@ -388,23 +404,23 @@ as "like Observable" and Mockobor creates for such classes a special notifier - 
 
 ```java
 class TestedObserver_Test {
-    private final SomeObservable mockedObservable = Mockito.mock(SomeObservable.class);
-    private final ListenersNotifier notifier = Mockobor.createNotifierFor(mockedObservable);
-    private final TestedObserver testObject = new TestedObserver(mockedObservable);
+  private final SomeObservable    mockedObservable = Mockito.mock( SomeObservable.class );
+  private final ListenersNotifier notifier         = Mockobor.createNotifierFor( mockedObservable );
+  private final TestedObserver    testObject       = new TestedObserver( mockedObservable );
 
-    @Test
-    void testSendEventToPropertyChangeListeners() {
-        // using ObservableNotifier
-        ObservableNotifier observableNotifier = (ObservableNotifier) notifier;
-        observableNotifier.notifyObservers();
-        observableNotifier.notifyObservers("v1");
+  @Test
+  void testSendEventToPropertyChangeListeners() {
+    // using ObservableNotifier
+    ObservableNotifier observableNotifier = (ObservableNotifier) notifier;
+    observableNotifier.notifyObservers();
+    observableNotifier.notifyObservers( "v1" );
 
-        // using ListenersNotifier
-        notifier.notifierFor(Observer.class).update(null, "v3");
+    // using ListenersNotifier
+    notifier.notifierFor( Observer.class ).update( null, "v3" );
 
-        // direct using listener interface (Observer)
-        ((Observer) notifier).update(null, "v2");
-    }
+    // direct using listener interface (Observer)
+    ( (Observer) notifier ).update( null, "v2" );
+  }
 }
 ```
 
@@ -416,19 +432,19 @@ You can use Mockobor to check if all registered by mocked observable object list
 
 ```java
 class TestedObserver_Test {
-    private final SomeObservable mockedObservable = Mockito.mock(SomeObservable.class);
-    private final ListenersNotifier notifier = Mockobor.createNotifierFor(mockedObservable);
-    private final TestedObserver testObject = new TestedObserver(mockedObservable);
+  private final SomeObservable    mockedObservable = Mockito.mock( SomeObservable.class );
+  private final ListenersNotifier notifier         = Mockobor.createNotifierFor( mockedObservable );
+  private final TestedObserver    testObject       = new TestedObserver( mockedObservable );
 
-    @Test
-    void testAllListenersAreRemoved() {
+  @Test
+  void testAllListenersAreRemoved() {
 
-        // tested object should remove itself from the specified PropertyChangeSupport object on close.
-        testObject.destroy(); // or close() or dispose() etc.
+    // tested object should remove itself from the specified PropertyChangeSupport object on close.
+    testObject.destroy(); // or close() or dispose() etc.
 
-        // check that all listeners are unregistered
-        Mockobor.assertThatAllListenersAreUnregistered(notifier);
-    }
+    // check that all listeners are unregistered
+    Mockobor.assertThatAllListenersAreUnregistered( notifier );
+  }
 }
 ```
 
@@ -557,10 +573,10 @@ in `pom.xml`:
 ```xml 
 
 <dependency>
-    <groupId>io.github.mickle-ak.mockobor</groupId>
-    <artifactId>mockobor</artifactId>
-    <version>1.0.5</version>
-    <scope>test</scope>
+  <groupId>io.github.mickle-ak.mockobor</groupId>
+  <artifactId>mockobor</artifactId>
+  <version>1.0.5</version>
+  <scope>test</scope>
 </dependency>
 ```
 

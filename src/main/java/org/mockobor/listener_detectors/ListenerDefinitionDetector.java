@@ -38,5 +38,5 @@ public interface ListenerDefinitionDetector {
 	 * @param methods readonly list of methods to examine (defined in mocked observable)
 	 * @return definition of detected listeners.
 	 */
-	@NonNull ListenerDefinition detect(@NonNull Collection<Method> methods );
+	@NonNull ListenerDefinition detect( @NonNull Collection<Method> methods );
 }

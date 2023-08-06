@@ -19,6 +19,7 @@ class UsageExample_TypicalJavaListener_Test {
 	/** The listener to listen to changes on something. */
 	public interface MyListener {
 		void somethingChanged1( Object somethingNewValue );
+
 		void somethingChanged2( Object somethingNewValue );
 	}
 
@@ -82,7 +83,9 @@ class UsageExample_TypicalJavaListener_Test {
 			allChangesTogether.add( somethingOtherValue );
 		}
 
-		public List<Object> getAllChangesTogether() { return allChangesTogether; }
+		public List<Object> getAllChangesTogether() {
+			return allChangesTogether;
+		}
 	}
 
 

@@ -31,7 +31,7 @@ import java.util.Observer;
  *
  * </code></pre>
  */
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings( { "unused", "deprecation" } )
 public interface ObservableNotifier extends ListenersNotifier {
 
 	/**
@@ -45,9 +45,9 @@ public interface ObservableNotifier extends ListenersNotifier {
 	 * <p>
 	 * This method is equivalent to: {@code notifyObservers(null)}
 	 *
-	 * @see Observable#notifyObservers()
 	 * @throws ListenersNotFoundException if no {@code Observer} registered by the mocked observable and
 	 *                                    strictCheckListenerList-flag set to true (default)
+	 * @see Observable#notifyObservers()
 	 * @see #notifyObservers(Object)
 	 */
 	default void notifyObservers() throws ListenersNotFoundException {

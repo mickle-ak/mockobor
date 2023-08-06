@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings( "deprecation" )
 class UsageExample_Observable_Test {
 
 	/** The class under test, which should observe a mocked {@link Observable}. */
@@ -29,7 +29,9 @@ class UsageExample_Observable_Test {
 		}
 
 		@Override
-		public void close() { observable.deleteObserver( this ); }
+		public void close() {
+			observable.deleteObserver( this );
+		}
 
 
 		@Override
@@ -39,7 +41,9 @@ class UsageExample_Observable_Test {
 		}
 
 
-		public List<Object> getUpdateArguments() { return updateArguments; }
+		public List<Object> getUpdateArguments() {
+			return updateArguments;
+		}
 	}
 
 

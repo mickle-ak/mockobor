@@ -17,9 +17,13 @@ class ReflectionUtils_Methods_Test {
 
 	private interface TestMethods {
 		void method( String s );
+
 		void method( Object s );
+
 		void method( Integer s );
+
 		void method();
+
 		default String defaultMethod( String param ) {
 			return param;
 		}
@@ -27,9 +31,13 @@ class ReflectionUtils_Methods_Test {
 
 	private interface TestMethods2 {
 		void method( String s );
+
 		void method( Object s );
+
 		int method( Integer s );
+
 		void method();
+
 		void anotherMethod();
 	}
 
@@ -58,19 +66,19 @@ class ReflectionUtils_Methods_Test {
 		Class<TestMethods> clazz = TestMethods.class;
 
 		assertThat( methodMatch( clazz.getMethod( "method", String.class ), "method", String.class ) )
-			.isTrue();
+				.isTrue();
 
 		assertThat( methodMatch( clazz.getMethod( "method", Integer.class ), "method", Integer.class ) )
-			.isTrue();
+				.isTrue();
 
 		assertThat( methodMatch( clazz.getMethod( "method", Object.class ), "method", Object.class ) )
-			.isTrue();
+				.isTrue();
 
 		assertThat( methodMatch( clazz.getMethod( "method" ), "method" ) )
-			.isTrue();
+				.isTrue();
 
 		assertThat( methodMatch( clazz.getMethod( "method", Object.class ), "method", List.class ) )
-			.isFalse();
+				.isFalse();
 	}
 
 

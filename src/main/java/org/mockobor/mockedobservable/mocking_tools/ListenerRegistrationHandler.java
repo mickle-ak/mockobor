@@ -24,8 +24,8 @@ public interface ListenerRegistrationHandler {
 	 * To check if this registration handler can handle the specified mocked observable.
 	 * <p>
 	 * Usually this handler can handle an object if<ul>
-	 *     <li>the object is not null, and</li>
-	 *     <li>it is a mock created with corresponding mocking tool</li>
+	 * <li>the object is not null, and</li>
+	 * <li>it is a mock created with corresponding mocking tool</li>
 	 * </ul>
 	 *
 	 * @param mockedObservable object to check (can be null)

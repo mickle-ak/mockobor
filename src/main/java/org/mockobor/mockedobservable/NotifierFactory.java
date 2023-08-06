@@ -66,7 +66,7 @@ public class NotifierFactory {
 		List<ListenerDefinition> listenerDefinitions = detectListenerDefinitions( mockedObservable );
 		ListenersManager listenerManager = new ListenersManager( mockedObservable );
 		listenerManager.setStrictCheckListenerList( settings.getStrictCheckListenerList() );
-		registerInMockedObservable( listenerManager, listenerDefinitions);
+		registerInMockedObservable( listenerManager, listenerDefinitions );
 		return createProxy( listenerManager, listenerDefinitions, settings );
 	}
 
@@ -98,7 +98,7 @@ public class NotifierFactory {
 	// ==================================================================================
 
 	/** To find all possible listener registrations in the specified mocked observable. */
-	private @NonNull List<ListenerDefinition> detectListenerDefinitions(@NonNull Object mockedObservable ) {
+	private @NonNull List<ListenerDefinition> detectListenerDefinitions( @NonNull Object mockedObservable ) {
 		List<ListenerDefinition> listenerDefinitions = new ArrayList<>();
 		Collection<Method> methods = getReachableMethods( mockedObservable );
 		Collection<ListenerDefinitionDetector> detectors = listenerDetectorsRegistry.getDetectors();
@@ -121,23 +121,23 @@ public class NotifierFactory {
 
 	/** Redirect all found registration methods (add/remove listener methods) from mocked observable to listener container. */
 	private void registerInMockedObservable( @NonNull ListenerContainer listenerManager,
-	                                         @NonNull List<ListenerDefinition> listenerDefinitions) {
+	                                         @NonNull List<ListenerDefinition> listenerDefinitions ) {
 		Object mockedObservable = listenerManager.getObservableMock();
 		ListenerRegistrationHandler registrationHandler = mockingToolsRegistry.findHandlerForMock( mockedObservable );
-		interceptPreviouslyListenerRegistrations( mockedObservable, registrationHandler, listenerManager, listenerDefinitions);
-		redirectRegistrationMethods( registrationHandler, listenerManager, listenerDefinitions);
+		interceptPreviouslyListenerRegistrations( mockedObservable, registrationHandler, listenerManager, listenerDefinitions );
+		redirectRegistrationMethods( registrationHandler, listenerManager, listenerDefinitions );
 	}
 
 	private void interceptPreviouslyListenerRegistrations( @NonNull Object observableMock,
 	                                                       @NonNull ListenerRegistrationHandler registrationHandler,
 	                                                       @NonNull ListenerContainer listenerManager,
-	                                                       @NonNull List<ListenerDefinition> listenerDefinitions) {
+	                                                       @NonNull List<ListenerDefinition> listenerDefinitions ) {
 
 		Collection<Invocation> previouslyInvocations = registrationHandler.getPreviouslyRegistrations( observableMock );
 
 		if( !previouslyInvocations.isEmpty() ) {
 			Map<Method, RegistrationInvocation> registrationMethods =
-					registrationDelegateStream(listenerDefinitions).collect(
+					registrationDelegateStream( listenerDefinitions ).collect(
 							Collectors.toMap( RegistrationDelegate::getSource, RegistrationDelegate::getDestination ) );
 			previouslyInvocations.forEach( invocation -> {
 				Method invokedMethod = invocation.getInvokedMethod();
@@ -152,13 +152,13 @@ public class NotifierFactory {
 
 	private void redirectRegistrationMethods( @NonNull ListenerRegistrationHandler registrationHandler,
 	                                          @NonNull ListenerContainer listenerManager,
-	                                          @NonNull List<ListenerDefinition> listenerDefinitions) {
-		registrationDelegateStream(listenerDefinitions).forEach(
+	                                          @NonNull List<ListenerDefinition> listenerDefinitions ) {
+		registrationDelegateStream( listenerDefinitions ).forEach(
 				delegation -> registrationHandler.registerInMock( listenerManager, delegation ) );
 	}
 
-	private @NonNull Stream<RegistrationDelegate> registrationDelegateStream( @NonNull List<ListenerDefinition> listenerDefinitions) {
-		return listenerDefinitions.stream().flatMap(definition -> definition.getRegistrations().stream() );
+	private @NonNull Stream<RegistrationDelegate> registrationDelegateStream( @NonNull List<ListenerDefinition> listenerDefinitions ) {
+		return listenerDefinitions.stream().flatMap( definition -> definition.getRegistrations().stream() );
 	}
 
 
@@ -170,8 +170,8 @@ public class NotifierFactory {
 	                                                @NonNull List<ListenerDefinition> listenerDefinitions,
 	                                                @NonNull NotifierSettings settings ) {
 		// collect interfaces to implement
-		Set<Class<?>> additionalInterfaces = collectAdditionalInterfaces(listenerDefinitions);
-		Set<Class<?>> detectedListenerToImplement = collectDetectedListenerToImplement(listenerDefinitions, settings );
+		Set<Class<?>> additionalInterfaces = collectAdditionalInterfaces( listenerDefinitions );
+		Set<Class<?>> detectedListenerToImplement = collectDetectedListenerToImplement( listenerDefinitions, settings );
 		Set<Class<?>> interfacesToImplement = new LinkedHashSet<>( additionalInterfaces );
 		interfacesToImplement.add( ListenersNotifier.class ); // ListenersNotifier must always be implemented
 		interfacesToImplement.addAll( detectedListenerToImplement );
@@ -179,7 +179,7 @@ public class NotifierFactory {
 		// create invocation handler for proxy
 		InvocationHandler invocationHandler = createInvocationHandler(
 				listenersNotifier,
-				collectCustomNotificationDelegates(listenerDefinitions),
+				collectCustomNotificationDelegates( listenerDefinitions ),
 				additionalInterfaces,
 				detectedListenerToImplement );
 
@@ -247,9 +247,9 @@ public class NotifierFactory {
 	}
 
 
-	private @NonNull Set<Class<?>> collectAdditionalInterfaces( @NonNull List<ListenerDefinition> listenerDefinitions) {
+	private @NonNull Set<Class<?>> collectAdditionalInterfaces( @NonNull List<ListenerDefinition> listenerDefinitions ) {
 		Set<Class<?>> interfaces = new LinkedHashSet<>();
-		listenerDefinitions.forEach(ld -> interfaces.addAll( ld.getAdditionalInterfaces() ) );
+		listenerDefinitions.forEach( ld -> interfaces.addAll( ld.getAdditionalInterfaces() ) );
 		return interfaces;
 	}
 
@@ -257,15 +257,15 @@ public class NotifierFactory {
 	                                                                   @NonNull NotifierSettings settings ) {
 		Set<Class<?>> interfaces = new LinkedHashSet<>();
 		if( settings.shouldNotifierImplementListenerInterfaces() ) {
-			listenerDefinitions.forEach(ld -> interfaces.addAll( ld.getDetectedListeners() ) );
+			listenerDefinitions.forEach( ld -> interfaces.addAll( ld.getDetectedListeners() ) );
 		}
 		return interfaces;
 	}
 
 	private @NonNull Map<Method, NotificationMethodInvocation> collectCustomNotificationDelegates(
-			@NonNull List<ListenerDefinition> listenerDefinitions) {
+			@NonNull List<ListenerDefinition> listenerDefinitions ) {
 		Map<Method, NotificationMethodInvocation> customNotificationDelegates = new HashMap<>();
-		listenerDefinitions.forEach(ld -> customNotificationDelegates.putAll( ld.getCustomNotificationMethodDelegates() ) );
+		listenerDefinitions.forEach( ld -> customNotificationDelegates.putAll( ld.getCustomNotificationMethodDelegates() ) );
 		return customNotificationDelegates;
 	}
 

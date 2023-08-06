@@ -16,6 +16,7 @@ public interface MockedObservable {
 
 	interface MyListener {
 		void somethingChanged1( Object somethingNewValue );
+
 		int somethingChanged2( Object somethingNewValue );
 	}
 
@@ -58,9 +59,9 @@ public interface MockedObservable {
 	// ================================== Observer ======================================
 	// ==================================================================================
 
-	@SuppressWarnings("deprecation")
-	void addObserver(Observer o );
+	@SuppressWarnings( "deprecation" )
+	void addObserver( Observer o );
 
-	@SuppressWarnings("deprecation")
-	void deleteObserver(Observer o );
+	@SuppressWarnings( "deprecation" )
+	void deleteObserver( Observer o );
 }

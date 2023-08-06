@@ -26,19 +26,19 @@ class PropertyChangeDetectorTest {
 		assertThat( listenerDefinition.hasListenerDetected() ).isTrue();
 
 		assertThat( listenerDefinition.getRegistrations() )
-			.as( "expected registration methods" )
-			.extracting( RegistrationDelegate::getSource )
-			.extracting( Method::getName )
-			.containsExactlyInAnyOrder( "addPropertyChangeListener", "addPropertyChangeListener",
-			                            "removePropertyChangeListener", "removePropertyChangeListener" );
+				.as( "expected registration methods" )
+				.extracting( RegistrationDelegate::getSource )
+				.extracting( Method::getName )
+				.containsExactlyInAnyOrder( "addPropertyChangeListener", "addPropertyChangeListener",
+				                            "removePropertyChangeListener", "removePropertyChangeListener" );
 
 		assertThat( listenerDefinition.getDetectedListeners() )
-			.as( "detected listener" )
-			.containsExactly( PropertyChangeListener.class );
+				.as( "detected listener" )
+				.containsExactly( PropertyChangeListener.class );
 
 		assertThat( listenerDefinition.getAdditionalInterfaces() )
-			.as( "expected interfaces" )
-			.containsExactly( PropertyChangeNotifier.class );
+				.as( "expected interfaces" )
+				.containsExactly( PropertyChangeNotifier.class );
 
 		// no additional notifications expected
 		// because all methods of {@link PropertyChangeNotifier} have the default implementation
