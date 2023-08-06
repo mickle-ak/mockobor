@@ -36,7 +36,7 @@ your tests.
 - [Restrictions](#restrictions)
 - [Installation](#installation)
 - [Changelog](CHANGELOG.md)
-- [Releasing](RELEASING.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## Dependencies
 
