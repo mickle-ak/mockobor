@@ -1,4 +1,6 @@
 - **In the next Version**
+
+- **1.1.3** (07.08.2023)
     - Changed
         - correct documentation and simple optimization of workflows
         - correct dependencies-tests - tests showing that mockobor works correctly when there are no mocking tools in the classpath

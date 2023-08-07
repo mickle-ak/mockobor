@@ -10,7 +10,7 @@
 mocked collaborator to a tested object.
 
 If you write a lot of unit tests for a big java enterprise application, you can see that some problems come again and
-again — you often need to:
+again ? you often need to:
 
 - simulate sending of events (via java listeners) from mocked collaborators to tested objects,
 - check complete deregistration of listeners registered by mocked collaborator,
@@ -94,7 +94,7 @@ public class TestedObserver {
 ```
 
 _Note: It is not strictly necessary to register listeners using direct invocation of addXxxListener methods, it can be
-any kind of registration — using annotations, aspects or other mechanisms.
+any kind of registration ? using annotations, aspects or other mechanisms.
 Important is that the registration methods of observable object will be invoked somewhere._
 
 - a collaborator of the tested object that fires some events to registered listeners:
@@ -441,7 +441,7 @@ _Note: It does not work with EasyMock! See [Restrictions / EasyMock restrictions
 
 - strict or lenient checking if the list of listeners selected to send notification contains any listener
     + strict (default) - throw `ListenersNotFoundException` if no listener selected to send notification
-    + lenient — do nothing in this case
+    + lenient ? do nothing in this case
 - should a new listener notifier implement interfaces of detected listeners?
     + true (default) - all new `ListenersNotifier` returned from `Mockobor.createNotifierFor` implement all detected
       listener interfaces. So events can be fired using both ways:
@@ -524,7 +524,7 @@ as implementation examples.
 
 ## Restrictions
 
-- only interfaces accepted as listeners — you can't use methods like `addMyListener(MyListener)`, where `MyListener` has
+- only interfaces accepted as listeners ? you can't use methods like `addMyListener(MyListener)`, where `MyListener` has
   a class type - such methods will be not recognized as registration methods. `MyListener` can be an interface only.
   That is in fact standard practice in java.
 
@@ -562,7 +562,7 @@ in `pom.xml`:
 <dependency>
   <groupId>io.github.mickle-ak.mockobor</groupId>
   <artifactId>mockobor</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.3</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -572,7 +572,7 @@ in `pom.xml`:
 in `build.gradle.kts`:
 
 ```kotlin
-testImplementation("io.github.mickle-ak.mockobor:mockobor:1.1.0")
+testImplementation("io.github.mickle-ak.mockobor:mockobor:1.1.3")
 ```
 
 [releases]: https://github.com/mickle-ak/mockobor/releases
