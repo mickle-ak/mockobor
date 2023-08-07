@@ -16,14 +16,14 @@ class No_Mocking_ToolsRegistry_Test {
 	@Test
 	void canNotCreate_Mockito() {
 		assertThatThrownBy( MockitoListenerRegistrationHandler::new )
-				.hasCauseInstanceOf( NoClassDefFoundError.class )
+				.isInstanceOfAny( NoClassDefFoundError.class, ClassNotFoundException.class )
 				.hasMessageFindingMatch( "org.mockito" );
 	}
 
 	@Test
 	void canNotCreate_EasyMock() {
 		assertThatThrownBy( EasymockListenerRegistrationHandler::new )
-				.hasCauseInstanceOf( NoClassDefFoundError.class )
+				.isInstanceOfAny( NoClassDefFoundError.class, ClassNotFoundException.class )
 				.hasMessageFindingMatch( "org.easymock" );
 	}
 }
