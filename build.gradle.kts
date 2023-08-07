@@ -152,6 +152,7 @@ scmVersion {
         uncommittedChanges = false
         aheadOfRemote = false
     }
+    useHighestVersion = true
 }
 
 tasks.currentVersion {
@@ -195,7 +196,7 @@ publishing {
             pom {
 
                 name = "Mockobor"
-                description = "Mocked Observable Observation - java library to simulate sending of events from a mocked collaborator to a tested object."
+                description = project.description
                 url = "https://github.com/mickle-ak/mockobor"
 
                 licenses {

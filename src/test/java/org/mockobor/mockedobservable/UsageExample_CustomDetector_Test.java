@@ -26,7 +26,7 @@ class UsageExample_CustomDetector_Test {
 
 	/** Custom listener interface used by observer to receive notifications from {@link MyObservable}. */
 	public interface MyObserver {
-		void update( Object param );
+		void onEvent( Object param );
 	}
 
 	/** Class of the observable object (it is mocked in this test because we don't need to have a class, interface is enough). */
@@ -61,7 +61,7 @@ class UsageExample_CustomDetector_Test {
 		int numberOfListenerDeregistrations(); // override, but don't change behavior => original method must be invoked
 
 		default void notifyMyObserver( String param ) {
-			notifierFor( MyObserver.class ).update( param );
+			notifierFor( MyObserver.class ).onEvent( param );
 		}
 
 		void notifyMyObserver();
@@ -107,7 +107,7 @@ class UsageExample_CustomDetector_Test {
 					new NotificationMethodDelegate(
 							AdditionalInterface.class.getMethod( "notifyMyObserver" ),
 							( listenersNotifier, method, arguments ) -> {
-								listenersNotifier.notifierFor( MyObserver.class ).update( null );
+								listenersNotifier.notifierFor( MyObserver.class ).onEvent( null );
 								return null;
 							} ) );
 		}
@@ -130,7 +130,7 @@ class UsageExample_CustomDetector_Test {
 		}
 
 		@Override
-		public void update( Object param ) {
+		public void onEvent( Object param ) {
 			invocations.add( param );
 		}
 	}
@@ -165,8 +165,8 @@ class UsageExample_CustomDetector_Test {
 		additionalNotifier.notifyMyObserver(); // null, over custom notification delegate
 
 		// send events using direct ListenerNotifier
-		this.notifier.notifierFor( MyObserver.class ).update( "v2" );
-		( (MyObserver) this.notifier ).update( 33 );
+		this.notifier.notifierFor( MyObserver.class ).onEvent( "v2" );
+		( (MyObserver) this.notifier ).onEvent( 33 );
 
 		// check events
 		assertThat( testedObject.getInvocations() ).containsExactly( "v1", null, "v2", 33 );

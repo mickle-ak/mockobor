@@ -38,6 +38,13 @@ parameters:
 > ./gradlew -q createRelease "-Prelease.versionIncrementer=incrementMinor"
 ```
 
+#### Force release version
+
+To create a version with the custom version number use `release.forceVersion` parameter:
+```
+> ./gradlew -q createRelease "-Prelease.forceVersion=x.x.x"
+```
+
 ### Check the current version
 
 start ``./gradlew -q currentVersion``
