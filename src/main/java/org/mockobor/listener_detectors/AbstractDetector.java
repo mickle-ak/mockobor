@@ -27,7 +27,7 @@ public abstract class AbstractDetector implements ListenerDefinitionDetector {
 	 *
 	 * @param parameterType type to check
 	 * @param method        method which contains this parameter (as context)
-	 * @return is the specified parameter type is a listener type
+	 * @return true if the specified parameter type is a listener type; false otherwise
 	 */
 	protected abstract boolean isListenerClass( @NonNull Class<?> parameterType, @NonNull Method method );
 

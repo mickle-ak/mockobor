@@ -9,7 +9,7 @@ import java.beans.PropertyChangeSupport;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
-class NoMock_ListenerNotifer_Test {
+class NoMock_ListenerNotifier_Test {
 
 	@Test
 	void createNotifierFor_failed() {

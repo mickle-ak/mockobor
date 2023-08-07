@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * To manage listener registration and find and send notifications to require listener.
  * <p>
- * It used in "runtime" in background to store registered listeners and send notifications to these listeners.
+ * It used in "runtime" to store registered listeners and send notifications to these listeners.
  */
 @RequiredArgsConstructor
 public class ListenersManager implements ListenerContainer, ListenersNotifier {

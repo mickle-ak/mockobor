@@ -6,8 +6,7 @@ import java.util.*
 
 group = "io.github.mickle-ak.mockobor"
 version = scmVersion.version
-description = "Mocked Observable Observation - java library to simulate sending of events " +
-        "from a mocked collaborator to a tested object."
+description = "Mocked Observable Observation - java library to simulate sending of events from a mocked collaborator to a tested object."
 
 
 plugins {
@@ -196,7 +195,7 @@ publishing {
             pom {
 
                 name = "Mockobor"
-                description = project.description
+                description = "Mocked Observable Observation - java library to simulate sending of events from a mocked collaborator to a tested object."
                 url = "https://github.com/mickle-ak/mockobor"
 
                 licenses {

@@ -134,7 +134,7 @@ public interface ListenersNotifier {
 	 * For some common cases ({@code Observable}, {@link PropertyChangeListener})
 	 * Mockobor has special support: {@link ObservableNotifier}, {@link PropertyChangeNotifier}.
 	 * <p><br>
-	 * But, if you listeners have methods with same signature, or you need selectors (see {@link ListenerSelector})
+	 * But, if your listeners have methods with same signature, or you need selectors (see {@link ListenerSelector})
 	 * to register/find your listeners, you can use {@code notifierFor}-methods to notify only required listener(s).
 	 * <p>
 	 * For Example, for {@link PropertyChangeListener} you need (sometimes) to define String parameter - property name.
