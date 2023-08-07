@@ -1,4 +1,6 @@
 - **In the next Version**
+
+- **1.1.0** (07.08.2023)
     - Changed
         - Update the minimum supported Java version to 11
         - use latest Mockito version (5.4.0)
