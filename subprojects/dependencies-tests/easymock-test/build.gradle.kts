@@ -2,8 +2,9 @@ plugins {
     id("common-configuration")
 }
 
-dependencies {
-    val easymockVersion = "5.1.0"
 
+val easymockVersion = "5.5.0"
+
+dependencies {
     testImplementation("org.easymock:easymock:$easymockVersion")
 }

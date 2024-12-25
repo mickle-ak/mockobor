@@ -1,4 +1,9 @@
 - **In the next Version**
+    - Changed
+        - Make compatible with Java 21
+      - Test with the latest versions of Mockito (5.14.2) and EasyMock (5.5.0)
+      - Bump version of other compile/test dependencies
+      - Update Gradle to 8.12
 
 - **1.1.3** (07.08.2023)
     - Changed

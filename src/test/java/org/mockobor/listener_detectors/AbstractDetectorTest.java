@@ -74,7 +74,7 @@ class AbstractDetectorTest {
 	}
 
 	/** Invalid listener, because has a class type. Listeners can be only interfaces. */
-	static abstract class InvalidListener {
+	abstract static class InvalidListener {
 		@SuppressWarnings( "unused" )
 		abstract void onEvent( Object event );
 	}
@@ -241,7 +241,7 @@ class AbstractDetectorTest {
 
 	@SuppressWarnings( "ConstantConditions" )
 	@Test
-	void registrationParameters_selector_errors_tooLittleArguments() {
+	void registrationParameters_selector_errors_tooFewArguments() {
 		Method method = findMethod( "stringAndListener" );
 		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( method );
 
@@ -263,7 +263,7 @@ class AbstractDetectorTest {
 
 	@SuppressWarnings( "ConstantConditions" )
 	@Test
-	void registrationParameters_selector_errors_tooLittleArgumentsVararg() {
+	void registrationParameters_selector_errors_tooFewArgumentsVararg() {
 		Method method = findMethod( "addVarargListener" );
 		ListenerRegistrationParameters registrationParameters = detector.getListenerRegistrationParameter( method );
 

@@ -19,7 +19,7 @@ on:
 
 jobs:
 
-  test-dependences:
+  test-dependencies:
 
     runs-on: ubuntu-latest
 
