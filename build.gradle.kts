@@ -8,6 +8,16 @@ group = "io.github.mickle-ak.mockobor"
 version = scmVersion.version
 description = "Mocked Observable Observation - java library to simulate sending of events from a mocked collaborator to a tested object."
 
+// test/compile dependencies versions
+val mockitoVersion = "5.14.2"
+val easymockVersion = "5.5.0"
+val lombokVersion = "1.18.36"
+val junit5Version = "5.11.4"
+val assertjVersion = "3.27.0"
+
+// implementation dependencies versions
+val eclipseAnnotationVersion = "2.2.700"
+
 
 plugins {
     // build
@@ -15,12 +25,12 @@ plugins {
     jacoco
 
     // versioning
-    id("pl.allegro.tech.build.axion-release") version "1.14.4"
+    id("pl.allegro.tech.build.axion-release") version "1.18.16"
 
     // publishing
     `maven-publish`
     signing
-    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 
     // IDE
     idea
@@ -46,15 +56,6 @@ java {
 
 dependencies {
 
-    val mockitoVersion = "5.4.0"
-    val easymockVersion = "5.1.0"
-
-    val eclipseAnnotationVersion = "2.2.700"
-
-    val lombokVersion = "1.18.28"
-    val junit5Version = "5.10.0"
-    val assertjVersion = "3.24.2"
-
     implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:$eclipseAnnotationVersion")
 
     compileOnly("org.mockito:mockito-core:$mockitoVersion")
@@ -70,12 +71,14 @@ dependencies {
     testImplementation("org.easymock:easymock:$easymockVersion")
     testCompileOnly("org.projectlombok:lombok:$lombokVersion")
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 // configure test starter
 tasks.test {
     useJUnitPlatform()
     systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
+    jvmArgs("-Xshare:off")
 
     testLogging {
         events("skipped", "failed")
@@ -102,6 +105,17 @@ tasks.test {
             }
         }
     })
+}
+
+// enable the mockito's inline-mock-maker (required for java 21+)
+val mockitoAgent = configurations.create("mockitoAgent")
+dependencies {
+    mockitoAgent("org.mockito:mockito-core:$mockitoVersion") { isTransitive = false }
+}
+tasks {
+    test {
+        jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    }
 }
 
 // disable strict checking of javadoc in java 8+
@@ -159,9 +173,11 @@ tasks.currentVersion {
     doNotTrackState("axion-release-plugin uses old deprecated api (accessing unreadable inputs or outputs)")
 }
 
-fun currentDate() = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now())
+fun currentDate(): String = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now())
 
-tasks.create("getLastChangesFromChangelog") {
+tasks.register("getLastChangesFromChangelog") {
+    description = "Get changes since the last release from the changelog file (content of the '**In the next Version**' section)"
+    group = "versioning"
     doLast {
         val readmeText = File("CHANGELOG.md").readText(Charsets.UTF_8)
         val versionPattern = """[\d+.]+"""
@@ -236,7 +252,7 @@ fun base64Decode(prop: String): String? {
     }
 }
 
-fun findProperty(prop: String) = project.findProperty(prop) ?: System.getenv(prop)
+fun findProperty(prop: String): Any? = project.findProperty(prop) ?: System.getenv(prop)
 
 
 /*

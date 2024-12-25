@@ -3,6 +3,11 @@ import org.gradle.api.JavaVersion.VERSION_11
 
 group = "io.github.mickle-ak.mockobor"
 
+// test/compile dependencies versions
+val junit5Version = "5.11.4"
+val assertjVersion = "3.27.0"
+
+
 plugins {
     java
 }
@@ -24,18 +29,16 @@ dependencies {
 
     testImplementation("io.github.mickle-ak.mockobor:mockobor:$mockoborVersion")
 
-
-    val junit5Version = "5.10.0"
-    val assertjVersion = "3.24.2"
-
     testImplementation(platform("org.junit:junit-bom:$junit5Version"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junit5Version")
     testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
     useJUnitPlatform()
     systemProperty("mockito-mock-maker", System.getProperty("mockito-mock-maker", "inline"))
+    jvmArgs("-Xshare:off")
 
     testLogging {
         events("skipped", "failed")
