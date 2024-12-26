@@ -562,7 +562,7 @@ in `pom.xml`:
 <dependency>
   <groupId>io.github.mickle-ak.mockobor</groupId>
   <artifactId>mockobor</artifactId>
-  <version>1.1.3</version>
+  <version>1.1.4</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -572,7 +572,7 @@ in `pom.xml`:
 in `build.gradle.kts`:
 
 ```kotlin
-testImplementation("io.github.mickle-ak.mockobor:mockobor:1.1.3")
+testImplementation("io.github.mickle-ak.mockobor:mockobor:1.1.4")
 ```
 
 [releases]: https://github.com/mickle-ak/mockobor/releases

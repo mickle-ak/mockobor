@@ -1,4 +1,6 @@
 - **In the next Version**
+
+- **1.1.4** (26.12.2024)
     - Changed
         - Make compatible with Java 21
       - Test with the latest versions of Mockito (5.14.2) and EasyMock (5.5.0)
